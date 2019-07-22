@@ -43,6 +43,7 @@ export CTS_HOME=$SCRIPTPATH/cts_home
 export WORKSPACE=$CTS_HOME/jakartaeetck
 
 echo "Cleaning and installing TCK"
+killall java
 if [ -z "$SKIP_TCK" ]; then
     # clean cts directory
     rm -rf $CTS_HOME/*
@@ -105,6 +106,6 @@ export GF_VI_TOPLEVEL_DIR=payara5
 # (ENV) SKIP_TEST - if just testing the script
 if [ -z "$SKIP_TEST" ]; then 
   echo "Starting test!"
-  time $WORKSPACE/docker/run_jakartaeetck.sh "$@" | tee $CTS_HOME/$1.log
+  time bash $WORKSPACE/docker/run_jakartaeetck.sh "$@" | tee $CTS_HOME/$1.log
 fi
 # collect results
