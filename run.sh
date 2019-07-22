@@ -54,6 +54,12 @@ if [ -z "$SKIP_TCK" ]; then
     rm $TCK_TEMP
     cp $WORKSPACE/bin/ts.jte $CTS_HOME/ts.jte.dist
     echo "Done"
+
+    # test for https://github.com/eclipse-ee4j/jakartaee-tck/pull/89/
+    if ! grep -q config.vi.javadb $WORKSPACE/docker/run_jakartaeetck.sh; then
+      echo "Replacing runner script with patched one"
+      cp patch/run_jakartaeetck.sh $WORKSPACE/docker/
+    fi;
 fi
 
 # link VI impl
@@ -77,7 +83,7 @@ diff $WORKSPACE/bin/ts.jte $CTS_HOME/ts.jte.dist
 # (ENV) SKIP_MAIL - do not attempt to start mailserver container
 if [ -z "$SKIP_MAIL"]; then 
     JAMES_CONTAINER=`docker ps -f name='james-mail' -q`
-    if [ -z "$JAMES_CONTAINER"]; then
+    if [ -z "$JAMES_CONTAINER" ]; then
         echo "Starting email server Docker container"
         docker run --name james-mail --rm -d -p 1025:1025 -p 1143:1143 --entrypoint=/bin/bash jakartaee/cts-mailserver:0.1 -c /root/startup.sh
         sleep 10
@@ -88,8 +94,6 @@ fi
 
 # run testcase
 
-echo "Starting test!"
-
 # Set the env to run against payara
 export PROFILE=full
 export LANG="en_US.UTF-8"
@@ -98,5 +102,9 @@ export DATABASE=JavaDB
 export GF_VI_BUNDLE_URL=$PAYARA_URL
 export GF_VI_TOPLEVEL_DIR=payara5
 
-time $WORKSPACE/docker/run_jakartaeetck.sh "$@" | tee $CTS_HOME/$1.log
+# (ENV) SKIP_TEST - if just testing the script
+if [ -z "$SKIP_TEST" ]; then 
+  echo "Starting test!"
+  time $WORKSPACE/docker/run_jakartaeetck.sh "$@" | tee $CTS_HOME/$1.log
+fi
 # collect results
