@@ -1,6 +1,9 @@
 #!/bin/bash
+
+############ 
 # Payara Jakarta EE TCK Runner.
-# Any environment customization is marked in commend with prefix (ENV) below
+# Any environment customization is marked in commend with prefix (ENV) below.
+#
 # Usage:
 # 1. copy or link tck binary, glassfish binary and payara binary to bundles/ (see BUNDLES below)
 # 2. run bundles/run_server.sh
@@ -10,9 +13,6 @@
 # 5. collect failure logs
 # 6. adjust test properties in ./ts.override.properties
 
-
-SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-
 # BUNDLES 
 # 
 # URLs to respective binaries that get downloaded thoughout the process. By default it assumes server
@@ -21,6 +21,8 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 # (ENV) TCK_URL - full url to TCK
 # (ENV) GLASSFISH_URL - full url to glassfish
 # (ENV) PAYARA_URL - full url to payara
+
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 if [ -z "$BASE_URL"]; then
   BASE_URL=http://localhost:8000
 fi
@@ -63,26 +65,32 @@ echo "Patching ts.jte"
 
 OVERRIDE_TEMP=`tempfile`
 ## We create a sed program, that we'll execute against ts.jte.
+# TODO: Multiline props. Please use something else than sed to implement that ;)
 sed -n "s/^\([a-z.]\+\)=\(.\+\)/s#^\1=.\\\+#\1=\2#/p " ts.override.properties > $OVERRIDE_TEMP
 sed -f $OVERRIDE_TEMP -i $WORKSPACE/bin/ts.jte
 rm $OVERRIDE_TEMP
 
-echo "Comparison with distributed ts.jte"
+echo "Comparison with ts.jte of original distribution:"
 diff $WORKSPACE/bin/ts.jte $CTS_HOME/ts.jte.dist
 
 # run mailserver container
-JAMES_CONTAINER=`docker ps -f name='james-mail' -q`
-if [ -z "$JAMES_CONTAINER"]; then
-    echo "Starting email server Docker container"
-    docker run --name james-mail --rm -d -p 1025:1025 -p 1143:1143 --entrypoint=/bin/bash jakartaee/cts-mailserver:0.1 -c /root/startup.sh
-    sleep 10
-    echo "Initializing container"
-    docker exec -it james-mail /bin/bash -c /root/create_users.sh
+# (ENV) SKIP_MAIL - do not attempt to start mailserver container
+if [ -z "$SKIP_MAIL"]; then 
+    JAMES_CONTAINER=`docker ps -f name='james-mail' -q`
+    if [ -z "$JAMES_CONTAINER"]; then
+        echo "Starting email server Docker container"
+        docker run --name james-mail --rm -d -p 1025:1025 -p 1143:1143 --entrypoint=/bin/bash jakartaee/cts-mailserver:0.1 -c /root/startup.sh
+        sleep 10
+        echo "Initializing container"
+        docker exec -it james-mail /bin/bash -c /root/create_users.sh
+    fi
 fi
+
 # run testcase
 
 echo "Starting test!"
 
+# Set the env to run against payara
 export PROFILE=full
 export LANG="en_US.UTF-8"
 export GF_BUNDLE_URL=$GLASSFISH_URL
