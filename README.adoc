@@ -26,6 +26,7 @@ The runner will
 1. copy the binaries into `bundles` directory (`jakartaeetck.zip`,`latest-glassfish.zip`, `payara-prerelease.zip`)
 1. run `bundles/run_server`. That's this simple download server on port 8000
 1. run run.sh <whatever> -- this will perform the test under `./cts_home`
+1. produce a slim-down report archived by running `./slim-archive.sh <suite-results.tar.gz>`
 
 == What to configure
 
