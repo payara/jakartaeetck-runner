@@ -14,7 +14,9 @@
 # https://www.gnu.org/software/classpath/license.html.
 #
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+#
 # Excerpt of run_javaeetck.sh to rerun the test cases (after reapplying ts.jte overrides)
+# NOTE: reapplying ts.jte seems to have no effect on the rerun, so this might not be as useful as I thought
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 export CTS_HOME=$SCRIPTPATH/cts_home
