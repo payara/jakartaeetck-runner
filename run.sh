@@ -90,6 +90,16 @@ if [ -z "$SKIP_MAIL"]; then
     fi
 fi
 
+if [ $1=="jaxr" ]; then
+    JWSDP_CONTAINER=`docker ps -f name='jwsdp' -q`
+    if [ -z "$JWSDP_CONTAINER"]; then
+      echo "Starting JWSDP Docker container"
+      docker run --name jwsdp --rm -d -p 8280:8080 --entrypoint=/bin/bash jakartaee/cts-base:0.1 /opt/jwsdp-1.3/bin/catalina.sh run
+      export UDDI_REGISTRY_URL="http://localhost:8280/RegistryServer/"
+    fi
+fi
+
+
 # run testcase
 
 # Set the env to run against payara
