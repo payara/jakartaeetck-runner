@@ -106,6 +106,6 @@ export GF_VI_TOPLEVEL_DIR=payara5
 # (ENV) SKIP_TEST - if just testing the script
 if [ -z "$SKIP_TEST" ]; then 
   echo "Starting test!"
-  time bash $WORKSPACE/docker/run_jakartaeetck.sh "$@" | tee $CTS_HOME/$1.log
+  time bash $WORKSPACE/docker/run_jakartaeetck.sh "$@" |& tee $CTS_HOME/$1.log
 fi
 # collect results
