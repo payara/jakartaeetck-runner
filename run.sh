@@ -23,6 +23,8 @@
 # (ENV) PAYARA_URL - full url to payara
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+. $SCRIPTPATH/functions.sh
+
 if [ -z "$BASE_URL"]; then
   BASE_URL=http://localhost:8000
 fi
@@ -70,12 +72,7 @@ ln -s $SCRIPTPATH/cts-impl $WORKSPACE/bin/xml/impl/payara
 # patch ts.jte
 echo "Patching ts.jte"
 
-OVERRIDE_TEMP=`tempfile`
-## We create a sed program, that we'll execute against ts.jte.
-# TODO: Multiline props. Please use something else than sed to implement that ;)
-sed -n "s/^\([a-z.]\+\)=\(.\+\)/s#^\1=.\\\+#\1=\2#/p " ts.override.properties > $OVERRIDE_TEMP
-sed -f $OVERRIDE_TEMP -i $WORKSPACE/bin/ts.jte
-rm $OVERRIDE_TEMP
+apply_overrides
 
 echo "Comparison with ts.jte of original distribution:"
 diff $WORKSPACE/bin/ts.jte $CTS_HOME/ts.jte.dist

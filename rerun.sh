@@ -16,18 +16,14 @@
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 #
 # Excerpt of run_javaeetck.sh to rerun the test cases (after reapplying ts.jte overrides)
-# NOTE: reapplying ts.jte seems to have no effect on the rerun, so this might not be as useful as I thought
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+. $SCRIPTPATH/functions.sh
+
 export CTS_HOME=$SCRIPTPATH/cts_home
 export WORKSPACE=$CTS_HOME/jakartaeetck
 
-OVERRIDE_TEMP=`tempfile`
-## We create a sed program, that we'll execute against ts.jte.
-# TODO: Multiline props. Please use something else than sed to implement that ;)
-sed -n "s/^\([a-z.]\+\)=\(.\+\)/s#^\1=.\\\+#\1=\2#/p " ts.override.properties > $OVERRIDE_TEMP
-sed -f $OVERRIDE_TEMP -i $WORKSPACE/bin/ts.jte
-rm $OVERRIDE_TEMP
+apply_overrides
 
 ### initialize variables
 if [[ $1 = *'_'* ]]; then
