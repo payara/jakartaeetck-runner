@@ -110,9 +110,11 @@ export DATABASE=JavaDB
 export GF_VI_BUNDLE_URL=$PAYARA_URL
 export GF_VI_TOPLEVEL_DIR=payara5
 
+TEST_SUITE=`echo "$1" | tr '/' '_'`
+
 # (ENV) SKIP_TEST - if just testing the script
 if [ -z "$SKIP_TEST" ]; then 
   echo "Starting test!"
-  time bash $WORKSPACE/docker/run_jakartaeetck.sh "$@" |& tee $CTS_HOME/$1.log
+  time bash $WORKSPACE/docker/run_jakartaeetck.sh "$@" |& tee $CTS_HOME/$TEST_SUITE.log
 fi
 # collect results
