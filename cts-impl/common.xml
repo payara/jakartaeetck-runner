@@ -626,6 +626,7 @@
      <target name="create-jms-user" >
        <exec executable="${exec.imqusermgr}" >
             <env key="IMQ_JAVAHOME" value="${java.home}"/>
+            <env key="IMQ_VARHOME" value="${s1as.domain}/imq"/>
             <arg line="${exec.imqusermgr.part2}"/>
             <arg line="-i ${jmsServer}"/>
             <arg line=" add"/>
@@ -643,6 +644,7 @@
      <target name="delete-jms-user" >
        <exec executable="${exec.imqusermgr}" >
             <env key="IMQ_JAVAHOME" value="${java.home}"/>
+            <env key="IMQ_VARHOME" value="${s1as.domain}/imq"/>
             <arg line="${exec.imqusermgr.part2}"/>
             <arg line="-i ${jmsServer}"/>
             <arg line=" delete"/>
