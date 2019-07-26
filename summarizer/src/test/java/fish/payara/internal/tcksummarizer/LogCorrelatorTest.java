@@ -40,11 +40,20 @@
 
 package fish.payara.internal.tcksummarizer;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.Test;
 
-public class TestReport {
-    String timestamp;
-    String name;
-    List<TestCase> cases = new ArrayList<>();
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class LogCorrelatorTest {
+    @Test
+    public void logfiles_sorted_chronologically() throws IOException {
+        List<Path> files = LogCorrelator.sortedLogs("src/test/sample/logs").collect(Collectors.toList());
+        assertThat(files).extracting(path -> path.getFileName().toString())
+                .containsSequence("server.log_2019-07-26T00-13-45","server.log_2019-07-26T00-13-46", "server.log");
+    }
 }

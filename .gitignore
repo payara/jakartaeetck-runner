@@ -2,3 +2,8 @@
 /cts_home/*
 ts.save
 target/
+/summarizer/*.txt
+/summarizer/*-report.xml
+/summarizer/logs
+/summarizer/*.log
+/summarizer/summary-*

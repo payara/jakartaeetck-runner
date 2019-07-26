@@ -87,6 +87,7 @@ public class JTRParser {
         @Override
         public void startSection(String sectionLine) {
             this.section = sectionLine;
+            this.subSection = null;
         }
 
         @Override

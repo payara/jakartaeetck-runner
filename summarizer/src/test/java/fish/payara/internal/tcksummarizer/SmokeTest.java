@@ -108,4 +108,21 @@ public class SmokeTest {
         List<Cluster> clusters = Cluster.makeClusters(report.cases, 0.96);
         clusters.forEach(System.out::println);
     }
+
+    @Test
+    public void correlationSmokeTest() throws IOException, ParserConfigurationException, SAXException {
+        TestReport report2 = JUnitReportParser.parse(new InputSource(new FileInputStream("src/test/sample/ejb-junit-report-2.xml")));
+        LogCorrelator.correlate(report2.cases, "src/test/sample/logs");
+
+        TestCase matchedCase = report2.cases.stream().filter(c -> c.name.equals("cancelAndRollbackSingleEventTest")
+                && c.className.equals("com.sun.ts.tests.ejb.ee.timer.mdb.Client")).findAny().get();
+        StringBuilder serverLog = matchedCase.serverLog;
+        assertThat(serverLog.length() > 0);
+        System.out.println(matchedCase.start);
+        System.out.println(matchedCase.end);
+
+        System.out.println(serverLog.subSequence(0,serverLog.indexOf("]]")+2));
+        System.out.println("---");
+        System.out.println(serverLog.subSequence(serverLog.lastIndexOf("[2019"), serverLog.length()));
+    }
 }

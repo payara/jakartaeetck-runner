@@ -42,9 +42,12 @@ package fish.payara.internal.tcksummarizer;
 
 import org.xml.sax.Attributes;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class TestCase {
     public String failure;
@@ -54,7 +57,10 @@ public class TestCase {
     String status;
     String output;
     TermVector vector;
+    ZonedDateTime start;
+    ZonedDateTime end;
     String log;
+    StringBuilder serverLog;
 
     public TestCase(Attributes attributes) {
         name = attributes.getValue("name");
@@ -76,6 +82,23 @@ public class TestCase {
         return className + '#' + name;
     }
 
+    public void appendServerLog(String line) {
+        if (serverLog == null) {
+            serverLog = new StringBuilder();
+        } else {
+            serverLog.append("\n");
+        }
+        serverLog.append(line);
+    }
+
+    public boolean hasServerLog() {
+        return serverLog != null && serverLog.length() > 0;
+    }
+
+    public String getServerLog() {
+        return serverLog.toString();
+    }
+
 
     class Handler extends JTRParser.StatelessHandler {
         List<String> terms = new ArrayList<>();
@@ -83,6 +106,14 @@ public class TestCase {
         protected void line(String section, String subSection, String line) {
             if ("section:TestRun".equals(section) && subSection != null && subSection.startsWith("log:")) {
                 extractTerms(trimTimestamp(line));
+            }
+            if ("testresult".equals(section) && subSection == null) {
+                if (line.startsWith("start")) {
+                    start = parseDateLine(line);
+                }
+                if (line.startsWith("end")) {
+                    end = parseDateLine(line);
+                }
             }
         }
 
@@ -95,6 +126,14 @@ public class TestCase {
         public void finish() {
             vector = new TermVector(terms);
         }
+    }
+
+    final static DateTimeFormatter JTR_TIMESTAMP_FORMAT = DateTimeFormatter
+            .ofPattern("EEE MMM dd HH:mm:ss zzz yyy").withLocale(Locale.ENGLISH);
+
+    static ZonedDateTime parseDateLine(String line) {
+        line = line.replaceFirst("^[^=]+=", "").replace("\\:",":");
+        return ZonedDateTime.parse(line, JTR_TIMESTAMP_FORMAT);
     }
 
     private static String trimTimestamp(String line) {

@@ -59,7 +59,13 @@ public class JUnitReportParser  {
 
 
     JUnitReportParser() {
-        this.handler = new XmlHandler(when("testcase", this::startTestCase));
+        this.handler = new XmlHandler(when("testsuite", this::initSuite));
+    }
+
+    private ElementHandler initSuite(Element testsuite) {
+        report.name = testsuite.attributes.getValue("name");
+        report.timestamp = testsuite.attributes.getValue("timestamp");
+        return when("testcase", this::startTestCase);
     }
 
     private ElementHandler startTestCase(Element testCase) {

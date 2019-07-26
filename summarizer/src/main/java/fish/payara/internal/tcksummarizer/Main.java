@@ -44,9 +44,16 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -67,30 +74,65 @@ public class Main {
     }
 
     public static void main(String... args) throws IOException, ParserConfigurationException, SAXException {
-        if (args.length < 1 && args.length > 2) {
-            System.out.println("Usage: -jar ... <tck junit report file> <similarity threshold>");
+        if (args.length < 1 && args.length > 3) {
+            System.out.println("Usage: -jar ... <tck junit report file> [<similarity threshold>] [<server log directory>]");
         }
         double threshold=0.96;
+        String serverLogs = null;
         if (args.length == 2) {
+            try {
+                threshold = Double.parseDouble(args[1]);
+            } catch (NumberFormatException nfe) {
+                serverLogs = args[1];
+            }
+        }
+        if (args.length == 3) {
             threshold = Double.parseDouble(args[1]);
+            serverLogs = args[2];
         }
         String path = args[0];
         Main main = new Main(path, threshold);
         main.process();
+        if (serverLogs != null) {
+            main.correlate(serverLogs);
+        }
         main.print();
+
     }
 
-    private void print() {
-        System.out.println("TCK Failure summary\t"+path);
-        System.out.println("Number of failures:\t"+report.cases.size());
-        System.out.println("Number of clusters:\t"+clusters.size());
-        System.out.println();
-        System.out.println("Lead case\tNumber of similar");
-        clusters.forEach(cluster -> System.out.println(cluster.lead+"\t"+cluster.similar.size()));
-        System.out.println(" ---- End of summary. Now boring details ----");
-        clusters.forEach(System.out::println);
+    private Path output() {
+        return Paths.get("summary-"+report.name+"-"+report.timestamp.replaceAll(":","")+"/");
     }
 
-    private static void printSummary(List<TestCase> cases, List<Cluster> clusters) {
+    private void correlate(String serverLogs) throws IOException {
+        Path outDir = output().resolve("logs/");
+        Files.createDirectories(outDir);
+        LogCorrelator.correlate(report.cases, serverLogs);
+        report.cases.stream().parallel().filter(TestCase::hasServerLog)
+                .forEach(testCase -> writeLog(outDir, testCase));
     }
+
+    private static void writeLog(Path serverLogs, TestCase testCase) {
+        try {
+            Files.write(serverLogs.resolve(testCase.toString()+".log"),
+                    Collections.singleton(testCase.serverLog));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void print() throws IOException {
+        Path outPath = output().resolve("_summary.txt");
+        try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(outPath,StandardCharsets.UTF_8))) {
+            out.println("TCK Failure summary\t" + path);
+            out.println("Number of failures:\t" + report.cases.size());
+            out.println("Number of clusters:\t" + clusters.size());
+            out.println();
+            out.println("Lead case\tNumber of similar");
+            clusters.forEach(cluster -> out.println(cluster.lead + "\t" + cluster.similar.size()));
+            out.println(" ---- End of summary. Now boring details ----");
+            clusters.forEach(out::println);
+        }
+    }
+
 }

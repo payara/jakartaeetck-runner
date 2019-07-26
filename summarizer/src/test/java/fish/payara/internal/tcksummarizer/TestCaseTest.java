@@ -40,11 +40,29 @@
 
 package fish.payara.internal.tcksummarizer;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.Test;
 
-public class TestReport {
-    String timestamp;
-    String name;
-    List<TestCase> cases = new ArrayList<>();
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+import static org.junit.Assert.assertEquals;
+
+public class TestCaseTest {
+    @Test
+    public void testDateParsing() {
+        ZonedDateTime date = TestCase.parseDateLine("start=Thu Jul 25 23\\:47\\:40 UTC 2019");
+        assertEquals(25, date.getDayOfMonth());
+        assertEquals(7, date.getMonthValue());
+        assertEquals(2019, date.getYear());
+        assertEquals(23, date.getHour());
+        assertEquals(47, date.getMinute());
+        assertEquals(40, date.getSecond());
+        assertEquals(ZoneId.of("UTC"), date.getZone());
+    }
+
+    @Test
+    public void testFormat() {
+        ZonedDateTime reference = ZonedDateTime.of(2019,7,25,23,47,40,0, ZoneId.of("UTC"));
+        assertEquals("Thu Jul 25 23:47:40 UTC 2019", TestCase.JTR_TIMESTAMP_FORMAT.format(reference));
+    }
 }
