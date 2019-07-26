@@ -40,7 +40,6 @@
 
 package fish.payara.internal.tcksummarizer;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -48,7 +47,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -97,9 +95,9 @@ public class SmokeTest {
     @Test
     public void cosineSmokeTest() throws IOException, ParserConfigurationException, SAXException {
 
-        TermVector firstTermVector = report.cases.get(0).vector;
+        TermVector firstTermVector = report.cases.get(0).getVector();
 
-        double[] similarities = report.cases.stream().skip(1).mapToDouble(testCase -> firstTermVector.cosineSimilarity(testCase.vector)).toArray();
+        double[] similarities = report.cases.stream().skip(1).mapToDouble(testCase -> firstTermVector.cosineSimilarity(testCase.getVector())).toArray();
         System.out.println(Arrays.toString(similarities));
     }
 

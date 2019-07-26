@@ -56,7 +56,8 @@ public class TestCase {
     Integer time;
     String status;
     String output;
-    TermVector vector;
+    private TermVector vector;
+    private List<String> terms = new ArrayList<>();
     ZonedDateTime start;
     ZonedDateTime end;
     String log;
@@ -82,13 +83,16 @@ public class TestCase {
         return className + '#' + name;
     }
 
-    public void appendServerLog(String line) {
+    public void appendServerLog(String entry) {
         if (serverLog == null) {
             serverLog = new StringBuilder();
         } else {
             serverLog.append("\n");
         }
-        serverLog.append(line);
+        serverLog.append(entry);
+        // and parse tokens of the log into terms
+        String body = entry.substring(entry.indexOf("[[") + 2, entry.lastIndexOf("]]"));
+        terms.addAll(Arrays.asList(body.split("\\W+")));
     }
 
     public boolean hasServerLog() {
@@ -97,6 +101,13 @@ public class TestCase {
 
     public String getServerLog() {
         return serverLog.toString();
+    }
+
+    TermVector getVector() {
+        if (vector == null) {
+            vector = new TermVector(terms);
+        }
+        return vector;
     }
 
 
@@ -124,7 +135,7 @@ public class TestCase {
 
         @Override
         public void finish() {
-            vector = new TermVector(terms);
+            TestCase.this.terms.addAll(terms);
         }
     }
 

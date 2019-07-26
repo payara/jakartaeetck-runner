@@ -42,6 +42,7 @@ package fish.payara.internal.tcksummarizer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Cluster {
     final TestCase lead;
@@ -64,13 +65,17 @@ public class Cluster {
         return sb.toString();
     }
 
+    public Stream<TestCase> stream() {
+        return Stream.concat(Stream.of(lead),similar.stream());
+    }
+
     static List<Cluster> makeClusters(List<TestCase> cases, double threshold) {
         List<TestCase> candidates = new ArrayList<>(cases);
         List<Cluster> clusters = new ArrayList<>();
         while (!candidates.isEmpty()) {
             TestCase lead = candidates.remove(0);
             double[] similarities = candidates.stream().parallel()
-                    .mapToDouble(testCase -> lead.vector.cosineSimilarity(testCase.vector))
+                    .mapToDouble(testCase -> lead.getVector().cosineSimilarity(testCase.getVector()))
                     .toArray();
             List<TestCase> similar = new ArrayList<>();
             int offset = 0;

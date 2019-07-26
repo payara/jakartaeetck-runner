@@ -44,9 +44,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -60,16 +58,24 @@ import java.util.List;
 public class Main {
     private final String path;
     private final double threshold;
+    private final String serverLogs;
     private TestReport report;
     private List<Cluster> clusters;
 
-    public Main(String path, double threshold) {
+    public Main(String path, double threshold, String serverLogs) {
         this.path = path;
         this.threshold = threshold;
+        this.serverLogs = serverLogs;
     }
 
     private void process() throws IOException, ParserConfigurationException, SAXException {
+        System.out.println("Parsing jUnit report");
         report = JUnitReportParser.parse(new InputSource(new FileInputStream(path)));
+        if (serverLogs != null) {
+            System.out.println("Parsing server logs");
+            LogCorrelator.correlate(report.cases, serverLogs);
+        }
+        System.out.println("Correlating failures");
         clusters = Cluster.makeClusters(report.cases, threshold);
     }
 
@@ -91,11 +97,9 @@ public class Main {
             serverLogs = args[2];
         }
         String path = args[0];
-        Main main = new Main(path, threshold);
+        Main main = new Main(path, threshold, serverLogs);
         main.process();
-        if (serverLogs != null) {
-            main.correlate(serverLogs);
-        }
+        main.writeLogs();
         main.print();
 
     }
@@ -104,18 +108,33 @@ public class Main {
         return Paths.get("summary-"+report.name+"-"+report.timestamp.replaceAll(":","")+"/");
     }
 
-    private void correlate(String serverLogs) throws IOException {
+    private void writeLogs() throws IOException {
+        System.out.println("Writing out logs");
         Path outDir = output().resolve("logs/");
         Files.createDirectories(outDir);
-        LogCorrelator.correlate(report.cases, serverLogs);
-        report.cases.stream().parallel().filter(TestCase::hasServerLog)
-                .forEach(testCase -> writeLog(outDir, testCase));
+
+        clusters.stream()
+                .forEach(cluster -> writeClusterLogs(outDir, cluster));
     }
 
-    private static void writeLog(Path serverLogs, TestCase testCase) {
+    private void writeClusterLogs(Path parentDir, Cluster cluster) {
+        Path outDir = parentDir.resolve(cluster.lead.toString());
         try {
-            Files.write(serverLogs.resolve(testCase.toString()+".log"),
-                    Collections.singleton(testCase.serverLog));
+            Files.createDirectories(outDir);
+            cluster.stream().parallel().forEach(testCase -> writeLog(outDir, testCase));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void writeLog(Path outDir, TestCase testCase) {
+        try {
+            if (testCase.hasServerLog()) {
+                Files.write(outDir.resolve(testCase.toString() + ".serverlog"),
+                        Collections.singleton(testCase.serverLog));
+            }
+            Files.write(outDir.resolve(testCase.toString()+".jtrlog"),
+                    Collections.singleton(testCase.log));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

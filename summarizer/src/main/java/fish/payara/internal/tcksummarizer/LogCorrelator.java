@@ -59,6 +59,8 @@ import java.util.stream.Stream;
 
 public class LogCorrelator {
     final TreeMap<ZonedDateTime, TestCase> byStartTime = new TreeMap<>();
+    StringBuilder currentEntry = new StringBuilder();
+
     private TestCase target;
 
     LogCorrelator(Iterable<TestCase> testCases) {
@@ -77,13 +79,13 @@ public class LogCorrelator {
         handler.accept(line);
     }
 
-    static Pattern ENTRY_START = Pattern.compile("^\\[([\\d:T+-.]+)].+\\[\\[$");
+    static Pattern ENTRY_START = Pattern.compile("^\\[([\\d:T+-.]+)]");
 
     static DateTimeFormatter LOG_TIMESTAMP = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 
     private void expectStart(String line) {
         Matcher m = ENTRY_START.matcher(line);
-        if (m.matches()) {
+        if (m.find()) {
             ZonedDateTime timestamp = ZonedDateTime.parse(m.group(1), LOG_TIMESTAMP);
             if (target == null) {
                 Map.Entry<ZonedDateTime, TestCase> candidate = byStartTime.floorEntry(timestamp);
@@ -100,12 +102,21 @@ public class LogCorrelator {
     }
 
     private void body(String line) {
-        if (target != null) {
-            target.appendServerLog(line);
+        if (currentEntry.length() > 0) {
+            currentEntry.append('\n');
         }
+        currentEntry.append(line);
         if (line.endsWith("]]")) {
-            handler = this::expectStart;
+            finish();
         }
+    }
+
+    private void finish() {
+        if (target != null && currentEntry.length() > 0) {
+            target.appendServerLog(currentEntry.toString());
+        }
+        currentEntry.setLength(0);
+        handler = this::expectStart;
     }
 
     private void readFile(Path path) {
@@ -113,6 +124,7 @@ public class LogCorrelator {
             handler = this::expectStart;
             Files.lines(path)
                     .forEach(this::handleLine);
+            finish();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
