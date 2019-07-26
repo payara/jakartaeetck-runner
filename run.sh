@@ -118,3 +118,19 @@ if [ -z "$SKIP_TEST" ]; then
   time bash $WORKSPACE/docker/run_jakartaeetck.sh "$@" |& tee $CTS_HOME/$TEST_SUITE.log
 fi
 # collect results
+
+summary=$CTS_HOME/jakartaeetck-report/${TEST_SUITE}/text/summary.txt
+ALL=`wc -l $summary`
+NOT_PASS=`cat $summary | grep -v Passed. | wc -l`
+
+echo "Not passed: ${NOT_PASS}/${ALL}"
+
+./slim_report.sh $WORKSPACE/$TEST_SUITE-results.tar.gz
+
+TIMESTAMP=`date -Iminutes | tr -d :`
+TARGET=$SCRIPTPATH/results/$TEST_SUITE-$TIMESTAMP
+mkdir $TARGET
+mv $WORKSPACE/$TEST_SUITE-results.slim.tar.gz $TARGET
+cp $WORKSPACE/results/junitreports/*.xml $TARGET
+cp $summary $TARGET
+echo "Not passed: ${NOT_PASS}/${ALL}" > $TARGET/count.txt
