@@ -16,7 +16,8 @@ The runner will
 * Build of glassfish  (`latest-glassfish.zip`)
 * Build of payara, e. g. nightly from Jenkins (`payara-prerelease.zip`)
 * Linux system with
-** Java (referenced by `JAVA_HOME`)
+** Java 8 (referenced by `JAVA_HOME` and referenced in the `PATH`)
+*** E.g. the following should hold: `export PATH=$JAVA_HOME/bin:$ANT_HOME/bin/:$PATH`
 ** Ant (referenced by `ANT_HOME`)
 ** Python (just for `SimpleHTTPServer`)
 ** Docker (needed for mailserver container)
