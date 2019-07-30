@@ -129,7 +129,7 @@ echo "Not passed: ${NOT_PASS}/${ALL}"
 
 TIMESTAMP=`date -Iminutes | tr -d :`
 TARGET=$SCRIPTPATH/results/$TEST_SUITE-$TIMESTAMP
-mkdir $TARGET
+mkdir -p $TARGET
 mv $WORKSPACE/$TEST_SUITE-results.slim.tar.gz $TARGET
 cp $WORKSPACE/results/junitreports/*.xml $TARGET
 cp $summary $TARGET
