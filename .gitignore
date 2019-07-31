@@ -7,3 +7,4 @@ target/
 /summarizer/logs
 /summarizer/*.log
 /summarizer/summary-*
+/results/
