@@ -8,11 +8,7 @@ s/^([[:alnum:].]+)=(.+[^\\])$/s#^\1=.+#\1=\2#/p
 # mutli-line to multi-line rewrite - create a c command for range
 /^([[:alnum:].]+)=(.+\\)/ {
     # print the change command on the first line
-<<<<<<< HEAD
-    s#^([[:alnum:].]+)=.+#/^\1=.+\\\\$/,/[^\\\\]$/ c\\&#
-=======
-    s#^([[:alnum:].]+)=.+#/^\1=.+\\\\$/,/[^\\\\]$/ c\\\n&#
->>>>>>> d0de424e4b2bbd0fb3965fed5c151794e6ec4c8c
+    s#^([[:alnum:].]+)=.+#/^\1=.+\\\\$/,/[^\\\\]$/ c\\ &#
     :collect
     N
     # while backslash is not last, collect into the buffer
