@@ -1,0 +1,1 @@
+exec cts_home/vi/payara5/bin/asadmin "$@"

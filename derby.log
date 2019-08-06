@@ -1,0 +1,16 @@
+----------------------------------------------------------------
+Wed Jul 31 15:44:08 UTC 2019:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-016c-48b3-f125-00001ae51948 
+on database directory /tmp/DerbyDB with class loader AntClassLoader[/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derby.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_cs.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_de_DE.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_es.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_fr.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_hu.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_it.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_ja_JP.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_ko_KR.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_pl.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_pt_BR.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_ru.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_zh_CN.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_zh_TW.jar:/home/ubuntu/payara_tck/cts_home/jakartaeetck/lib/dbprocedures.jar] 
+Loaded from file:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derby.jar
+java.vendor=Private Build
+java.runtime.version=1.8.0_222-8u222-b10-1ubuntu1~18.04.1-b10
+user.dir=/home/ubuntu/payara_tck
+os.name=Linux
+os.arch=amd64
+os.version=4.15.0-1044-aws
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Wed Jul 31 15:44:14 UTC 2019:
+Shutting down instance a816c00e-016c-48b3-f125-00001ae51948 on database directory /tmp/DerbyDB with class loader AntClassLoader[/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derby.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_cs.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_de_DE.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_es.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_fr.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_hu.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_it.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_ja_JP.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_ko_KR.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_pl.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_pt_BR.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_ru.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_zh_CN.jar:/home/ubuntu/payara_tck/cts_home/vi/payara5/javadb/lib/derbyLocale_zh_TW.jar:/home/ubuntu/payara_tck/cts_home/jakartaeetck/lib/dbprocedures.jar] 
