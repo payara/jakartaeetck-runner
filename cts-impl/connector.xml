@@ -69,7 +69,7 @@
         <antcall target="restart.server"/>
 
         <antcall target="create-jvm-options" >
-             <param name="jvm.options" value="${ri.jvm.options}"/>
+             <param name="jvm.options" value="${vi.jvm.options}"/>
         </antcall>
 
         <antcall target="create.security.eis.mappings" />

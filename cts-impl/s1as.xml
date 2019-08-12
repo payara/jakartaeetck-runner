@@ -314,7 +314,7 @@
     -->
     <target name="add.jvm.options" depends="configPlatform" if="jvm.args.set">
          <antcall target="create-jvm-options" >
-          <param name="jvm.options" value="${s1as.jvm.options}"/>
+          <param name="jvm.options" value="${vi.jvm.options}"/>
          </antcall>
 
          <!-- add call to set jvm option for use by interop-csiv2 loggerServlet -->
@@ -330,7 +330,7 @@
     <target name="drop.jvm.options" depends="configPlatform" if="jvm.args.set">
 
          <antcall target="delete-jvm-options" >
-          <param name="jvm.options" value=" ${s1as.jvm.options.remove}"/>
+          <param name="jvm.options" value=" ${vi.jvm.options.remove}"/>
          </antcall>
 
          <antcall target="delete-one-jvm-option" >
