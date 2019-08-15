@@ -8,3 +8,7 @@ target/
 /summarizer/*.log
 /summarizer/summary-*
 /results/
+.vscode/
+.project
+.settings/
+.classpath
