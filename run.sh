@@ -50,7 +50,7 @@ if [ -z "$SKIP_TCK" ]; then
     # clean cts directory
     rm -rf $CTS_HOME/*
     # download and unzip TCK
-    TCK_TEMP=`tempfile -s .zip`
+    TCK_TEMP=`mktemp --suffix .zip`
     curl $TCK_URL -o $TCK_TEMP
     echo -n "Unzipping TCK... "
     unzip -q -d $CTS_HOME $TCK_TEMP
