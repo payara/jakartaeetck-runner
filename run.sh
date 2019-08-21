@@ -25,18 +25,7 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 . $SCRIPTPATH/functions.sh
 
-if [ -z "$BASE_URL"]; then
-  BASE_URL=http://localhost:8000
-fi
-if [ -z "$TCK_URL"]; then
-  TCK_URL=$BASE_URL/jakartaeetck.zip
-fi
-if [ -z "$GLASSFISH_URL" ]; then
-  GLASSFISH_URL=$BASE_URL/latest-glassfish.zip
-fi
-if [ -z "$PAYARA_URL" ]; then
-  PAYARA_URL=$BASE_URL/payara-prerelease.zip
-fi
+init_urls
 
 # Since this is multi-step process, there are some environment variables that help when troubleshooting
 # (ENV) SKIP_TCK - skips cleaning CTS home and downloading TCK again

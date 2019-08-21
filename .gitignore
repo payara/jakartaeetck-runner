@@ -12,3 +12,5 @@ target/
 .project
 .settings/
 .classpath
+cdi/latest-glassfish.zip
+cdi/*.log

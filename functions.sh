@@ -23,3 +23,18 @@ s/^([[:alnum:].]+)=(.+[^\\])$/s#^\1=.+#\1=\2#/p
     echo "Changed $WORKSPACE/bin/ts.jte"
     rm $OVERRIDE_TEMP
 }
+
+init_urls () {
+    if [ -z "$BASE_URL"]; then
+        BASE_URL=http://localhost:8000
+    fi
+    if [ -z "$TCK_URL"]; then
+        TCK_URL=$BASE_URL/jakartaeetck.zip
+    fi
+    if [ -z "$GLASSFISH_URL" ]; then
+        GLASSFISH_URL=$BASE_URL/latest-glassfish.zip
+    fi
+    if [ -z "$PAYARA_URL" ]; then
+        PAYARA_URL=$BASE_URL/payara-prerelease.zip
+    fi
+}
