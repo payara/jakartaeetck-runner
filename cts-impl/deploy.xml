@@ -501,15 +501,36 @@
                     </sequential>
                     </for>
 
-                    <jar destfile="@{archive}"
-                         duplicate="preserve"
-                         update="true">
-                        <zipfileset dir="${tmp.dir}/${archive.name.minus.suffix}.dir"
-                                    includes="*.*ar"/>
-                        <zipfileset dir="${tmp.dir}"
-                                    includes="${archive.name.only}.sun-application.xml"
-                                    fullpath="META-INF/sun-application.xml"/>
-                    </jar>
+                    <if>
+                        <available file="${ts.home}/bin/xml/impl/payara/deployment/${archive.name.minus.suffix}" type="dir"/>
+                    <then>
+                        <jar destfile="@{archive}"
+                             duplicate="preserve"
+                             update="true">
+                            <zipfileset dir="${ts.home}/bin/xml/impl/payara/deployment/${archive.name.minus.suffix}"
+                                        includes="*.*ar"/>
+                            <zipfileset dir="${ts.home}/bin/xml/impl/payara/deployment/${archive.name.minus.suffix}"
+                                        includes="${archive.name.only}.sun-application.xml"
+                                        fullpath="META-INF/sun-application.xml"/>
+                            <zipfileset dir="${tmp.dir}/${archive.name.minus.suffix}.dir"
+                                        includes="*.*ar"/>
+                            <zipfileset dir="${tmp.dir}"
+                                        includes="${archive.name.only}.sun-application.xml"
+                                        fullpath="META-INF/sun-application.xml"/>
+                        </jar>
+                    </then>
+                    <else>
+                        <jar destfile="@{archive}"
+                             duplicate="preserve"
+                             update="true">
+                            <zipfileset dir="${tmp.dir}/${archive.name.minus.suffix}.dir"
+                                        includes="*.*ar"/>
+                            <zipfileset dir="${tmp.dir}"
+                                        includes="${archive.name.only}.sun-application.xml"
+                                        fullpath="META-INF/sun-application.xml"/>
+                        </jar>
+                    </else>
+                    </if>
 
                <delete dir="${tmp.dir}/${archive.name.minus.suffix}.dir"/>
                </then>
