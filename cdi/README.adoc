@@ -24,6 +24,8 @@ This will create the package and links it into parent bundles repository, so it 
 
 However, the run script (`./run.sh`, obviously) doesn't download it, rather requires the bundle to be present in bundle subdirectory, which is what build script does, so there's no trouble with that.
 
+CDI TCK is not in Maven Central at this point, therefore run first delegates to `install.sh`, which puts downloaded TCK files into local maven repo.
+
 Script will download payara bundle, configure the server and run the test suite with managed arquillian container.
 *Assure no other server instance is running before executing the script*.
 Similar to other TCK scripts it does it with an Ant script.

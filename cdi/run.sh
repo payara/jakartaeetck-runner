@@ -10,6 +10,9 @@ OUTPUT=$PORTING/bundles
 rm $PORTING/latest_glassfish.zip
 rm -rf cditck-porting/payara5
 
+# install CDI TCK into local maven repo
+. ./install.sh
+
 export WORKSPACE=$SCRIPTPATH/cditck-porting
 export GF_BUNDLE_URL=$PAYARA_URL
 echo Build should download from $GF_BUNDLE_URL

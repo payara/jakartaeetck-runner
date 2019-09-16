@@ -7,13 +7,18 @@ init_urls
 CDI_TCK_VERSION=2.0.6
 PORTING=$SCRIPTPATH/cditck-porting
 OUTPUT=$PORTING/bundles
-
-
-# wget into dist
-# unpack into lib or root
-# mvn installfile:
 DIST=$PORTING/dist
 CDI_TCK_DIST=cdi-tck-$CDI_TCK_VERSION
+
+rm -rf $DIST/$CDI_TCK_DIST
+
+# wget into dist
+if [ ! -f $DIST/$CDI_TCK_DIST-dist.zip ]; then
+    wget $CDI_TCK_URL -P $DIST
+fi
+
+unzip $DIST/$CDI_TCK_DIST-dist.zip -d $DIST > /dev/null
+
 TCK_ARTIFACTS=$DIST/$CDI_TCK_DIST/artifacts
 GROUP_ID=org.jboss.cdi.tck
 
