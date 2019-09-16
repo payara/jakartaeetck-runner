@@ -37,4 +37,7 @@ init_urls () {
     if [ -z "$PAYARA_URL" ]; then
         PAYARA_URL=$BASE_URL/payara-prerelease.zip
     fi
+    if [ -z "$CDI_TCK_URL"]; then
+        CDI_TCK_URL=$BASE_URL/cdi-tck-2.0.6-dist.zip
+    fi
 }
