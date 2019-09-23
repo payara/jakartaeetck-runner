@@ -107,6 +107,7 @@ TEST_SUITE=`echo "$1" | tr '/' '_'`
 if [ -z "$SKIP_TEST" ]; then 
   echo "Starting test!"
   time bash $WORKSPACE/docker/run_jakartaeetck.sh "$@" |& tee $CTS_HOME/$TEST_SUITE.log
+  ./asadmin stop-domain
 fi
 # collect results
 
