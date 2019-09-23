@@ -45,7 +45,7 @@ init_urls () {
 make_stage_log () {
     # create a stage file
     
-cat << EOF 
+cat > stage_$2 << EOF 
 ### $1
 
 \`\`\`
