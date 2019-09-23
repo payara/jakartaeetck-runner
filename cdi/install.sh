@@ -6,11 +6,11 @@ init_urls
 
 CDI_TCK_VERSION=2.0.6
 PORTING=$SCRIPTPATH/cditck-porting
-OUTPUT=$PORTING/bundles
-DIST=$PORTING/dist
+DIST=$PORTING/dist/tck
 CDI_TCK_DIST=cdi-tck-$CDI_TCK_VERSION
 
-rm -rf $DIST/$CDI_TCK_DIST
+rm -rf $DIST
+mkdir -p $DIST
 
 # wget into dist
 if [ ! -f $DIST/$CDI_TCK_DIST-dist.zip ]; then
