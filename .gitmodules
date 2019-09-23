@@ -4,3 +4,6 @@
 [submodule "bv/bvtck-porting"]
 	path = bv/bvtck-porting
 	url = https://github.com/cubastanley/bvtck-porting
+[submodule "di/ditck-porting"]
+	path = di/ditck-porting
+	url = https://github.com/cubastanley/ditck-porting
