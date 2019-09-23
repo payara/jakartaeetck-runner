@@ -1,0 +1,6 @@
+[submodule "cdi/cditck-porting"]
+	path = cdi/cditck-porting
+	url = https://github.com/pdudits/cditck-porting
+[submodule "bv/bvtck-porting"]
+	path = bv/bvtck-porting
+	url = https://github.com/cubastanley/bvtck-porting
