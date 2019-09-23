@@ -34,7 +34,9 @@ export CTS_HOME=$SCRIPTPATH/cts_home
 export WORKSPACE=$CTS_HOME/jakartaeetck
 
 echo "Cleaning and installing TCK"
-killall java
+# This only makes sense in interactive standalone VM. So minority of cases
+# killall java
+
 if [ -z "$SKIP_TCK" ]; then
     # clean cts directory
     rm -rf $CTS_HOME/*
@@ -123,3 +125,5 @@ mv $WORKSPACE/$TEST_SUITE-results.slim.tar.gz $TARGET
 cp $WORKSPACE/results/junitreports/*.xml $TARGET
 cp $summary $TARGET
 echo "Not passed: ${NOT_PASS}/${ALL}" > $TARGET/count.txt
+
+make_stage_log $1 $TEST_SUITE

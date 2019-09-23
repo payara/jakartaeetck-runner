@@ -25,10 +25,10 @@ s/^([[:alnum:].]+)=(.+[^\\])$/s#^\1=.+#\1=\2#/p
 }
 
 init_urls () {
-    if [ -z "$BASE_URL"]; then
+    if [ -z "$BASE_URL" ]; then
         BASE_URL=http://localhost:8000
     fi
-    if [ -z "$TCK_URL"]; then
+    if [ -z "$TCK_URL" ]; then
         TCK_URL=$BASE_URL/jakartaeetck.zip
     fi
     if [ -z "$GLASSFISH_URL" ]; then
@@ -37,7 +37,20 @@ init_urls () {
     if [ -z "$PAYARA_URL" ]; then
         PAYARA_URL=$BASE_URL/payara-prerelease.zip
     fi
-    if [ -z "$CDI_TCK_URL"]; then
+    if [ -z "$CDI_TCK_URL" ]; then
         CDI_TCK_URL=$BASE_URL/cdi-tck-2.0.6-dist.zip
     fi
+}
+
+make_stage_log () {
+    # create a stage file
+    
+cat << EOF 
+### $1
+
+\`\`\`
+`sed -n '/Completed running/,+3 p' $CTS_HOME/$2.log`
+\`\`\`
+
+EOF
 }

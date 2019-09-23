@@ -14,3 +14,4 @@ target/
 .classpath
 cdi/latest-glassfish.zip
 cdi/*.log
+/stage_*
