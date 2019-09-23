@@ -32,3 +32,4 @@ report=$SCRIPTPATH/../results/cdi-$TIMESTAMP.tar.gz
 echo Creating report $report
 tar zcf $report $WORKSPACE/cdi-tck-report/ $WORKSPACE/payara5/glassfish/domains/domain1/logs
 
+sed -n "/Tests run:/,/BUILD/ p" $WORKSPACE/cdi.log > $SCRIPTPATH/../stage_cdi
