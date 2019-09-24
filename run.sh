@@ -85,7 +85,7 @@ if [ -z "$SKIP_MAIL"]; then
     fi
 fi
 
-if [ $1=="jaxr" ]; then
+if [ "$1" == "jaxr" ]; then
     JWSDP_CONTAINER=`docker ps -f name='jwsdp' -q`
     if [ -z "$JWSDP_CONTAINER"]; then
       echo "Starting JWSDP Docker container"
