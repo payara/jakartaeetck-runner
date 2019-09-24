@@ -34,8 +34,8 @@ export CTS_HOME=$SCRIPTPATH/cts_home
 export WORKSPACE=$CTS_HOME/jakartaeetck
 
 echo "Cleaning and installing TCK"
-# This only makes sense in interactive standalone VM. So minority of cases
-# killall java
+# kill any leftover glassfish/payara instances
+pkill -f glassfish
 
 if [ -z "$JAVA_HOME" ]; then
   export JAVA_HOME=`readlink -f /usr/bin/java | sed "s:jre/bin/java::"`
