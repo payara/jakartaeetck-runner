@@ -37,6 +37,10 @@ echo "Cleaning and installing TCK"
 # This only makes sense in interactive standalone VM. So minority of cases
 # killall java
 
+if [ -z "$JAVA_HOME" ]; then
+  export JAVA_HOME=`readlink -f /usr/bin/java | sed "s:jre/bin/java::"`
+fi
+
 if [ -z "$SKIP_TCK" ]; then
     # clean cts directory
     rm -rf $CTS_HOME/*
