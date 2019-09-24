@@ -40,6 +40,9 @@ init_urls () {
     if [ -z "$CDI_TCK_URL" ]; then
         CDI_TCK_URL=$BASE_URL/cdi-tck-2.0.6-dist.zip
     fi
+    if [ -z "$DI_TCK_URL" ]; then
+        DI_TCK_URL=$BASE_URL/jakarta.inject-tck-1.0-bin.zip
+    fi    
 }
 
 make_stage_log () {
