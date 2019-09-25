@@ -38,7 +38,7 @@ echo "Cleaning and installing TCK"
 pkill -KILL -f glassfish
 
 if [ -z "$JAVA_HOME" ]; then
-  export JAVA_HOME=`readlink -f /usr/bin/java | sed "s:jre/bin/java::"`
+  export JAVA_HOME=`readlink -f /usr/bin/java | sed  "s:\(/jre\)\?/bin/java::"`
 fi
 
 if [ -z "$SKIP_TCK" ]; then
