@@ -65,4 +65,16 @@ public class TestCaseTest {
         ZonedDateTime reference = ZonedDateTime.of(2019,7,25,23,47,40,0, ZoneId.of("UTC"));
         assertEquals("Thu Jul 25 23:47:40 UTC 2019", TestCase.JTR_TIMESTAMP_FORMAT.format(reference));
     }
+
+    @Test
+    public void testBritishDateParsing() {
+        ZonedDateTime date = TestCase.parseDateLine("start=Wed Sep 25 22\\:02\\:07 BST 2019");
+        assertEquals(25, date.getDayOfMonth());
+        assertEquals(9, date.getMonthValue());
+        assertEquals(2019, date.getYear());
+        assertEquals(22, date.getHour());
+        assertEquals(02, date.getMinute());
+        assertEquals(07, date.getSecond());
+        assertEquals("+01:00", date.getOffset().getId());
+    }
 }

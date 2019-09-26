@@ -143,7 +143,9 @@ public class TestCase {
             .ofPattern("EEE MMM dd HH:mm:ss zzz yyy").withLocale(Locale.ENGLISH);
 
     static ZonedDateTime parseDateLine(String line) {
-        line = line.replaceFirst("^[^=]+=", "").replace("\\:",":");
+        line = line.replaceFirst("^[^=]+=", "").replace("\\:",":")
+                // BST in Linux is not same as BST in Java
+                .replace("BST", "Europe/London");
         return ZonedDateTime.parse(line, JTR_TIMESTAMP_FORMAT);
     }
 
