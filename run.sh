@@ -38,7 +38,7 @@ echo "Cleaning and installing TCK"
 pkill -KILL -f glassfish
 
 if [ -z "$JAVA_HOME" ]; then
-  export JAVA_HOME=`readlink -f /usr/bin/java | sed "s:jre/bin/java::"`
+  export JAVA_HOME=`readlink -f /usr/bin/java | sed  "s:\(/jre\)\?/bin/java::"`
 fi
 
 if [ -z "$SKIP_TCK" ]; then
@@ -87,7 +87,7 @@ fi
 
 if [ "$1" == "jaxr" ]; then
     JWSDP_CONTAINER=`docker ps -f name='jwsdp' -q`
-    if [ -z "$JWSDP_CONTAINER"]; then
+    if [ -z "$JWSDP_CONTAINER" ]; then
       echo "Starting JWSDP Docker container"
       docker run --name jwsdp --rm -d -p 8280:8080 --entrypoint=/bin/bash jakartaee/cts-base:0.1 /opt/jwsdp-1.3/bin/catalina.sh run
       export UDDI_REGISTRY_URL="http://localhost:8280/RegistryServer/"
@@ -109,8 +109,10 @@ TEST_SUITE=`echo "$1" | tr '/' '_'`
 
 # (ENV) SKIP_TEST - if just testing the script
 if [ -z "$SKIP_TEST" ]; then 
+  echo "Environment"
+  printenv
   echo "Starting test!"
-  time bash $WORKSPACE/docker/run_jakartaeetck.sh "$@" |& tee $CTS_HOME/$TEST_SUITE.log
+  time bash -x $WORKSPACE/docker/run_jakartaeetck.sh "$@" |& tee $CTS_HOME/$TEST_SUITE.log
   ./asadmin stop-domain
 fi
 # collect results
