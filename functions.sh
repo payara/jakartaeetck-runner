@@ -47,9 +47,13 @@ init_urls () {
 
 make_stage_log () {
     # create a stage file
-    
-cat > stage_$2 << EOF 
-### $1
+    stage_name=$2
+    if [[ ! -z $3 ]]; then
+      stage_name=$2_`echo $3 | tr '/\\&!|' '_'`
+    fi
+    echo "Writing stage file for $1 $3 into stage_$stage_name"
+    cat > stage_$stage_name << EOF 
+### $1 $3
 
 \`\`\`
 `sed -n '/Completed running/,+3 p' $CTS_HOME/$2.log`
