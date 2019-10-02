@@ -100,22 +100,29 @@ ERROR_COUNT=`cat ${JT_REPORT_DIR}/${TEST_SUITE}/text/summary.txt | grep 'Error.'
 rerun_log=${CTS_HOME}/${TEST_SUITE}_rerun.log
 echo "Failed tests: ${FAILED_COUNT}" | tee $rerun_log
 echo "Errored tests: ${ERROR_COUNT}" | tee -a $rerun_log
+RUN_CLIENT_ARGS=""
 if [[ $FAILED_COUNT -gt 0 || $ERROR_COUNT -gt 0 ]]; then
   echo "One or more tests failed. Failure count:$FAILED_COUNT/Error count:$ERROR_COUNT"
   echo "Re-running only the failed, error tests"
+  if [[ "jbatch" == ${test_suite} ]]; then
+    RUN_CLIENT_ARGS="-DpriorStatus=fail"
+  else 
+    RUN_CLIENT_ARGS='-Drun.client.args="-DpriorStatus=fail,error"'
+  fi
+fi
 if [ -z "$KEYWORDS" ]; then
   if [[ "jbatch" == ${test_suite} ]]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
-    ant runclient -DpriorStatus=fail -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch |& tee -a $rerun_log
+    ant runclient $RUN_CLIENT_ARGS -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch |& tee -a $rerun_log
   else
-    ant -f xml/impl/glassfish/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Drun.client.args="-DpriorStatus=fail,error"  -DbuildJwsJaxws=false -Dtest.areas="${test_suite}" |& tee -a $rerun_log
+    ant -f xml/impl/glassfish/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" $RUN_CLIENT_ARGS  -DbuildJwsJaxws=false -Dtest.areas="${test_suite}" |& tee -a $rerun_log
   fi
 else
   if [[ "jbatch" == ${test_suite} ]]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
-    ant runclient -DpriorStatus=fail -Dkeywords=\"${KEYWORDS}\" -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch |& tee -a $rerun_log
+    ant runclient $RUN_CLIENT_ARGS -Dkeywords=\"${KEYWORDS}\" -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch |& tee -a $rerun_log
   else
-    ant -f xml/impl/glassfish/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Drun.client.args="-DpriorStatus=fail,error"  -DbuildJwsJaxws=false -Dtest.areas="${test_suite}" |& tee -a $rerun_log
+    ant -f xml/impl/glassfish/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" $RUN_CLIENT_ARGS  -DbuildJwsJaxws=false -Dtest.areas="${test_suite}" |& tee -a $rerun_log
   fi
 fi
   # Generate combined report for both the runs.
@@ -125,7 +132,6 @@ else
   ant -Dreport.for=com/sun/ts/tests/$test_suite -Dreport.dir=${JT_REPORT_DIR}/${TEST_SUITE} -Dwork.dir=${JT_WORK_DIR}/${TEST_SUITE} report |& tee -a $rerun_log
 fi
 
-fi
 
 export HOST=`hostname -f`
 echo "1 ${TEST_SUITE} ${HOST}" > ${CTS_HOME}/args.txt

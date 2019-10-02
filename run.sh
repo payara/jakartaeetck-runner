@@ -133,4 +133,4 @@ cp $WORKSPACE/results/junitreports/*.xml $TARGET
 cp $summary $TARGET
 echo "Not passed: ${NOT_PASS}/${ALL}" > $TARGET/count.txt
 
-make_stage_log $1 $TEST_SUITE
+make_stage_log $1 $TEST_SUITE $USER_KEYWORDS
