@@ -28,7 +28,7 @@ echo Creating report $report
 tar zcf $report $WORKSPACE/bvtck-report/ $WORKSPACE/payara5/glassfish/domains/domain1/logs
 
 # override BV_TCK_BUNDLE_URL=http://download.eclipse.org/ee4j/bean-validation/beanvalidation-tck-dist-2.0.5.zip 
-cat > $SCRIPTPATH/../stage_cdi << EOF
+cat > $SCRIPTPATH/../stage_beanvalidation << EOF
 ### beanvalidation
 
 \`\`\`
