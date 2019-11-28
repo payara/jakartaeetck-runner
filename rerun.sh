@@ -146,11 +146,11 @@ else
   sed -i "s/name=\"${TEST_SUITE}\"/name=\"${TEST_SUITE}_${vehicle_name}\"/g" ${WORKSPACE}/results/junitreports/${TEST_SUITE}-junit-report.xml
   mv ${WORKSPACE}/results/junitreports/${TEST_SUITE}-junit-report.xml  ${WORKSPACE}/results/junitreports/${TEST_SUITE}_${vehicle_name}-junit-report.xml
 fi
-tar zcvf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/
+tar zcf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/
 
 if [ -z ${vehicle} ];then
   JUNIT_REPORT_FILE_NAME=${TEST_SUITE}-junitreports.tar.gz
 else
   JUNIT_REPORT_FILE_NAME=${TEST_SUITE}_${vehicle_name}-junitreports.tar.gz
 fi
-tar zcvf ${WORKSPACE}/${JUNIT_REPORT_FILE_NAME} ${WORKSPACE}/results/junitreports/
+tar zcf ${WORKSPACE}/${JUNIT_REPORT_FILE_NAME} ${WORKSPACE}/results/junitreports/
