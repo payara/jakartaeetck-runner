@@ -112,7 +112,7 @@ if [ -z "$SKIP_TEST" ]; then
   echo "Environment"
   printenv
   echo "Starting test!"
-  time bash -x $WORKSPACE/docker/run_jakartaeetck.sh "$@" |& tee $CTS_HOME/$TEST_SUITE.log
+  time bash -x $SCRIPTPATH/jakartaeetck.sh "$@" |& tee $CTS_HOME/$TEST_SUITE.log
   ./asadmin stop-domain
 fi
 # collect results
