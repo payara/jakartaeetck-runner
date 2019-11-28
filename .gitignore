@@ -15,3 +15,6 @@ target/
 cdi/latest-glassfish.zip
 cdi/*.log
 /stage_*
+*.tar.gz
+*.log
+bv/*.zip
