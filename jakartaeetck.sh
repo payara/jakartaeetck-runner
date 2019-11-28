@@ -376,9 +376,6 @@ echo 'permission java.io.FilePermission "${com.sun.aas.instanceRoot}${/}generate
 echo '};' >> ${VI_SERVER_POLICY_FILE}
 
 
-echo "Contents of ts.jte"
-cat ${TS_HOME}/bin/ts.jte
-
 mkdir -p ${JT_REPORT_DIR}
 mkdir -p ${JT_WORK_DIR}
 
@@ -515,4 +512,4 @@ if [ -z ${vehicle} ];then
 else
   JUNIT_REPORT_FILE_NAME=${TEST_SUITE}_${vehicle_name}-junitreports.tar.gz
 fi
-tar zcf ${WORKSPACE}/${JUNIT_REPORT_FILE_NAME} ${WORKSPACE}/results/junitreports/
+tar zcf ${WORKSPACE}/${JUNIT_REPORT_FILE_NAME} ${WORKSPACE}/results/junitreports/ ${TS_HOME}/bin/ts.jte
