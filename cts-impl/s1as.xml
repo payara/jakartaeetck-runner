@@ -1253,7 +1253,8 @@
               antopts="${ant.opts}"
               deliverabledir="${deliverabledir}"
               bufferingenabled="${buffering.enabled}"
-              skipserverrestart="${skip.server.restart}"/>
+              skipserverrestart="${skip.server.restart}"
+              passwordfile="${ts.home}/../admin-password.txt"/>
     </target>
 
     <target name="backup.ts.jte.file" unless="ts.jte.backed">
