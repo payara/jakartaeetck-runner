@@ -107,7 +107,7 @@ cat ${TS_HOME}/bin/ts.jte | sed "s/-Doracle.jdbc.mapDateToTimestamp/-Doracle.jdb
 cp ts.save $TS_HOME/bin/ts.jte
 ##### installCTS.sh ends here #####
 
- export ADMIN_PASSWORD_FILE="${CTS_HOME}/admin-password.txt"
+export ADMIN_PASSWORD_FILE="${CTS_HOME}/admin-password.txt"
 echo "AS_ADMIN_PASSWORD=adminadmin" > ${ADMIN_PASSWORD_FILE}
 
 echo "AS_ADMIN_PASSWORD=" > ${CTS_HOME}/change-admin-password.txt
@@ -383,7 +383,7 @@ export JAVA_VERSION=`java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}'`
 echo $JAVA_VERSION > ${JT_REPORT_DIR}/.jdk_version
 
 cd  ${TS_HOME}/bin
-ant config.vi.javadb
+ant ${ANT_ARG} config.vi.javadb
 ##### configVI.sh ends here #####
 
 ### populateMailbox for suites using mail server - Start ###
@@ -397,13 +397,13 @@ fi
 configRI() {
   ##### configRI.sh ends here #####
   cd  ${TS_HOME}/bin
-  ant config.ri
-  ant enable.csiv2
+  ant ${ANT_ARG} config.ri
+  ant ${ANT_ARG} enable.csiv2
   ##### configRI.sh ends here #####
 
   ##### addInteropCerts.sh starts here #####
   cd ${TS_HOME}/bin
-  ant add.interop.certs
+  ant ${ANT_ARG} add.interop.certs
   ##### addInteropCerts.sh ends here #####
 
   ### restartRI.sh starts here #####
@@ -430,7 +430,7 @@ fi
 
 if [[ "securityapi" == ${test_suite} ]]; then
   cd $TS_HOME/bin;
-  ant init.ldap
+  ant ${ANT_ARG} init.ldap
   echo "LDAP initilized for securityapi"
 fi
 
@@ -444,16 +444,16 @@ cd $TS_HOME/bin;
 if [ -z "$KEYWORDS" ]; then
   if [[ "jbatch" == ${test_suite} ]]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
-    ant runclient -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
+    ant ${ANT_ARG} runclient -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
   else
-    ant -f xml/impl/glassfish/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
+    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
   fi
 else
   if [[ "jbatch" == ${test_suite} ]]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
-    ant runclient -Dkeywords=\"${KEYWORDS}\" -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
+    ant ${ANT_ARG} runclient -Dkeywords=\"${KEYWORDS}\" -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
   else
-    ant -f xml/impl/glassfish/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
+    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
   fi
 fi
 
@@ -473,7 +473,7 @@ if [ -z "$KEYWORDS" ]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
     ant runclient -DpriorStatus=fail -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch
   else
-    ant -f xml/impl/glassfish/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Drun.client.args="-DpriorStatus=fail,error"  -DbuildJwsJaxws=false -Dtest.areas="${test_suite}"
+    ant -f xml/impl/payara/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Drun.client.args="-DpriorStatus=fail,error"  -DbuildJwsJaxws=false -Dtest.areas="${test_suite}"
   fi
 else
   if [[ "jbatch" == ${test_suite} ]]; then
