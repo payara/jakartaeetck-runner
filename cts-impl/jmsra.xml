@@ -21,9 +21,9 @@
 
     <!-- IMPORTS -->
     <import file="./common.xml" optional="true"/>
-    <import file="../../../../../../bin/xml/impl/glassfish/common.xml" optional="true"/>
+    <import file="../../../../../../bin/xml/impl/${impl.vi}/common.xml" optional="true"/>
     <import file="./deploy.xml" optional="true"/>
-    <import file="../../../../../../bin/xml/impl/glassfish/deploy.xml" optional="true"/>
+    <import file="../../../../../../bin/xml/impl/${impl.vi}/deploy.xml" optional="true"/>
 
     <property name="jmseemdb.srcpath" 
 		value="${ts.home}/src/com/sun/ts/tests/jms/ee/mdb"/>
@@ -41,10 +41,10 @@
 		value="${ts.home}/src/com/sun/ts/tests/jms/commonee/xml/descriptors/genericra"/>
 
     <property name="createJMSRAtemplate.file" 
-		value="${bin.dir}/xml/impl/glassfish/templates/create.jmsra.template"/>
+		value="${bin.dir}/xml/impl/${impl.vi}/templates/create.jmsra.template"/>
 
     <property name="createJMSRAtemplate.txt" 
-		value="${bin.dir}/xml/impl/glassfish/templates/create.jmsra.template.txt"/>
+		value="${bin.dir}/xml/impl/${impl.vi}/templates/create.jmsra.template.txt"/>
 
     <target name="configPlatform" depends="checkPlatform, configUnix, configWindows"/>
 
@@ -98,7 +98,7 @@
             <arg line=" --port ${s1as.admin.port}"/>
             <arg line=" --echo=true"/>
             <arg line=" multimode"/>
-            <arg line=" --file ${bin.dir}/xml/impl/glassfish/templates/delete.jmsra.template"/>
+            <arg line=" --file ${bin.dir}/xml/impl/${impl.vi}/templates/delete.jmsra.template"/>
         </exec>
 	<if>
           <not>

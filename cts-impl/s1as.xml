@@ -851,7 +851,7 @@
                 <available file="${ts.home}/src/com/sun/ts/tests/common/connector"/>
            </and>
        <then>
-           <ant antfile="${common.bin.dir}/xml/impl/glassfish/connector.xml" target="config.connector"/>
+           <ant antfile="./connector.xml" target="config.connector"/>
        </then>
        </if>
      </target>
@@ -862,14 +862,14 @@
      -->
      <target name="setup.all.rars.and.pools" depends="configPlatform">
 
-       <ant antfile="${common.bin.dir}/xml/impl/glassfish/connector.xml" target="setup.all.rars.and.pools">
+       <ant antfile="./connector.xml" target="setup.all.rars.and.pools">
        </ant>
 
      </target>
 
 
      <target name="undeploy.all.rars.and.pools" >
-       <ant antfile="${common.bin.dir}/xml/impl/glassfish/connector.xml" target="undeploy.all.rars.and.pools">
+       <ant antfile="./connector.xml" target="undeploy.all.rars.and.pools">
        </ant>
      </target>
  
@@ -885,7 +885,7 @@
          <if>
            <equals arg1="${test.sa.jmsra}" arg2="true"/>
          <then>
-           <ant antfile="${bin.dir}/xml/impl/glassfish/jmsra.xml" target="doJMSRAConfig"/>
+           <ant antfile="./jmsra.xml" target="doJMSRAConfig"/>
          </then>
          <else>
            <exec executable="${exec.asadmin}" >
@@ -897,7 +897,7 @@
              <arg line="${exec.asadmin.part2}" />
              <arg line=" --echo=true "/>
              <arg line="multimode " />
-             <arg line="--file ${bin.dir}/xml/impl/glassfish/templates/create.jms.template " />
+             <arg line="--file ${bin.dir}/xml/impl/${impl.vi}/templates/create.jms.template " />
            </exec>
          </else>
          </if>
@@ -921,7 +921,7 @@
          <if>
            <equals arg1="${test.sa.jmsra}" arg2="true"/>
          <then>
-           <ant antfile="${bin.dir}/xml/impl/glassfish/jmsra.xml" target="doJMSRAUnconfig"/>
+           <ant antfile="${bin.dir}/xml/impl/${impl.vi}/jmsra.xml" target="doJMSRAUnconfig"/>
          </then>
          <else>
            <exec executable="${exec.asadmin}" >
@@ -933,7 +933,7 @@
              <arg line="${exec.asadmin.part2}" />
              <arg line=" --echo=true "/>
              <arg line="multimode " />
-             <arg line="--file ${bin.dir}/xml/impl/glassfish/templates/delete.jms.template " />
+             <arg line="--file ${bin.dir}/xml/impl/${impl.vi}/templates/delete.jms.template " />
            </exec>
          </else>
          </if>

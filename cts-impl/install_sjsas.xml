@@ -60,7 +60,7 @@ The following facts makes it hard to maintain and generalize:
   <property name="begin.done.tag" value="J2EE 1.4 SDK"/>
   <property name="s1as.release.dir"
             value="/net/invalid.domain.com/disk2/releng/weekly/${sjsas.platform}/${version}"/>
-  <property name="statefile.template" value="${common.bin.dir}/xml/impl/glassfish/templates/statefile.template.ee"/>
+  <property name="statefile.template" value="${common.bin.dir}/xml/impl/${impl.vi}/templates/statefile.template.ee"/>
   <property name="promoted.bundle.dir" value="${s1as.release.dir}/promoted/latest/latest/bundles"/>
   <property name="nightly.bundle.dir" value="${s1as.release.dir}/nightly/bundles/latest"/>
 
