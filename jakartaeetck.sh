@@ -138,12 +138,12 @@ installRI() {
     export OLD_GF_BUNDLE_URL=$GF_BUNDLE_URL
   fi
   wget --progress=bar:force --no-cache $GF_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish.zip
-  if [[ "interop" == ${test_suite} ]]; then
+  if [[ ${test_suite} == interop* ]]; then
     wget --progress=bar:force --no-cache $OLD_GF_BUNDLE_URL -O ${CTS_HOME}/glassfish-5.0.zip
   fi
   rm -Rf ${CTS_HOME}/ri
   mkdir -p ${CTS_HOME}/ri
-  if [[ "interop" == ${test_suite} ]]; then
+  if [[ ${test_suite} == interop* ]]; then
     unzip -q ${CTS_HOME}/glassfish-5.0.zip -d ${CTS_HOME}/ri
   else
     unzip -q ${CTS_HOME}/latest-glassfish.zip -d ${CTS_HOME}/ri
@@ -196,7 +196,7 @@ installRI() {
 }
 
 # RI only needs to be installed for interop
-if [[ "interop" == ${test_suite} ]]; then
+if [[ ${test_suite} == interop* ]]; then
   installRI
 fi
 
@@ -414,7 +414,7 @@ configRI() {
   ### restartRI.sh ends here #####
 }
 
-if [[ "interop" == ${test_suite} ]]; then
+if [[ ${test_suite} == interop* ]]; then
   configRI
 fi
 
