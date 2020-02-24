@@ -247,7 +247,7 @@ fi
 wget --progress=bar:force --no-cache $DERBY_URL -O ${CTS_HOME}/javadb.zip
 
 echo -n "Unzipping JavaDB... "
-unzip ${CTS_HOME}/javadb.zip -d $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR
+unzip -q -o ${CTS_HOME}/javadb.zip -d $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR
 cp $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbyclient.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derby.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib
 rm ${CTS_HOME}/javadb.zip
 
