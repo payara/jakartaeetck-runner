@@ -1,4 +1,8 @@
 #!/bin/bash -x
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+. $SCRIPTPATH/../functions.sh
+
+init_urls
 
 #
 # Copyright (c) 2018, 2019 Oracle and/or its affiliates. All rights reserved.
