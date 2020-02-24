@@ -57,7 +57,17 @@ init_urls () {
     fi
     if [ -z "$DI_TCK_URL" ]; then
         DI_TCK_URL=$BASE_URL/jakarta.inject-tck-1.0-bin.zip
-    fi    
+    fi
+    fi
+    if [ -z "$DERBY_URL" ]; then
+        DERBY_URL=$BASE_URL/javadb.zip
+    fi
+    if [ -z "$EJBTIMER_DERBY_SQL" ]; then
+        EJBTIMER_DERBY_SQL=$BASE_URL/ejbtimer_derby.sql.zip
+    fi
+    if [ -z "$JSR352_DERBY_SQL" ]; then
+        JSR352_DERBY_SQL=$BASE_URL/jsr352-derby.sql
+    fi      
 }
 
 make_stage_log () {
