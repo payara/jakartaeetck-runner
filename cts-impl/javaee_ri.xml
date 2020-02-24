@@ -21,7 +21,7 @@
 
     <!-- IMPORTS -->
     <import file="./common.xml" optional="true"/>
-    <import file="../../../../../../bin/xml/impl/glassfish/common.xml" optional="true"/>
+    <import file="../../../../../../bin/xml/impl/${impl.vi}/common.xml" optional="true"/>
 
     <property name="admin.user"         value="${ri.admin.user}"/>
     <property name="admin.password"     value="${ri.admin.passwd}" />

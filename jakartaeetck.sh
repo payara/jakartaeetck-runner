@@ -2,7 +2,7 @@
 
 #
 # Copyright (c) 2018, 2019 Oracle and/or its affiliates. All rights reserved.
-# Copyright (c) 2019 Payara Foundation and/or its affiliates. All rights reserved.
+# Copyright (c) 2019, 2020 Payara Foundation and/or its affiliates. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,6 +15,19 @@
 # https://www.gnu.org/software/classpath/license.html.
 #
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+killjava() {
+    MATCH=$1
+    echo "killall $MATCH"
+    echo "Pending process to be killed:"
+    ps -eaf | grep "$MATCH" | grep -v "grep" | grep -v "nohup" 
+    for i in `ps -eaf | grep "$MATCH" | grep -v "grep" | grep -v "nohup" | tr -s " " | cut -d" " -f2`
+    do
+        echo "[killJava.sh] kill $i"
+        kill $i
+    done
+}
+
 if [[ $1 = *'_'* ]]; then
   test_suite=`echo "$1" | cut -f1 -d_`
   vehicle_name=`echo "$1" | cut -f2 -d_`
@@ -87,58 +100,12 @@ printf  "
 "
 
 
-
-echo "[killJava.sh] uname: LINUX"
-echo "Pending process to be killed:"
-ps -eaf | grep "com.sun.enterprise.admin.cli.AdminMain" | grep -v "grep" | grep -v "nohup" 
-for i in `ps -eaf | grep "com.sun.enterprise.admin.cli.AdminMain" | grep -v "grep" | grep -v "nohup" | tr -s " " | cut -d" " -f2`
-do
-  echo "[killJava.sh] kill $i"
-  kill $i
-done
-
+killjava "com.sun.enterprise.admin.cli.AdminMain"
 
 ##### installCTS.sh starts here #####
 cat ${TS_HOME}/bin/ts.jte | sed "s/-Doracle.jdbc.mapDateToTimestamp/-Doracle.jdbc.mapDateToTimestamp -Djava.security.manager/"  > ts.save
 cp ts.save $TS_HOME/bin/ts.jte
 ##### installCTS.sh ends here #####
-
-
-
-printf  "
-******************************************************
-* Installing CI/RI (Glassfish 5.1)                   *
-******************************************************
-
-"
-
-
-##### installRI.sh starts here #####
-echo "Download and install GlassFish 5.0.1 ..."
-if [ -z "${GF_BUNDLE_URL}" ]; then
-  if [ -z "$DEFAULT_GF_BUNDLE_URL" ]; then
-    echo "[ERROR] GF_BUNDLE_URL not set"
-    exit 1
-  else 
-    echo "Using default url for GF bundle: $DEFAULT_GF_BUNDLE_URL"
-    export GF_BUNDLE_URL=$DEFAULT_GF_BUNDLE_URL
-  fi
-fi
-if [ -z "${OLD_GF_BUNDLE_URL}" ]; then
-  export OLD_GF_BUNDLE_URL=$GF_BUNDLE_URL
-fi
-wget --progress=bar:force --no-cache $GF_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish.zip
-if [[ "interop" == ${test_suite} ]]; then
-  wget --progress=bar:force --no-cache $OLD_GF_BUNDLE_URL -O ${CTS_HOME}/glassfish-5.0.zip
-fi
-rm -Rf ${CTS_HOME}/ri
-mkdir -p ${CTS_HOME}/ri
-if [[ "interop" == ${test_suite} ]]; then
-  unzip ${CTS_HOME}/glassfish-5.0.zip -d ${CTS_HOME}/ri
-else
-  unzip ${CTS_HOME}/latest-glassfish.zip -d ${CTS_HOME}/ri
-fi
-chmod -R 777 ${CTS_HOME}/ri
 
 export ADMIN_PASSWORD_FILE="${CTS_HOME}/admin-password.txt"
 echo "AS_ADMIN_PASSWORD=adminadmin" > ${ADMIN_PASSWORD_FILE}
@@ -148,64 +115,104 @@ echo "AS_ADMIN_NEWPASSWORD=adminadmin" >> ${CTS_HOME}/change-admin-password.txt
 
 echo "" >> ${CTS_HOME}/change-admin-password.txt
 
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} enable-secure-admin
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+installRI() {
+  printf  "
+******************************************************
+* Installing CI/RI (Glassfish 5.1)                   *
+******************************************************
 
-# Change default ports for RI
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --interactive=false  --user admin --passwordfile ${ADMIN_PASSWORD_FILE} delete-jvm-options -Dosgi.shell.telnet.port=6666
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dosgi.shell.telnet.port=6667
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.jms-service.jms-host.default_JMS_host.port=7776
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} enable-secure-admin
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+"
 
-# Change default ports for RI
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --interactive=false  --user admin --passwordfile ${ADMIN_PASSWORD_FILE} delete-jvm-options -Dosgi.shell.telnet.port=6666
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dosgi.shell.telnet.port=6667
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.jms-service.jms-host.default_JMS_host.port=7776
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.orb-listener-1.port=3701
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.SSL.port=4820
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.port=4920
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.admin-service.jmx-connector.system.port=9696
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.http-listener-1.port=8002
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.http-listener-2.port=1045
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.admin-listener.port=5858
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dorg.glassfish.orb.iiop.orbserverid=200
-
-sleep 5
-echo "Stopping RI domain"
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
-sleep 5
-echo "Killing any RI java processes that were not stopped gracefully"
-echo "Pending process to be killed:"
-ps -eaf | grep "$JAVA_HOME/bin/java" | grep -v "grep" | grep -v "nohup" 
-for i in `ps -eaf | grep "$JAVA_HOME/bin/java" | grep -v "grep" | grep -v "nohup" | tr -s " " | cut -d" " -f2`
-do
-  echo "[killJava.sh] kill -9 $i"
-  kill -9 $i
-done
-##### installRI.sh ends here #####
+  ##### installRI.sh starts here #####
+  echo "Download and install GlassFish 5.0.1 ..."
+  if [ -z "${GF_BUNDLE_URL}" ]; then
+    if [ -z "$DEFAULT_GF_BUNDLE_URL" ]; then
+      echo "[ERROR] GF_BUNDLE_URL not set"
+      exit 1
+    else 
+      echo "Using default url for GF bundle: $DEFAULT_GF_BUNDLE_URL"
+      export GF_BUNDLE_URL=$DEFAULT_GF_BUNDLE_URL
+    fi
+  fi
+  if [ -z "${OLD_GF_BUNDLE_URL}" ]; then
+    export OLD_GF_BUNDLE_URL=$GF_BUNDLE_URL
+  fi
+  wget --progress=bar:force --no-cache $GF_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish.zip
+  if [[ ${test_suite} == interop* ]]; then
+    wget --progress=bar:force --no-cache $OLD_GF_BUNDLE_URL -O ${CTS_HOME}/glassfish-5.0.zip
+  fi
+  rm -Rf ${CTS_HOME}/ri
+  mkdir -p ${CTS_HOME}/ri
+  if [[ ${test_suite} == interop* ]]; then
+    unzip -q ${CTS_HOME}/glassfish-5.0.zip -d ${CTS_HOME}/ri
+  else
+    unzip -q ${CTS_HOME}/latest-glassfish.zip -d ${CTS_HOME}/ri
+  fi
+  chmod -R 777 ${CTS_HOME}/ri
 
 
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} enable-secure-admin
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+
+  # Change default ports for RI
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --interactive=false  --user admin --passwordfile ${ADMIN_PASSWORD_FILE} delete-jvm-options -Dosgi.shell.telnet.port=6666
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dosgi.shell.telnet.port=6667
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.jms-service.jms-host.default_JMS_host.port=7776
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} enable-secure-admin
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+
+  # Change default ports for RI
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --interactive=false  --user admin --passwordfile ${ADMIN_PASSWORD_FILE} delete-jvm-options -Dosgi.shell.telnet.port=6666
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dosgi.shell.telnet.port=6667
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.jms-service.jms-host.default_JMS_host.port=7776
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.orb-listener-1.port=3701
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.SSL.port=4820
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.port=4920
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.admin-service.jmx-connector.system.port=9696
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.http-listener-1.port=8002
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.http-listener-2.port=1045
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.admin-listener.port=5858
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dorg.glassfish.orb.iiop.orbserverid=200
+
+  sleep 5
+  echo "Stopping RI domain"
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  sleep 5
+  echo "Killing any RI java processes that were not stopped gracefully"
+  killjava "$JAVA_HOME/bin/java"
+  ##### installRI.sh ends here #####
+}
+
+# RI only needs to be installed for interop
+if [[ ${test_suite} == interop* ]]; then
+  installRI
+fi
 
 
 printf  "
 ******************************************************
-* Installing VI (Glassfish)                          *
+* Installing VI (Payara)                          *
 ******************************************************
 
 "
+
+if [ -z "${JAVA_HOME_VI}" ]; then
+  export JAVA_HOME_VI=$JAVA_HOME
+fi
+export JAVA_HOME_VI
+echo "Java home for VI: $JAVA_HOME_VI"
 
 
 ##### installVI.sh starts here #####
@@ -229,23 +236,13 @@ wget --progress=bar:force --no-cache $GF_VI_BUNDLE_URL -O ${CTS_HOME}/latest-gla
 
 rm -Rf ${CTS_HOME}/vi
 mkdir -p ${CTS_HOME}/vi
-unzip ${CTS_HOME}/latest-glassfish-vi.zip -d ${CTS_HOME}/vi
+unzip -q ${CTS_HOME}/latest-glassfish-vi.zip -d ${CTS_HOME}/vi
 chmod -R 777 ${CTS_HOME}/vi
 
 if [ ! -d "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR" ]; then
   echo "VI toplevel directory ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR does not exists or is not a directory"
   exit 1
 fi
-
-wget --progress=bar:force --no-cache http://192.168.1.120:8080/userContent/tck/javadb.zip -O ${CTS_HOME}/javadb.zip
-
-echo -n "Unzipping JavaDB... "
-unzip ${CTS_HOME}/javadb.zip -d $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR
-cp $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbyclient.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derby.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib
-rm ${CTS_HOME}/javadb.zip
-
-wget --progress=bar:force --no-cache http://192.168.1.120:8080/userContent/tck/ejbtimer_derby.sql -O ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/ejbtimer_derby.sql
-wget --progress=bar:force --no-cache http://192.168.1.120:8080/userContent/tck/jsr352-derby.sql -O ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/jsr352-derby.sql
 
 if [[ $test_suite == ejb30/lite* ]] || [[ "ejb30" == $test_suite ]] ; then
   echo "Using higher JVM memory for EJB Lite suites to avoid OOM errors"
@@ -258,6 +255,8 @@ if [[ $test_suite == ejb30/lite* ]] || [[ "ejb30" == $test_suite ]] ; then
   sed -i 's/-Xmx1024m/-Xmx4096m/g' ${TS_HOME}/bin/ts.jte
 fi 
 
+echo "AS_JAVA=$JAVA_HOME_VI" >> ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/config/asenv.conf
+
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
@@ -265,14 +264,7 @@ ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --password
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
 
 sleep 5
-echo "[killJava.sh] uname: LINUX"
-echo "Pending process to be killed:"
-ps -eaf | grep "$JAVA_HOME/bin/java" | grep -v "grep" | grep -v "nohup" 
-for i in `ps -eaf | grep "$JAVA_HOME/bin/java" | grep -v "grep" | grep -v "nohup" | tr -s " " | cut -d" " -f2`
-do
-  echo "[killJava.sh] kill -9 $i"
-  kill -9 $i
-done
+killjava "$JAVA_HOME_VI/bin/java"
 ##### installVI.sh ends here #####
 
 ##### configVI.sh starts here #####
@@ -384,9 +376,6 @@ echo 'permission java.io.FilePermission "${com.sun.aas.instanceRoot}${/}generate
 echo '};' >> ${VI_SERVER_POLICY_FILE}
 
 
-echo "Contents of ts.jte"
-cat ${TS_HOME}/bin/ts.jte
-
 mkdir -p ${JT_REPORT_DIR}
 mkdir -p ${JT_WORK_DIR}
 
@@ -394,8 +383,7 @@ export JAVA_VERSION=`java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}'`
 echo $JAVA_VERSION > ${JT_REPORT_DIR}/.jdk_version
 
 cd  ${TS_HOME}/bin
-## change. Use ant target, that will use VI implementation of start.javadb
-ant config.vi.javadb
+ant ${ANT_ARG} config.vi.javadb
 ##### configVI.sh ends here #####
 
 ### populateMailbox for suites using mail server - Start ###
@@ -406,23 +394,29 @@ if [[ $test_suite == "javamail" || $test_suite == "samples" || $test_suite == "s
 fi
 ### populateMailbox for javamail suite - End ###
 
-##### configRI.sh ends here #####
-cd  ${TS_HOME}/bin
-ant config.ri
-ant enable.csiv2
-##### configRI.sh ends here #####
+configRI() {
+  ##### configRI.sh ends here #####
+  cd  ${TS_HOME}/bin
+  ant ${ANT_ARG} config.ri
+  ant ${ANT_ARG} enable.csiv2
+  ##### configRI.sh ends here #####
 
-##### addInteropCerts.sh starts here #####
-cd ${TS_HOME}/bin
-ant add.interop.certs
-##### addInteropCerts.sh ends here #####
+  ##### addInteropCerts.sh starts here #####
+  cd ${TS_HOME}/bin
+  ant ${ANT_ARG} add.interop.certs
+  ##### addInteropCerts.sh ends here #####
 
-### restartRI.sh starts here #####
-cd ${CTS_HOME}
-export PORT=5858
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} -p ${PORT} stop-domain
-${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} -p ${PORT} start-domain
-### restartRI.sh ends here #####
+  ### restartRI.sh starts here #####
+  cd ${CTS_HOME}
+  export PORT=5858
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} -p ${PORT} stop-domain
+  ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} -p ${PORT} start-domain
+  ### restartRI.sh ends here #####
+}
+
+if [[ ${test_suite} == interop* ]]; then
+  configRI
+fi
 
 ### Registry server initialization starts here
 if [[ "jaxr" == ${test_suite} ]]; then
@@ -436,7 +430,7 @@ fi
 
 if [[ "securityapi" == ${test_suite} ]]; then
   cd $TS_HOME/bin;
-  ant init.ldap
+  ant ${ANT_ARG} init.ldap
   echo "LDAP initilized for securityapi"
 fi
 
@@ -450,16 +444,16 @@ cd $TS_HOME/bin;
 if [ -z "$KEYWORDS" ]; then
   if [[ "jbatch" == ${test_suite} ]]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
-    ant runclient -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
+    ant ${ANT_ARG} runclient -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
   else
-    ant -f xml/impl/glassfish/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
+    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
   fi
 else
   if [[ "jbatch" == ${test_suite} ]]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
-    ant runclient -Dkeywords=\"${KEYWORDS}\" -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
+    ant ${ANT_ARG} runclient -Dkeywords=\"${KEYWORDS}\" -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
   else
-    ant -f xml/impl/glassfish/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
+    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
   fi
 fi
 
@@ -479,7 +473,7 @@ if [ -z "$KEYWORDS" ]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
     ant runclient -DpriorStatus=fail -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch
   else
-    ant -f xml/impl/glassfish/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Drun.client.args="-DpriorStatus=fail,error"  -DbuildJwsJaxws=false -Dtest.areas="${test_suite}"
+    ant -f xml/impl/payara/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Drun.client.args="-DpriorStatus=fail,error"  -DbuildJwsJaxws=false -Dtest.areas="${test_suite}"
   fi
 else
   if [[ "jbatch" == ${test_suite} ]]; then
@@ -511,11 +505,11 @@ else
   sed -i "s/name=\"${TEST_SUITE}\"/name=\"${TEST_SUITE}_${vehicle_name}\"/g" ${WORKSPACE}/results/junitreports/${TEST_SUITE}-junit-report.xml
   mv ${WORKSPACE}/results/junitreports/${TEST_SUITE}-junit-report.xml  ${WORKSPACE}/results/junitreports/${TEST_SUITE}_${vehicle_name}-junit-report.xml
 fi
-tar zcvf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/
+tar zcf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/
 
 if [ -z ${vehicle} ];then
   JUNIT_REPORT_FILE_NAME=${TEST_SUITE}-junitreports.tar.gz
 else
   JUNIT_REPORT_FILE_NAME=${TEST_SUITE}_${vehicle_name}-junitreports.tar.gz
 fi
-tar zcvf ${WORKSPACE}/${JUNIT_REPORT_FILE_NAME} ${WORKSPACE}/results/junitreports/
+tar zcf ${WORKSPACE}/${JUNIT_REPORT_FILE_NAME} ${WORKSPACE}/results/junitreports/ ${TS_HOME}/bin/ts.jte

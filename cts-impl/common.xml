@@ -82,8 +82,8 @@
            <property name="exec.certutil" value= "${server.home}/lib/certutil" />
            <property name="exec.certutil.part2" value= "" />
            <property name="password.file.template"
-                     value="${common.bin.dir}/xml/impl/glassfish/templates/password.template"/>
-           <property name="password.file" value="${bin.dir}/password.txt"/>
+                     value="${common.bin.dir}/xml/impl/${impl.vi}/templates/password.template"/>
+           <property name="password.file" value="${ts.home}/../admin-password.txt"/>
            <property name="nodeagent.path" value="" />
     </target>
 
@@ -117,7 +117,7 @@
            <property name="exec.certutil.part2" value= " /c ${server.home}/lib/certutil" />
            <property name="password.file.template"
                      value="${ts.home}\bin\xml\impl\glassfish\templates\password.template"/>
-           <property name="password.file" value="${ts.home}\bin\password.txt"/>
+           <property name="password.file" value="${ts.home}/../admin-password.tx"/>
            <property name="nodeagent.path" value="--agentdir ${drive}\${sjsas.node.agent.dir.name}" />
     </target>
 
@@ -217,7 +217,7 @@
     -->
     <target name="filter.sun-acc.xml" depends="configPlatform">
        <!--<copy file="${as.base}/lib/install/templates/${sun-acc.xml.template}"-->
-       <copy file="${bin.dir}/xml/impl/glassfish/templates/${sun-acc.xml.template}"
+       <copy file="${bin.dir}/xml/impl/${impl.vi}/templates/${sun-acc.xml.template}"
              tofile="${ts.home}/tmp/appclient/${sun-acc.xml}" overwrite="yes">
            <filterset begintoken="%%%" endtoken="%%%">
               <filter token="SERVER_ROOT" value="${as.base}" />
@@ -294,7 +294,7 @@
     <target name="create.asadmin.bat" depends="configPlatform,checkForFiles" if="isWindowsPlatform">
         <concat destfile="${server.home}/bin/cts-asadmin.bat">
            <filelist dir="${server.home}/bin" files="asadmin.bat" />
-           <filelist dir="${bin.dir}/xml/impl/glassfish/templates" files="asadmin.bat.concat.template" />
+           <filelist dir="${bin.dir}/xml/impl/${impl.vi}/templates" files="asadmin.bat.concat.template" />
         </concat>
     </target>
 
@@ -1620,7 +1620,7 @@ AS_ADMIN_NEWPASSWORD=${admin.password}</echo>
 	  config.ri since all these issues are handled there.
 	  
 	  To invoke stand-alone (until it is added to config.ri):
-	    ant -f TS_HOME/install/jakartaee/bin/xml/impl/glassfish/javaee_ri.xml \
+	    ant -f TS_HOME/install/jakartaee/bin/xml/impl/${impl.vi}/javaee_ri.xml \
 	        enable.secure.admin
 	-->
 	<target name="enable.secure.admin" depends="filter.password.file, configPlatform">

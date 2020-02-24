@@ -1,6 +1,7 @@
 <!--
 
     Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2019 Payara Foundation and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -123,7 +124,7 @@
     <antcall target="runclient"/>
     <ant dir="${bin.dir}" target="clean.vi"/>
     <ant antfile="javaee_vi.xml" dir="${bin.dir}/xml/impl/${impl.vi}" target="stop.vi"/>
-    <ant antfile="s1as.xml" dir="${common.bin.dir}/xml/impl/glassfish" target="stop.javadb"/>
+    <ant antfile="s1as.xml" dir="${common.bin.dir}/xml/impl/${impl.vi}" target="stop.javadb"/>
   </target>
 
   <target name="smoke.javadb">
@@ -133,6 +134,6 @@
     <ant dir="${bin.dir}" target="disable.jacc"/>
     <ant dir="${bin.dir}" target="clean.vi"/>
     <ant antfile="javaee_vi.xml" dir="${bin.dir}/xml/impl/${impl.vi}" target="stop.vi"/>
-    <ant antfile="s1as.xml" dir="${common.bin.dir}/xml/impl/glassfish" target="stop.javadb"/>
+    <ant antfile="s1as.xml" dir="${common.bin.dir}/xml/impl/${impl.vi}" target="stop.javadb"/>
   </target>
 </project>
