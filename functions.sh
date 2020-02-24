@@ -58,7 +58,6 @@ init_urls () {
     if [ -z "$DI_TCK_URL" ]; then
         DI_TCK_URL=$BASE_URL/jakarta.inject-tck-1.0-bin.zip
     fi
-    fi
     if [ -z "$DERBY_URL" ]; then
         DERBY_URL=$BASE_URL/javadb.zip
     fi
