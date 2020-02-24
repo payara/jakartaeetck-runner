@@ -62,7 +62,7 @@ init_urls () {
         DERBY_URL=$BASE_URL/javadb.zip
     fi
     if [ -z "$EJBTIMER_DERBY_SQL" ]; then
-        EJBTIMER_DERBY_SQL=$BASE_URL/ejbtimer_derby.sql.zip
+        EJBTIMER_DERBY_SQL=$BASE_URL/ejbtimer_derby.sql
     fi
     if [ -z "$JSR352_DERBY_SQL" ]; then
         JSR352_DERBY_SQL=$BASE_URL/jsr352-derby.sql
