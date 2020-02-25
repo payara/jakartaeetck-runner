@@ -19,3 +19,4 @@ cdi/*.log
 *.tar.gz
 *.log
 bv/*.zip
+di/*.zip
