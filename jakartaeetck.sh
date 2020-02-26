@@ -195,8 +195,13 @@ installRI() {
   ##### installRI.sh ends here #####
 }
 
-# RI only needs to be installed for interop
-if [[ ${test_suite} == interop* ]]; then
+# Obviously, RI only needs to be installed for interop.
+#   And JACC. And some JAX-WS.
+if [[ ${test_suite} == interop* || ${test_suite} == jacc* || ${test_suite} == webservices12* ]]; then
+  ri_needed=true
+fi
+
+if [ ! -z $ri_needed ]; then
   installRI
 fi
 
@@ -424,7 +429,7 @@ configRI() {
   ### restartRI.sh ends here #####
 }
 
-if [[ ${test_suite} == interop* ]]; then
+if [ ! -z $ri_needed ]; then
   configRI
 fi
 
