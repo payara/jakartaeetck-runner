@@ -1049,6 +1049,10 @@
          <antcall target="set" >
           <param name="set.value" value=" ${server.instance}-config.network-config.network-listeners.network-listener.http-listener-2.enabled=true"/>
          </antcall>
+
+         <antcall target="set" >
+          <param name="set.value" value=" ${server.instance}-config.network-config.protocols.protocol.http-listener-1.http.http2-push-enabled=true"/>
+         </antcall>
      </target>
 
 
