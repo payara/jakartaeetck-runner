@@ -150,6 +150,10 @@ installRI() {
   fi
   chmod -R 777 ${CTS_HOME}/ri
 
+  # Set the -e flag to fail the script in the event that a command fails to execute
+  set -e
+  trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
+  trap 'echo "\"${last_command}\" command executed with exit code $?."' EXIT
 
   ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
   ${CTS_HOME}/ri/glassfish5/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
