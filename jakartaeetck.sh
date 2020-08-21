@@ -222,22 +222,21 @@ echo "Java home for VI: $JAVA_HOME_VI"
 
 ##### installVI.sh starts here #####
 
-if [ -z "${GF_VI_BUNDLE_URL}" ]; then
-    echo "Using GF_BUNDLE_URL for GF VI bundle: $GF_BUNDLE_URL"
-    export GF_VI_BUNDLE_URL=$GF_BUNDLE_URL
-fi
-
-if [ -z "${GF_VI_BUNDLE_URL}" ]; then
-    echo "Using GF_BUNDLE_URL for GF VI bundle: $GF_BUNDLE_URL"
-    export GF_VI_BUNDLE_URL=$GF_BUNDLE_URL
-fi
-
 if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
     echo "Using glassfish5 for GF_VI_TOPLEVEL_DIR"
     export GF_VI_TOPLEVEL_DIR=glassfish5
 fi
 
-wget --progress=bar:force --no-cache $GF_VI_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish-vi.zip
+if [[ ${PAYARA_BUNDLE^^} == HTTP* ]]; then
+    wget --progress=bar:force --no-cache $PAYARA_BUNDLE -O ${CTS_HOME}/latest-glassfish-vi.zip
+else
+
+    mvn dependency:copy \
+    -Dartifact=fish.payara.distributions:payara:$PAYARA_BUNDLE:zip \
+    -Dmdep.useBaseVersion=false \
+    -DoutputDirectory=${CTS_HOME}
+    mv ${CTS_HOME}/payara.zip ${CTS_HOME}/latest-glassfish-vi.zip
+fi
 
 rm -Rf ${CTS_HOME}/vi
 mkdir -p ${CTS_HOME}/vi

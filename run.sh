@@ -34,7 +34,7 @@
 # (ENV) BASE_URL - parent url, assuming binaries called jakartaeetck.zip, latest-glassfish.zip and payara-prerelease.zip
 # (ENV) TCK_URL - full url to TCK
 # (ENV) GLASSFISH_URL - full url to glassfish
-# (ENV) PAYARA_URL - full url to payara
+# (ENV) PAYARA_BUNDLE - full url to payara, or  a version to use maven to retrieve
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 . $SCRIPTPATH/functions.sh
@@ -116,7 +116,7 @@ export PROFILE=full
 export LANG="en_US.UTF-8"
 export GF_BUNDLE_URL=$GLASSFISH_URL
 export DATABASE=JavaDB
-export GF_VI_BUNDLE_URL=$PAYARA_URL
+export PAYARA_BUNDLE=$PAYARA_BUNDLE
 export GF_VI_TOPLEVEL_DIR=payara5
 export DERBY_URL
 export EJBTIMER_DERBY_SQL
