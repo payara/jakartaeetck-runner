@@ -233,7 +233,7 @@ else
 
     mvn dependency:copy \
     -Dartifact=fish.payara.distributions:payara:$PAYARA_BUNDLE:zip \
-    -Dmdep.useBaseVersion=false \
+    -Dmdep.stripVersion=true \
     -DoutputDirectory=${CTS_HOME}
     mv ${CTS_HOME}/payara.zip ${CTS_HOME}/latest-glassfish-vi.zip
 fi
