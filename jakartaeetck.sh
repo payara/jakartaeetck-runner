@@ -276,6 +276,9 @@ if [ -n "${PAYARA_LOGGING_PROPERTIES}" ]; then
   echo "Using logging configuration: ${PAYARA_LOGGING_PROPERTIES}";
   cp "${PAYARA_LOGGING_PROPERTIES}" "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/logging.properties";
 fi
+if [[ -z "${HARNESS_DEBUG}" ]]; then
+  export HARNESS_DEBUG=false;
+fi
 
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
@@ -375,7 +378,8 @@ fi
 sed -i 's/^impl.deploy.timeout.multiplier=.*/impl.deploy.timeout.multiplier=240/g' ts.jte
 sed -i 's/^javatest.timeout.factor=.*/javatest.timeout.factor=2.0/g' ts.jte
 sed -i 's/^test.ejb.stateful.timeout.wait.seconds=.*/test.ejb.stateful.timeout.wait.seconds=180/g' ts.jte
-sed -i 's/^harness.log.traceflag=.*/harness.log.traceflag=false/g' ts.jte
+sed -i "s#^harness.log.traceflag=.*#harness.log.traceflag=${HARNESS_DEBUG}#g" ts.jte
+sed -i 's/^harness.maxoutputsize=.*/harness.maxoutputsize=10000000/g' ts.jte
 sed -i 's/^impl\.deploy\.timeout\.multiplier=240/impl\.deploy\.timeout\.multiplier=480/g' ts.jte
 
 if [ "servlet" == "${test_suite}" ]; then
