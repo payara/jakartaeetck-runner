@@ -57,6 +57,10 @@ echo "TS_HOME ${TS_HOME}"
 echo "PATH ${PATH}"
 echo "Test suite to run ${test_suite}"
 
+if [ -z "${CLIENT_LOGGING_PROPERTIES}" ]; then
+  export CLIENT_LOGGING_PROPERTIES="${WORKSPACE}/../../client-logging.properties";
+fi
+
 #Set default mailserver related env variables
 if [ -z "$MAIL_HOST" ]; then
   export MAIL_HOST="localhost"
@@ -381,6 +385,7 @@ sed -i 's/^test.ejb.stateful.timeout.wait.seconds=.*/test.ejb.stateful.timeout.w
 sed -i "s#^harness.log.traceflag=.*#harness.log.traceflag=${HARNESS_DEBUG}#g" ts.jte
 sed -i 's/^harness.maxoutputsize=.*/harness.maxoutputsize=10000000/g' ts.jte
 sed -i 's/^impl\.deploy\.timeout\.multiplier=240/impl\.deploy\.timeout\.multiplier=480/g' ts.jte
+sed -i "s#=client-logging\.properties#=${CLIENT_LOGGING_PROPERTIES}#g" ts.jte
 
 if [ "servlet" == "${test_suite}" ]; then
   sed -i 's/s1as\.java\.endorsed\.dirs=.*/s1as.java.endorsed.dirs=\$\{endorsed.dirs\}\$\{pathsep\}\$\{ts.home\}\/endorsedlib/g' ts.jte
