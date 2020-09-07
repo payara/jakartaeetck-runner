@@ -280,6 +280,12 @@ if [ -n "${PAYARA_LOGGING_PROPERTIES}" ]; then
   echo "Using logging configuration: ${PAYARA_LOGGING_PROPERTIES}";
   cp "${PAYARA_LOGGING_PROPERTIES}" "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/logging.properties";
 fi
+if [[ -z "${PAYARA_DEBUG}" ]]; then
+  export PAYARA_DEBUG=false;
+fi
+if [ -z "${PAYARA_VERBOSE}" ]; then
+  export PAYARA_VERBOSE=false;
+fi
 if [[ -z "${HARNESS_DEBUG}" ]]; then
   export HARNESS_DEBUG=false;
 fi
@@ -339,6 +345,7 @@ export JT_WORK_DIR=${CTS_HOME}/jakartaeetck-work
 
 ### Update ts.jte for CTS run
 cd ${TS_HOME}/bin
+
 sed -i "s#^report.dir=.*#report.dir=${JT_REPORT_DIR}#g" ts.jte
 sed -i "s#^work.dir=.*#work.dir=${JT_WORK_DIR}#g" ts.jte
 
@@ -464,6 +471,22 @@ if [[ "securityapi" == ${test_suite} ]]; then
   echo "LDAP initilized for securityapi"
 fi
 
+### start PAYARA with arguments ###
+${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set configs.config.server-config.java-config.debug-enabled=${PAYARA_DEBUG}
+${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} rotate-log
+${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain --debug=${PAYARA_DEBUG} --verbose=${PAYARA_VERBOSE} &
+
+# yield to allow to roll the file depending on logging configuration
+sleep 5;
+# Wait for the Payara Server [version] #badassfish startup message in server.log
+timeout 30 grep -q '\[NCLS\-CORE\-00017\]' <(tail -n 100000 -F "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/logs/server.log")
+
+if [[ "${PAYARA_DEBUG}" == "true" ]]; then
+  echo "********************************************************************************";
+  read -p "Attach the debugger to the Payara Server instance and hit ENTER";
+fi
+
 ### ctsStartStandardDeploymentServer.sh starts here #####
 cd $TS_HOME/bin;
 echo "ant start.auto.deployment.server > /tmp/deploy.out 2>&1 & "
@@ -476,14 +499,14 @@ if [ -z "$KEYWORDS" ]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
     ant ${ANT_ARG} runclient -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
   else
-    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
+    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}" -Dskip.server.restart="true"
   fi
 else
   if [[ "jbatch" == ${test_suite} ]]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
     ant ${ANT_ARG} runclient -Dkeywords=\"${KEYWORDS}\" -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
   else
-    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
+    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}" -Dskip.server.restart="true"
   fi
 fi
 
