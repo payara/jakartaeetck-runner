@@ -9,8 +9,6 @@ CDI depends on multiple artifacts:
 * CDI TCK Runner - TestNG / Arquillian driver that runs the suite.
 * Whole porting package - All of above plus server provisioning
 
-The porting package is at this time fetched from https://github.com/pdudits/cditck-porting, which is a fork of Glassfish one.
-
 Porting package contains the runner sources in `glassfish-tck-runner`.
 That one is a template project, which is slightly modified for full or web mode.
 Runner contains dependencies to TCK Impl and Glassfish porting package (which work ok for Payara), as well as deployment exception tranlation magic.

@@ -1,8 +1,7 @@
 #!/bin/bash
 
 if [ ! -d bvtck-porting ]; then
-   # For now, use Cuba's for until everything is moved into Payara
-   git clone https://github.com/cubastanley/bvtck-porting
+   git clone https://github.com/payara/bvtck-porting
 fi
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
