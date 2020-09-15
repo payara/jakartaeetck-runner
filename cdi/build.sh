@@ -1,8 +1,7 @@
 #!/bin/bash -x
 
 if [ ! -d cditck-porting ]; then
-   # For now, use Patrik's for until everything is moved into Payara
-   git clone https://github.com/pdudits/cditck-porting
+   git clone https://github.com/payara/cditck-porting
 fi
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
