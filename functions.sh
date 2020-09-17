@@ -40,6 +40,9 @@ s/^([[:alnum:].]+)=(.+[^\\])$/s#^\1=.+#\1=\2#/p
 }
 
 init_urls () {
+    if [ -z "$PROFILE" ]; then
+        PROFILE=full
+    fi
     if [ -z "$BASE_URL" ]; then
         BASE_URL=http://localhost:8000
     fi

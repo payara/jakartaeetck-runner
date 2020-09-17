@@ -113,7 +113,7 @@ fi
 # run testcase
 
 # Set the env to run against payara
-export PROFILE=full
+export PROFILE=$PROFILE
 export LANG="en_US.UTF-8"
 export GF_BUNDLE_URL=$GLASSFISH_URL
 export DATABASE=JavaDB
