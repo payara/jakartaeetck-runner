@@ -1,20 +1,20 @@
-= Jakarta EE TCK Runner for Payara
+= Jakarta EE9 TCK Runner for Payara
 
-This is simple wrapper script to run https://github.com/eclipse-ee4j/jakartaee-tck[Jakarta EE TCK binaries].
-It provides relevats `ts.jte` overrides as well as vendor implementation of the configuration interface.
+This is simple wrapper script to run https://github.com/eclipse-ee4j/jakartaee-tck[Jakarta EE9 TCK binaries].
+It provides relevant `ts.jte` overrides as well as a vendor implementation of the configuration interface.
 
 The runner will
 
-1. Extract TCK into clean directory
+1. Extract the TCK into clean directory
 1. Apply Payara vendor configuration
-1. Run additional environment needed for tests
-1. Run actual TCK suite and capture its output
+1. Run additional environment setup needed for tests
+1. Run the actual TCK suite and capture its output
 
 == Prerequisites
 
 * Binary build of the TCK,  (`jakartaeetck.zip`)
-* Build of glassfish  (`latest-glassfish.zip`)
-* Build of payara, e. g. nightly from Jenkins (`payara-prerelease.zip`)
+* Build of glassfish 6  (`latest-glassfish.zip`)
+* Build of payara, e.g. nightly from Jenkins (`payara-prerelease.zip`)
 * Linux system with
 ** Java 8 (referenced by `JAVA_HOME` and referenced in the `PATH`)
 *** E.g. the following should hold: `export PATH=$JAVA_HOME/bin:$ANT_HOME/bin/:$PATH`
@@ -36,6 +36,6 @@ jakartaeetck.zip
 
 Inspect `run.sh` for comments with `(ENV)` concerning other parameters you can set via environment.
 
-If anything needs to be modified in `ts.jte`, place the line in `ts.overrides.properties`.
+If anything else needs to be modified in `ts.jte`, place the line in `ts.overrides.properties`.
 
 Anything concerning configuration of Payara should be possible to set up via ant scripts in `cts-impl/`
