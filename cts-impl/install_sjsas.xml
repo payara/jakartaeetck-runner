@@ -782,7 +782,7 @@ The following facts makes it hard to maintain and generalize:
            Change this prop name once the GF 4 bundle updates the base dir of the bundle.
            The javaee.home.ri prop value in ts.jte should also be updated to glassfish4.
        -->
-          <property name="v4.install.path" value="glassfish5"/>
+          <property name="v4.install.path" value="glassfish6"/>
       
         <propertyregex property="v4.install.dir.norm"
                        input="${v4.install.dir}"
