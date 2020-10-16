@@ -1,9 +1,9 @@
 [submodule "cdi/cditck-porting"]
 	path = cdi/cditck-porting
-	url = https://github.com/pdudits/cditck-porting
+	url = https://github.com/payara/cditck-porting
 [submodule "bv/bvtck-porting"]
 	path = bv/bvtck-porting
-	url = https://github.com/pdudits/bvtck-porting
+	url = https://github.com/payara/bvtck-porting
 [submodule "di/ditck-porting"]
 	path = di/ditck-porting
-	url = https://github.com/pdudits/ditck-porting
+	url = https://github.com/payara/ditck-porting
