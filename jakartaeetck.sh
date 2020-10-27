@@ -126,7 +126,7 @@ installRI() {
 "
 
   ##### installRI.sh starts here #####
-  echo "Download and install GlassFish 5.0.1 ..."
+  echo "Download and install GlassFish 6.0.0 ..."
   if [ -z "${GF_BUNDLE_URL}" ]; then
     if [ -z "$DEFAULT_GF_BUNDLE_URL" ]; then
       echo "[ERROR] GF_BUNDLE_URL not set"
@@ -141,12 +141,12 @@ installRI() {
   fi
   wget --progress=bar:force --no-cache $GF_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish.zip
   if [[ ${test_suite} == interop* ]]; then
-    wget --progress=bar:force --no-cache $OLD_GF_BUNDLE_URL -O ${CTS_HOME}/glassfish-5.0.zip
+    wget --progress=bar:force --no-cache $OLD_GF_BUNDLE_URL -O ${CTS_HOME}/glassfish-6.0.zip
   fi
   rm -Rf ${CTS_HOME}/ri
   mkdir -p ${CTS_HOME}/ri
   if [[ ${test_suite} == interop* ]]; then
-    unzip -q ${CTS_HOME}/glassfish-5.0.zip -d ${CTS_HOME}/ri
+    unzip -q ${CTS_HOME}/glassfish-6.0.zip -d ${CTS_HOME}/ri
   else
     unzip -q ${CTS_HOME}/latest-glassfish.zip -d ${CTS_HOME}/ri
   fi
@@ -250,7 +250,7 @@ unzip -q ${CTS_HOME}/latest-glassfish-vi.zip -d ${CTS_HOME}/vi
 chmod -R 777 ${CTS_HOME}/vi
 
 if [ ! -d "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR" ]; then
-  echo "VI toplevel directory ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR does not exists or is not a directory"
+  echo "VI toplevel directory ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR does not exist or is not a directory"
   exit 1
 fi
 
