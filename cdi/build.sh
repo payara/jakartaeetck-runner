@@ -12,6 +12,10 @@ init_urls
 PORTING=$SCRIPTPATH/cditck-porting
 OUTPUT=$PORTING/bundles
 
+cd $PORTING
+git checkout EE9
+cd $SCRIPTPATH
+
 rm $PORTING/latest-glassfish.zip
 rm -rf $OUTPUT
 rm -rf $PORTING/dist/
