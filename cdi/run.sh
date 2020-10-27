@@ -4,16 +4,20 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 init_urls
 
-PORTING=$SCRIPTPATH/cditck-porting
+export PORTING=$SCRIPTPATH/cditck-porting
+export WORKSPACE=$PORTING
+export GF_BUNDLE_URL=$PAYARA_URL
+export TS_HOME=${WORKSPACE}/cdi-tck-glassfish-porting
+export CDI_TCK_VERSION=3.0.0
+export DIST=$PORTING/dist/tck
+export CDI_TCK_DIST=cdi-tck-$CDI_TCK_VERSION
 
 rm $PORTING/latest_glassfish.zip
-rm -rf cditck-porting/payara5
+rm -rf $PORTING/payara5
 
 # install CDI TCK into local maven repo
 . ./install.sh
 
-export WORKSPACE=$SCRIPTPATH/cditck-porting
-export GF_BUNDLE_URL=$PAYARA_URL
 echo Build should download from $GF_BUNDLE_URL
 
 if [ -z $MAVEN_HOME ]; then
