@@ -4,13 +4,13 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 init_urls
 
-PORTING=$SCRIPTPATH/bvtck-porting
+export PORTING=$SCRIPTPATH/bvtck-porting
 OUTPUT=$PORTING/bundles
 
 rm $PORTING/latest-glassfish.zip
 rm -rf bvtck-porting/payara5
 
-export WORKSPACE=$SCRIPTPATH/bvtck-porting
+export WORKSPACE=$PORTING
 export GF_BUNDLE_URL=$PAYARA_URL
 echo Build should download from $GF_BUNDLE_URL
 
