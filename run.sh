@@ -140,7 +140,7 @@ summary=$CTS_HOME/jakartaeetck-report/${TEST_SUITE}/text/summary.txt
 ALL=`wc -l $summary`
 NOT_PASS=`cat $summary | grep -v Passed. | wc -l`
 
-echo "Not passed: ${NOT_PASS}/${ALL}"
+echo "Failed Count: ${NOT_PASS}/${ALL}"
 
 ./slim_report.sh $WORKSPACE/$TEST_SUITE-results.tar.gz
 
@@ -150,6 +150,6 @@ mkdir -p $TARGET
 mv $WORKSPACE/$TEST_SUITE-results.slim.tar.gz $TARGET
 cp $WORKSPACE/results/junitreports/*.xml $TARGET
 cp $summary $TARGET
-echo "Not passed: ${NOT_PASS}/${ALL}" > $TARGET/count.txt
+echo "Failed Count: ${NOT_PASS}/${ALL}" > $TARGET/count.txt
 
 make_stage_log $1 $TEST_SUITE $USER_KEYWORDS
