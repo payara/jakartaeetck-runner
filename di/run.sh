@@ -4,7 +4,7 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 init_urls
 
-PORTING=$SCRIPTPATH/ditck-porting
+export PORTING=$SCRIPTPATH/ditck-porting
 OUTPUT=$PORTING/bundles
 
 rm $PORTING/latest-glassfish.zip
@@ -15,7 +15,7 @@ rm -rf ditck-porting/cdi-tck-*/
 export WORKSPACE=$SCRIPTPATH/ditck-porting
 export GF_BUNDLE_URL=$PAYARA_URL
 export JSR299_TCK_URL=$CDI_TCK_URL
-export JAVAX_INJECT_TCK_URL=$DI_TCK_URL
+export JAKARTA_INJECT_TCK_URL=$DI_TCK_URL
 echo Build should download from $GF_BUNDLE_URL
 
 if [ -z $MAVEN_HOME ]; then
