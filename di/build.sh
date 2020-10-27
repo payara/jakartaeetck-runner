@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ ! -d ditck-porting ]; then
+   git clone https://github.com/payara/ditck-porting
+fi
+
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 . $SCRIPTPATH/../functions.sh
 
@@ -11,6 +15,10 @@ init_urls
 
 PORTING=$SCRIPTPATH/ditck-porting
 OUTPUT=$PORTING/bundles
+
+cd $PORTING
+git checkout EE9
+cd $SCRIPTPATH
 
 rm -f $PORTING/latest-glassfish.zip
 rm -rf $OUTPUT
