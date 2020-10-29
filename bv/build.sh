@@ -16,12 +16,16 @@ init_urls
 PORTING=$SCRIPTPATH/bvtck-porting
 OUTPUT=$PORTING/bundles
 
+cd $PORTING
+git checkout EE9
+cd $SCRIPTPATH
+
 rm -f $PORTING/latest-glassfish.zip
 rm -rf $OUTPUT
-rm -rf $OUTPUT/../dist/
-rm -rf bvtck-porting/payara5
+rm -rf $PORTING/dist/
+rm -rf $PORTING/payara5
 
-export WORKSPACE=$SCRIPTPATH/bvtck-porting
+export WORKSPACE=$PORTING
 export GF_BUNDLE_URL=$PAYARA_URL
 echo Build should download from $GF_BUNDLE_URL
 bash -x $WORKSPACE/docker/build_bvtck.sh
