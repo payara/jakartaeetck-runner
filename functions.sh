@@ -56,7 +56,7 @@ init_urls () {
         PAYARA_URL=$BASE_URL/payara-prerelease.zip
     fi
     if [ -z "$CDI_TCK_URL" ]; then
-        CDI_TCK_URL=$BASE_URL/cdi-tck-3.0.2-dist.zip
+        CDI_TCK_URL=$BASE_URL/cdi-tck-3.0.1-dist.zip
     fi
     if [ -z "$DI_TCK_URL" ]; then
         DI_TCK_URL=$BASE_URL/jakarta.inject-tck-2.0.1-bin.zip
