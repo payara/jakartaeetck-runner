@@ -56,6 +56,8 @@ if [ -z "$JAVA_HOME" ]; then
   export JAVA_HOME=`readlink -f /usr/bin/java | sed  "s:\(/jre\)\?/bin/java::"`
 fi
 
+TEST_SUITE=`echo "$1" | tr '/' '_'`
+
 if [ -z "$SKIP_TCK" ]; then
     # clean cts directory
     rm -rf $CTS_HOME/*
@@ -100,7 +102,7 @@ if [ -z "$SKIP_MAIL"]; then
     fi
 fi
 
-if [ "$1" == "jaxr" ]; then
+if [[ ${TEST_SUITE} == "jaxr" ]]; then
     JWSDP_CONTAINER=`docker ps -f name='jwsdp' -q`
     if [ -z "$JWSDP_CONTAINER" ]; then
       echo "Starting JWSDP Docker container"
@@ -123,8 +125,6 @@ export GF_VI_TOPLEVEL_DIR=payara5
 export DERBY_URL
 export EJBTIMER_DERBY_SQL
 export JSR352_DERBY_SQL
-
-TEST_SUITE=`echo "$1" | tr '/' '_'`
 
 # (ENV) SKIP_TEST - if just testing the script
 if [ -z "$SKIP_TEST" ]; then 

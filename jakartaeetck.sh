@@ -124,31 +124,7 @@ installRI() {
 "
 
   ##### installRI.sh starts here #####
-  echo "Download and install GlassFish 6.0.0 ..."
-  if [ -z "${GF_BUNDLE_URL}" ]; then
-    if [ -z "$DEFAULT_GF_BUNDLE_URL" ]; then
-      echo "[ERROR] GF_BUNDLE_URL not set"
-      exit 1
-    else 
-      echo "Using default url for GF bundle: $DEFAULT_GF_BUNDLE_URL"
-      export GF_BUNDLE_URL=$DEFAULT_GF_BUNDLE_URL
-    fi
-  fi
-  if [ -z "${OLD_GF_BUNDLE_URL}" ]; then
-    export OLD_GF_BUNDLE_URL=$GF_BUNDLE_URL
-  fi
-  wget --progress=bar:force --no-cache $GF_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish.zip
-  if [[ ${test_suite} == interop* ]]; then
-    wget --progress=bar:force --no-cache $OLD_GF_BUNDLE_URL -O ${CTS_HOME}/glassfish-6.0.zip
-  fi
-  rm -Rf ${CTS_HOME}/ri
-  mkdir -p ${CTS_HOME}/ri
-  if [[ ${test_suite} == interop* ]]; then
-    unzip -q ${CTS_HOME}/glassfish-6.0.zip -d ${CTS_HOME}/ri
-  else
-    unzip -q ${CTS_HOME}/latest-glassfish.zip -d ${CTS_HOME}/ri
-  fi
-  chmod -R 777 ${CTS_HOME}/ri
+  extractRI
 
 
   ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
@@ -195,6 +171,44 @@ installRI() {
   ##### installRI.sh ends here #####
 }
 
+
+extractRI() {
+  printf  "
+******************************************************
+* Extract CI/RI (Glassfish 6.x)                   *
+******************************************************
+
+"
+  ##### extractRI.sh starts here #####
+
+  echo "Download and install GlassFish 6.0.0 ..."
+  if [ -z "${GF_BUNDLE_URL}" ]; then
+    if [ -z "$DEFAULT_GF_BUNDLE_URL" ]; then
+      echo "[ERROR] GF_BUNDLE_URL not set"
+      exit 1
+    else 
+      echo "Using default url for GF bundle: $DEFAULT_GF_BUNDLE_URL"
+      export GF_BUNDLE_URL=$DEFAULT_GF_BUNDLE_URL
+    fi
+  fi
+  if [ -z "${OLD_GF_BUNDLE_URL}" ]; then
+    export OLD_GF_BUNDLE_URL=$GF_BUNDLE_URL
+  fi
+  wget --progress=bar:force --no-cache $GF_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish.zip
+  if [[ ${test_suite} == interop* ]]; then
+    wget --progress=bar:force --no-cache $OLD_GF_BUNDLE_URL -O ${CTS_HOME}/glassfish-6.0.zip
+  fi
+  rm -Rf ${CTS_HOME}/ri
+  mkdir -p ${CTS_HOME}/ri
+  if [[ ${test_suite} == interop* ]]; then
+    unzip -q ${CTS_HOME}/glassfish-6.0.zip -d ${CTS_HOME}/ri
+  else
+    unzip -q ${CTS_HOME}/latest-glassfish.zip -d ${CTS_HOME}/ri
+  fi
+  chmod -R 777 ${CTS_HOME}/ri
+  ##### extractRI.sh ends here #####
+}
+
 # Obviously, RI only needs to be installed for interop.
 #   And JACC. And some JAX-WS.
 if [[ ${test_suite} == interop* || ${test_suite} == jacc* || ${test_suite} == webservices12* ]]; then
@@ -203,6 +217,8 @@ fi
 
 if [ ! -z $ri_needed ]; then
   installRI
+elif [[ ${test_suite} == websocket* ]]; then
+  extractRI
 fi
 
 
