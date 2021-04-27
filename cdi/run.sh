@@ -13,7 +13,7 @@ export DIST=$PORTING/dist/tck
 export CDI_TCK_DIST=cdi-tck-$CDI_TCK_VERSION
 
 rm $PORTING/latest_glassfish.zip
-rm -rf $PORTING/payara5
+rm -rf $PORTING/payara6
 
 # install CDI TCK into local maven repo
 . ./install.sh
@@ -34,7 +34,7 @@ bash -x $WORKSPACE/docker/run_cditck.sh | tee $WORKSPACE/cdi.log
 TIMESTAMP=`date -Iminutes | tr -d :`
 report=$SCRIPTPATH/../results/cdi-$TIMESTAMP.tar.gz
 echo Creating report $report
-tar zcf $report $WORKSPACE/cdi-tck-report/ $WORKSPACE/payara5/glassfish/domains/domain1/logs
+tar zcf $report $WORKSPACE/cdi-tck-report/ $WORKSPACE/payara6/glassfish/domains/domain1/logs
 
 cat > $SCRIPTPATH/../stage_cdi << EOF
 ### cdi

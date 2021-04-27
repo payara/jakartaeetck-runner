@@ -23,7 +23,7 @@ cd $SCRIPTPATH
 rm -f $PORTING/latest-glassfish.zip
 rm -rf $OUTPUT
 rm -rf $OUTPUT/../dist/
-rm -rf ditck-porting/payara5
+rm -rf ditck-porting/payara6
 
 export WORKSPACE=$SCRIPTPATH/ditck-porting
 export GF_BUNDLE_URL=$PAYARA_URL
