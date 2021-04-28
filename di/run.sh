@@ -37,4 +37,4 @@ EOF
 TIMESTAMP=`date -Iminutes | tr -d :`
 report=$SCRIPTPATH/../results/di-$TIMESTAMP.tar.gz
 echo Creating report $report
-tar zcf $report $WORKSPACE/330tck-report/ $WORKSPACE/payara5/glassfish/domains/domain1/logs
+tar zcf $report $WORKSPACE/330tck-report/ $WORKSPACE/payara6/glassfish/domains/domain1/logs

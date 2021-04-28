@@ -1,2 +1,2 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-exec $SCRIPTPATH/cts_home/vi/payara5/bin/asadmin "$@"
+exec $SCRIPTPATH/cts_home/vi/payara6/bin/asadmin "$@"
