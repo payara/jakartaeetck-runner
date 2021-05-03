@@ -113,16 +113,16 @@ fi
 if [ -z "$KEYWORDS" ]; then
   if [[ "jbatch" == ${test_suite} ]]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
-    ant runclient $RUN_CLIENT_ARGS -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch |& tee -a $rerun_log
+    ant ${ANT_ARG} runclient -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
   else
-    ant -f xml/impl/glassfish/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" $RUN_CLIENT_ARGS  -DbuildJwsJaxws=false -Dtest.areas="${test_suite}" |& tee -a $rerun_log
+    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
   fi
 else
   if [[ "jbatch" == ${test_suite} ]]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
-    ant runclient $RUN_CLIENT_ARGS -Dkeywords=\"${KEYWORDS}\" -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch |& tee -a $rerun_log
+    ant ${ANT_ARG} runclient -Dkeywords=\"${KEYWORDS}\" -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
   else
-    ant -f xml/impl/glassfish/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" $RUN_CLIENT_ARGS  -DbuildJwsJaxws=false -Dtest.areas="${test_suite}" |& tee -a $rerun_log
+    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
   fi
 fi
   # Generate combined report for both the runs.
@@ -131,7 +131,6 @@ if [[ "jbatch" == ${test_suite} ]]; then
 else  
   ant -Dreport.for=com/sun/ts/tests/$test_suite -Dreport.dir=${JT_REPORT_DIR}/${TEST_SUITE} -Dwork.dir=${JT_WORK_DIR}/${TEST_SUITE} report |& tee -a $rerun_log
 fi
-
 
 export HOST=`hostname -f`
 echo "1 ${TEST_SUITE} ${HOST}" > ${CTS_HOME}/args.txt
