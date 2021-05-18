@@ -673,23 +673,6 @@
     </target>
 
      <!--
-       Create a Connector Connection Pool
-     -->
-     <target name="create-connector-connection-pool" >
-       <exec executable="${exec.asadmin}" >
-            <arg line="${exec.asadmin.part2}" />
-            <arg line=" --user ${admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${server.host}"/>
-            <arg line=" --port ${server.port}"/>
-            <arg line=" create-connector-connection-pool"/>
-            <arg line=" --raname ${rarName}"/>
-            <arg line=" --connectiondefinition com.sun.connector.jaxr.JaxrConnectionFactory"/>
-            <arg line=" ${poolName}"/>
-        </exec>
-     </target>
-
-     <!--
        Create a Connector Resource
      -->
      <target name="create-connector-resource" >
@@ -1439,7 +1422,7 @@
          </antcall>
 
          <antcall target="create-jvm-options" >
-          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.policy.provider=com.sun.enterprise.security.provider.PolicyWrapper"/>
+          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.policy.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyProvider"/>
          </antcall>
 
          <antcall target="create-jvm-options" >
@@ -1447,7 +1430,7 @@
          </antcall>
 
          <antcall target="create-jvm-options" >
-          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=com.sun.enterprise.security.provider.PolicyConfigurationFactoryImpl "/>
+          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyConfigurationFactory "/>
          </antcall>
 
          <antcall target="create-one-jvm-option" >
@@ -1476,7 +1459,7 @@
          </antcall>
         
          <antcall target="delete-jvm-options" >
-          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.policy.provider=com.sun.enterprise.security.provider.PolicyWrapper"/>
+          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.policy.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyProvider"/>
          </antcall>
 
          <antcall target="delete-jvm-options" >
@@ -1484,7 +1467,7 @@
          </antcall>
 
          <antcall target="delete-jvm-options" >
-          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=com.sun.enterprise.security.provider.PolicyConfigurationFactoryImpl "/>
+          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyConfigurationFactory "/>
          </antcall>
 
          <antcall target="delete-one-jvm-option" >

@@ -271,7 +271,7 @@
     -->
     <target name="clean.s1as" 
            depends= "drop.cts.users, drop.javamail.resources, drop.jdbc.resources, drop.jdbc.pools, 
-                    drop.jaxr, drop.jvm.options, drop.classpathsuffix, drop.certs, 
+                    drop.jvm.options, drop.classpathsuffix, drop.certs, 
                     drop.ssl.client.config, unconfig.jpa, delete.provider.jar, drop.custom.resource" />
 
     <!--
@@ -287,7 +287,7 @@
     -->
     <target name="config.s1as" 
            depends= "start.appserver, change.applicationRoot, copy.provider.jar, config.jpa, 
-                    add.cts.users, add.javamail.resources, add.jdbc.pools, add.jaxr, 
+                    add.cts.users, add.javamail.resources, add.jdbc.pools,
                     add.jdbc.resources,  drop.jvm.options, add.jvm.options, add.classpathsuffix,  
                     set.http.ports, set.orbport, create.asadmin.bat, concat.security, add.cert, 
                     add.custom.resource, enable.trace" />
@@ -1079,54 +1079,6 @@
           <param name="property" value=" HTTP_SSL_LISTENER_PORT=${securedWebServicePort}"/>
           <param name="instance.name" value=" ${server.instance}-config"/>
          </antcall>
-     </target>
-
-     <!--
-          Install the required jaxr pool and resource
-     -->
-     <target name="add.jaxr" depends="configPlatform" >
-       <if>
-         <contains string="${javaee.level}" substring="full"/>
-       <then>
-         <antcall target="create-connector-connection-pool" >
-          <param name="rarName" value="jaxr-ra"/>
-          <param name="poolName" value="jaxr-pool-1"/>
-         </antcall>
-
-         <antcall target="create-connector-resource" >
-          <param name="poolName" value="jaxr-pool-1"/>
-          <param name="jndiName" value="eis/JAXR"/>
-         </antcall>
-       </then>
-       <else>
-         <echo>*******************************************************</echo>
-         <echo>WEB PROFILE in use, JAXR Resource and Pool NOT Created.</echo>
-         <echo>*******************************************************</echo>
-       </else>
-       </if>
-     </target>
-
-     <!--
-          Remove the required jaxr pool and resource
-     -->
-     <target name="drop.jaxr" depends="configPlatform">
-       <if>
-         <contains string="${javaee.level}" substring="full"/>
-       <then>
-         <antcall target="delete-connector-resource" >
-          <param name="jndiName" value="eis/JAXR"/>
-         </antcall>
-
-         <antcall target="delete-connector-connection-pool" >
-          <param name="poolName" value="jaxr-pool-1"/>
-         </antcall>
-       </then>
-       <else>
-         <echo>*******************************************************</echo>
-         <echo>WEB PROFILE in use, JAXR Resource and Pool NOT Created.</echo>
-         <echo>*******************************************************</echo>
-       </else>
-       </if>
      </target>
 
 

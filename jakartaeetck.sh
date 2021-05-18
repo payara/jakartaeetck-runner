@@ -49,6 +49,47 @@ if [ -z "${CTS_HOME}" ]; then
   export CTS_HOME="${WORKSPACE}"
 fi
 export TS_HOME=${CTS_HOME}/jakartaeetck/
+
+if [ -z "${GF_RI_TOPLEVEL_DIR}" ]; then
+    echo "Using glassfish6 for GF_RI_TOPLEVEL_DIR"
+    export GF_RI_TOPLEVEL_DIR=glassfish6
+fi
+
+if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
+    echo "Using glassfish6 for GF_VI_TOPLEVEL_DIR"
+    export GF_VI_TOPLEVEL_DIR=glassfish6
+fi
+
+if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
+  cp $TS_HOME/bin/ts.jte.jdk11 $TS_HOME/bin/ts.jte
+  export JAVA_HOME=${JDK11_HOME}
+  export PATH=$JAVA_HOME/bin:$PATH
+  export ANT_OPTS="-Xmx2G \
+                 -Djavax.xml.accessExternalStylesheet=all \
+                 -Djavax.xml.accessExternalSchema=all \
+		 -DenableExternalEntityProcessing=true \
+                 -Djavax.xml.accessExternalDTD=file,http"
+  export CTS_ANT_OPTS="-Djavax.xml.accessExternalStylesheet=all \
+                 -Djavax.xml.accessExternalSchema=all \
+     -Djavax.xml.accessExternalDTD=file,http"
+
+else
+  export ANT_OPTS="-Xmx2G -Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/modules/endorsed \
+                 -Djavax.xml.accessExternalStylesheet=all \
+                 -Djavax.xml.accessExternalSchema=all \
+		 -DenableExternalEntityProcessing=true \
+                 -Djavax.xml.accessExternalDTD=file,http"
+  export CTS_ANT_OPTS="-Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/modules/endorsed \
+                 -Djavax.xml.accessExternalStylesheet=all \
+                 -Djavax.xml.accessExternalSchema=all \
+     -Djavax.xml.accessExternalDTD=file,http"
+
+fi
+
+if [ -z "${RI_JAVA_HOME}" ]; then
+  export RI_JAVA_HOME=$JAVA_HOME
+fi
+
 # Run CTS related steps
 echo "JAVA_HOME ${JAVA_HOME}"
 echo "ANT_HOME ${ANT_HOME}"
@@ -78,19 +119,6 @@ if [ -z "$IMAP_PORT" ]; then
 fi
 ##################################################
 
-# Set JWSDP install dir and UDDI Registry server url 
-# required for JAXR tests if not set.
-if [ -z "$UDDI_REGISTRY_URL" ]; then
-  export UDDI_REGISTRY_URL="http://localhost:8080/RegistryServer/"
-fi
-
-if [ -z "$JWSDP_HOME" ]; then
-  export  JWSDP_HOME="/opt/jwsdp-1.3"
-fi
-
-##################################################
-
-
 
 printf  "
 ******************************************************
@@ -118,7 +146,7 @@ echo "" >> ${CTS_HOME}/change-admin-password.txt
 installRI() {
   printf  "
 ******************************************************
-* Installing CI/RI (Glassfish 5.1)                   *
+* Installing CI/RI (Glassfish 6.0)                   *
 ******************************************************
 
 "
@@ -138,58 +166,55 @@ installRI() {
     export OLD_GF_BUNDLE_URL=$GF_BUNDLE_URL
   fi
   wget --progress=bar:force --no-cache $GF_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish.zip
-  if [[ ${test_suite} == interop* ]]; then
-    wget --progress=bar:force --no-cache $OLD_GF_BUNDLE_URL -O ${CTS_HOME}/glassfish-6.0.zip
-  fi
   rm -Rf ${CTS_HOME}/ri
   mkdir -p ${CTS_HOME}/ri
-  if [[ ${test_suite} == interop* ]]; then
-    unzip -q ${CTS_HOME}/glassfish-6.0.zip -d ${CTS_HOME}/ri
-  else
-    unzip -q ${CTS_HOME}/latest-glassfish.zip -d ${CTS_HOME}/ri
-  fi
+  unzip -q ${CTS_HOME}/latest-glassfish.zip -d ${CTS_HOME}/ri
   chmod -R 777 ${CTS_HOME}/ri
 
+  if [ ! -z "${RI_JAVA_HOME}" ]; then
+    echo "AS_JAVA=${RI_JAVA_HOME}" >> ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/config/asenv.conf
+  fi
 
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} enable-secure-admin
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
-
-  # Change default ports for RI
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --interactive=false  --user admin --passwordfile ${ADMIN_PASSWORD_FILE} delete-jvm-options -Dosgi.shell.telnet.port=6666
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dosgi.shell.telnet.port=6667
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.jms-service.jms-host.default_JMS_host.port=7776
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} enable-secure-admin
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} enable-secure-admin
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
 
   # Change default ports for RI
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --interactive=false  --user admin --passwordfile ${ADMIN_PASSWORD_FILE} delete-jvm-options -Dosgi.shell.telnet.port=6666
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dosgi.shell.telnet.port=6667
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.jms-service.jms-host.default_JMS_host.port=7776
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.orb-listener-1.port=3701
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.SSL.port=4820
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.port=4920
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.admin-service.jmx-connector.system.port=9696
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.http-listener-1.port=8002
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.http-listener-2.port=1045
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.admin-listener.port=5858
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dorg.glassfish.orb.iiop.orbserverid=200
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --interactive=false  --user admin --passwordfile ${ADMIN_PASSWORD_FILE} delete-jvm-options -Dosgi.shell.telnet.port=6666
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dosgi.shell.telnet.port=6667
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.jms-service.jms-host.default_JMS_host.port=7776
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} enable-secure-admin
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+
+  # Change default ports for RI
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --interactive=false  --user admin --passwordfile ${ADMIN_PASSWORD_FILE} delete-jvm-options -Dosgi.shell.telnet.port=6666
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dosgi.shell.telnet.port=6667
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.jms-service.jms-host.default_JMS_host.port=7776
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.orb-listener-1.port=3701
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.SSL.port=4820
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.port=4920
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.admin-service.jmx-connector.system.port=9696
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.http-listener-1.port=8002
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.http-listener-2.port=1045
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set server-config.network-config.network-listeners.network-listener.admin-listener.port=5858
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Dorg.glassfish.orb.iiop.orbserverid=200
 
   sleep 5
   echo "Stopping RI domain"
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
   sleep 5
+
   echo "Killing any RI java processes that were not stopped gracefully"
   killjava "$JAVA_HOME/bin/java"
   ##### installRI.sh ends here #####
@@ -227,12 +252,6 @@ if [ -z "${GF_VI_BUNDLE_URL}" ]; then
     export GF_VI_BUNDLE_URL=$GF_BUNDLE_URL
 fi
 
-if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
-    echo "Using glassfish6 for GF_VI_TOPLEVEL_DIR"
-    export GF_VI_TOPLEVEL_DIR=glassfish6
-fi
-
-
 
 if [[ -z "${PAYARA_VERSION}" ]]; then
     wget --progress=bar:force --no-cache $GF_VI_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish-vi.zip
@@ -268,8 +287,8 @@ if [[ $test_suite == ejb30/lite* ]] || [[ "ejb30" == $test_suite ]] ; then
   echo "Using higher JVM memory for EJB Lite suites to avoid OOM errors"
   sed -i 's/-Xmx512m/-Xmx4096m/g' ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/domain.xml
   sed -i 's/-Xmx1024m/-Xmx4096m/g' ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/domain.xml
-  sed -i 's/-Xmx512m/-Xmx2048m/g' ${CTS_HOME}/ri/glassfish6/glassfish/domains/domain1/config/domain.xml
-  sed -i 's/-Xmx1024m/-Xmx2048m/g' ${CTS_HOME}/ri/glassfish6/glassfish/domains/domain1/config/domain.xml
+  sed -i 's/-Xmx512m/-Xmx2048m/g' ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/domains/domain1/config/domain.xml
+  sed -i 's/-Xmx1024m/-Xmx2048m/g' ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/domains/domain1/config/domain.xml
  
   # Change the memory setting in ts.jte as well.
   sed -i 's/-Xmx1024m/-Xmx4096m/g' ${TS_HOME}/bin/ts.jte
@@ -281,6 +300,10 @@ ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --password
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Djava.security.manager
+#https://github.com/eclipse-ee4j/jakartaee-tck/issues/631
+if [[ ("$JDK" == "JDK11" || "$JDK" == "jdk11") &&  $test_suite == jstl ]]; then
+  ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Djava.locale.providers=COMPAT
+fi
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
 
 sleep 5
@@ -288,11 +311,6 @@ killjava "$JAVA_HOME_VI/bin/java"
 ##### installVI.sh ends here #####
 
 ##### configVI.sh starts here #####
-
-export CTS_ANT_OPTS="-Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/modules/endorsed \
--Djavax.xml.accessExternalStylesheet=all \
--Djavax.xml.accessExternalSchema=all \
--Djavax.xml.accessExternalDTD=file,http"
 
 if [[ "$PROFILE" == "web" || "$PROFILE" == "WEB" ]];then
   KEYWORDS="javaee_web_profile|jacc_web_profile|jaspic_web_profile|javamail_web_profile|connector_web_profile"
@@ -350,7 +368,7 @@ sed -i 's/^jdbc.steadypoolsize=.*/jdbc.steadypoolsize=5/g' ts.jte
 sed -i "s#^javaee.home=.*#javaee.home=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish#g" ts.jte
 sed -i 's/^orb.host=.*/orb.host=localhost/g' ts.jte
 
-sed -i "s#^javaee.home.ri=.*#javaee.home.ri=${CTS_HOME}/ri/glassfish6/glassfish#g" ts.jte
+sed -i "s#^javaee.home.ri=.*#javaee.home.ri=${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish#g" ts.jte
 sed -i 's/^orb.host.ri=.*/orb.host.ri=localhost/g' ts.jte
 
 sed -i 's/^ri.admin.port=.*/ri.admin.port=5858/g' ts.jte
@@ -358,17 +376,12 @@ sed -i 's/^orb.port.ri=.*/orb.port.ri=3701/g' ts.jte
 
 sed -i "s#^registryURL=.*#registryURL=${UDDI_REGISTRY_URL}#g" ts.jte
 sed -i "s#^queryManagerURL=.*#queryManagerURL=${UDDI_REGISTRY_URL}#g" ts.jte
-sed -i 's/^jaxrUser=.*/jaxrUser=testuser/g' ts.jte
-sed -i 's/^jaxrPassword=.*/jaxrPassword=testuser/g' ts.jte
-sed -i 's/^jaxrUser2=.*/jaxrUser2=jaxr-sqe/g' ts.jte
-sed -i 's/^jaxrPassword2=.*/jaxrPassword2=jaxrsqe/g' ts.jte
 
 sed -i "s/^wsgen.ant.classname=.*/wsgen.ant.classname=$\{ri.wsgen.ant.classname\}/g" ts.jte
 sed -i "s/^wsimport.ant.classname=.*/wsimport.ant.classname=$\{ri.wsimport.ant.classname\}/g" ts.jte
 
 if [[ "$PROFILE" == "web" || "$PROFILE" == "WEB" ]]; then
-  sed -i "s/^javaee.level=.*/javaee.level=web connector jaxws jaxb javamail javaeemgmt javaeedeploy jacc jaspic wsmd/g" ts.jte
-  sed -i "s/^optional.tech.packages.to.ignore=.*/optional.tech.packages.to.ignore=javax.xml.rpc.handler/g" ts.jte
+  sed -i "s/^javaee.level=.*/javaee.level=web connector jaxws jaxb javamail javaeedeploy jacc jaspic wsmd/g" ts.jte
 fi
 
 sed -i 's/^impl.deploy.timeout.multiplier=.*/impl.deploy.timeout.multiplier=240/g' ts.jte
@@ -414,39 +427,27 @@ if [[ $test_suite == "javamail" || $test_suite == "samples" || $test_suite == "s
 fi
 ### populateMailbox for javamail suite - End ###
 
+if [[ $test_suite == javamail* || $test_suite == samples* || $test_suite == servlet* || $test_suite == appclient* || $test_suite == ejb* || $test_suite == jsp* ]]; then
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Ddeployment.resource.validation=false
+fi
+
 configRI() {
   ##### configRI.sh ends here #####
   cd  ${TS_HOME}/bin
   ant ${ANT_ARG} config.ri
-  ant ${ANT_ARG} enable.csiv2
   ##### configRI.sh ends here #####
-
-  ##### addInteropCerts.sh starts here #####
-  cd ${TS_HOME}/bin
-  ant ${ANT_ARG} add.interop.certs
-  ##### addInteropCerts.sh ends here #####
 
   ### restartRI.sh starts here #####
   cd ${CTS_HOME}
   export PORT=5858
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} -p ${PORT} stop-domain
-  ${CTS_HOME}/ri/glassfish6/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} -p ${PORT} start-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} -p ${PORT} stop-domain
+  ${CTS_HOME}/ri/${GF_RI_TOPLEVEL_DIR}/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} -p ${PORT} start-domain
   ### restartRI.sh ends here #####
 }
 
 if [ ! -z $ri_needed ]; then
   configRI
 fi
-
-### Registry server initialization starts here
-if [[ "jaxr" == ${test_suite} ]]; then
-  if [ -f $JWSDP_HOME/bin/startup.sh ]; then
-    $JWSDP_HOME/bin/startup.sh
-    sleep 10
-    echo "Java Web Services Developer Pack started ..."
-  fi
-fi
-### Registry server initialization ends here
 
 if [[ "securityapi" == ${test_suite} ]]; then
   cd $TS_HOME/bin;
@@ -525,7 +526,7 @@ else
   sed -i "s/name=\"${TEST_SUITE}\"/name=\"${TEST_SUITE}_${vehicle_name}\"/g" ${WORKSPACE}/results/junitreports/${TEST_SUITE}-junit-report.xml
   mv ${WORKSPACE}/results/junitreports/${TEST_SUITE}-junit-report.xml  ${WORKSPACE}/results/junitreports/${TEST_SUITE}_${vehicle_name}-junit-report.xml
 fi
-tar zcf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/
+tar zcf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/ ${CTS_HOME}/ri/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/
 
 if [ -z ${vehicle} ];then
   JUNIT_REPORT_FILE_NAME=${TEST_SUITE}-junitreports.tar.gz
