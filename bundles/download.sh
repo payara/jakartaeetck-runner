@@ -11,5 +11,5 @@ if [ ! -f bv-tck-3.0.0-dist.zip ]; then
 	wget https://download.eclipse.org/ee4j/bean-validation/3.0/beanvalidation-tck-dist-3.0.0.zip -O bv-tck-3.0.0-dist.zip
 fi
 if [ ! -f latest-glassfish.zip ]; then
-	wget https://download.eclipse.org/ee4j/glassfish/glassfish-6.0.0.zip -O latest-glassfish.zip
+	wget https://download.eclipse.org/ee4j/glassfish/glassfish-6.1.0.zip -O latest-glassfish.zip
 fi
