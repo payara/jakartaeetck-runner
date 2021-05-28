@@ -131,7 +131,7 @@ done
 
 
 ##### installCTS.sh starts here #####
-cat ${TS_HOME}/bin/ts.jte | sed "s/-Doracle.jdbc.mapDateToTimestamp/-Doracle.jdbc.mapDateToTimestamp -Djava.security.manager/"  > ts.save
+cat ${TS_HOME}/bin/ts.jte | sed "s/-Doracle.jdbc.mapDateToTimestamp/-Doracle.jdbc.mapDateToTimestamp/"  > ts.save
 cp ts.save $TS_HOME/bin/ts.jte
 ##### installCTS.sh ends here #####
 
