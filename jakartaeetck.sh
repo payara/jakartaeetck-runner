@@ -277,7 +277,7 @@ wget --progress=bar:force --no-cache $DERBY_URL -O ${CTS_HOME}/javadb.zip
 
 echo -n "Unzipping JavaDB... "
 unzip -q -o ${CTS_HOME}/javadb.zip -d $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR
-cp $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbyclient.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derby.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib
+cp $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbytools.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbyshared.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbyclient.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derby.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib
 rm ${CTS_HOME}/javadb.zip
 
 wget --progress=bar:force --no-cache $EJBTIMER_DERBY_SQL -O ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/ejbtimer_derby.sql
@@ -407,6 +407,9 @@ VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domai
 echo 'grant {' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission java.io.FilePermission "${com.sun.aas.instanceRoot}${/}generated${/}policy${/}-", "read,write,execute,delete";' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission java.net.NetPermission "specifyStreamHandler";' >> ${VI_SERVER_POLICY_FILE}
+echo 'permission java.lang.RuntimePermission "getenv.SOURCE_DATE_EPOCH";' >> ${VI_SERVER_POLICY_FILE}
+echo 'permission java.net.SocketPermission "listen,resolve";' >> ${VI_SERVER_POLICY_FILE}
+echo 'permission java.security.AllPermission;' >> ${VI_SERVER_POLICY_FILE}
 echo '};' >> ${VI_SERVER_POLICY_FILE}
 
 
