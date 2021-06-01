@@ -2,7 +2,7 @@
 
 #
 # Copyright (c) 2018, 2019 Oracle and/or its affiliates. All rights reserved.
-# Copyright (c) 2019, 2020 Payara Foundation and/or its affiliates. All rights reserved.
+# Copyright (c) 2019, 2021 Payara Foundation and/or its affiliates. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v. 2.0, which is available at
@@ -61,7 +61,6 @@ if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
 fi
 
 if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
-  cp $TS_HOME/bin/ts.jte.jdk11 $TS_HOME/bin/ts.jte
   export JAVA_HOME=${JDK11_HOME}
   export PATH=$JAVA_HOME/bin:$PATH
   export ANT_OPTS="-Xmx2G \

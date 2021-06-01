@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2019, 2020 Payara Foundation and/or its affiliates. All rights reserved.
+# Copyright (c) 2019, 2021 Payara Foundation and/or its affiliates. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v. 2.0, which is available at
@@ -65,6 +65,9 @@ if [ -z "$SKIP_TCK" ]; then
     echo -n "Unzipping TCK... "
     unzip -q -d $CTS_HOME $TCK_TEMP
     rm $TCK_TEMP
+    if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
+      cp $WORKSPACE/bin/ts.jte.jdk11 $WORKSPACE/bin/ts.jte
+    fi
     cp $WORKSPACE/bin/ts.jte $CTS_HOME/ts.jte.dist
     echo "Done"
 
@@ -99,16 +102,6 @@ if [ -z "$SKIP_MAIL"]; then
         docker exec -it james-mail /bin/bash -c /root/create_users.sh
     fi
 fi
-
-if [ "$1" == "jaxr" ]; then
-    JWSDP_CONTAINER=`docker ps -f name='jwsdp' -q`
-    if [ -z "$JWSDP_CONTAINER" ]; then
-      echo "Starting JWSDP Docker container"
-      docker run --name jwsdp --rm -d -p 8280:8080 --entrypoint=/bin/bash jakartaee/cts-base:0.1 /opt/jwsdp-1.3/bin/catalina.sh run
-    fi
-    export UDDI_REGISTRY_URL="http://localhost:8280/RegistryServer/"
-fi
-
 
 # run testcase
 
