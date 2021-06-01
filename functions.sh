@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019,2020 Payara Foundation and/or its affiliates. All rights reserved.
+# Copyright (c) 2019,2021 Payara Foundation and/or its affiliates. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,6 +14,11 @@
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 
 apply_overrides () {
+    if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
+        OVERRIDE_PROP=ts.override.jdk11.properties
+    else
+        OVERRIDE_PROP=ts.override.properties
+    fi
     OVERRIDE_TEMP=`mktemp`
     ## We create a sed program, that we'll execute against ts.jte.
     # TODO: Non-matching single-line / multiline replacements
@@ -32,7 +37,7 @@ s/^([[:alnum:].]+)=(.+[^\\])$/s#^\1=.+#\1=\2#/p
     s/\\\n/\\\\&/g
     p
 }
-' ts.override.properties > $OVERRIDE_TEMP
+' $OVERRIDE_PROP > $OVERRIDE_TEMP
     cat $OVERRIDE_TEMP
     sed -E -f $OVERRIDE_TEMP -i $WORKSPACE/bin/ts.jte
     echo "Changed $WORKSPACE/bin/ts.jte"
