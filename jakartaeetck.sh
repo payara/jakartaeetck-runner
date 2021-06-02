@@ -407,8 +407,11 @@ echo 'grant {' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission java.io.FilePermission "${com.sun.aas.instanceRoot}${/}generated${/}policy${/}-", "read,write,execute,delete";' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission java.net.NetPermission "specifyStreamHandler";' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission java.lang.RuntimePermission "getenv.SOURCE_DATE_EPOCH";' >> ${VI_SERVER_POLICY_FILE}
-echo 'permission java.net.SocketPermission "listen,resolve";' >> ${VI_SERVER_POLICY_FILE}
-echo 'permission java.security.AllPermission;' >> ${VI_SERVER_POLICY_FILE}
+echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_SERVER_POLICY_FILE}
+echo 'permission java.net.SocketPermission "*", "listen";' >> ${VI_SERVER_POLICY_FILE}
+echo 'permission java.net.SocketPermission "*", "accept";' >> ${VI_SERVER_POLICY_FILE}
+echo 'permission java.io.FilePermission       "<<ALL FILES>>", "write,read";' >> ${VI_SERVER_POLICY_FILE}
+echo 'permission org.apache.derby.shared.common.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_SERVER_POLICY_FILE}
 echo '};' >> ${VI_SERVER_POLICY_FILE}
 
 
