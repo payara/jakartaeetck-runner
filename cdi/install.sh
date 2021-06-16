@@ -25,7 +25,7 @@ rm -fr glassfish-cdi-porting-tck-master
 wget https://github.com/eclipse-ee4j/glassfish-cdi-porting-tck/archive/master.zip -O glassfish-cdi-porting-tck.zip
 unzip -q glassfish-cdi-porting-tck.zip
 cd glassfish-cdi-porting-tck-master
-mvn --global-settings "${PORTING}/settings.xml" clean install
+mvn --global-settings "${PORTING}/settings.xml" clean install -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8
 
 # Parent pom
 mvn --global-settings "${PORTING}/settings.xml" org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
