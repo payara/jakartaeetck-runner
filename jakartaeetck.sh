@@ -97,6 +97,10 @@ echo "TS_HOME ${TS_HOME}"
 echo "PATH ${PATH}"
 echo "Test suite to run ${test_suite}"
 
+if [ -z "${CLIENT_LOGGING_PROPERTIES}" ]; then
+  export CLIENT_LOGGING_PROPERTIES="${WORKSPACE}/../../client-logging.properties";
+fi
+
 #Set default mailserver related env variables
 if [ -z "$MAIL_HOST" ]; then
   export MAIL_HOST="localhost"
@@ -136,10 +140,8 @@ cp ts.save $TS_HOME/bin/ts.jte
 
 export ADMIN_PASSWORD_FILE="${CTS_HOME}/admin-password.txt"
 echo "AS_ADMIN_PASSWORD=adminadmin" > ${ADMIN_PASSWORD_FILE}
-
 echo "AS_ADMIN_PASSWORD=" > ${CTS_HOME}/change-admin-password.txt
 echo "AS_ADMIN_NEWPASSWORD=adminadmin" >> ${CTS_HOME}/change-admin-password.txt
-
 echo "" >> ${CTS_HOME}/change-admin-password.txt
 
 installRI() {
@@ -251,6 +253,10 @@ if [ -z "${GF_VI_BUNDLE_URL}" ]; then
     export GF_VI_BUNDLE_URL=$GF_BUNDLE_URL
 fi
 
+if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
+    echo "Using glassfish6 for GF_VI_TOPLEVEL_DIR"
+    export GF_VI_TOPLEVEL_DIR=glassfish6
+fi
 
 if [[ -z "${PAYARA_VERSION}" ]]; then
     wget --progress=bar:force --no-cache $GF_VI_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish-vi.zip
@@ -293,7 +299,20 @@ if [[ $test_suite == ejb30/lite* ]] || [[ "ejb30" == $test_suite ]] ; then
   sed -i 's/-Xmx1024m/-Xmx4096m/g' ${TS_HOME}/bin/ts.jte
 fi 
 
-echo "AS_JAVA=$JAVA_HOME_VI" >> ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/config/asenv.conf
+echo "AS_JAVA=$JAVA_HOME_VI" >> ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/config/asenv.conf;
+if [ -n "${PAYARA_LOGGING_PROPERTIES}" ]; then
+  echo "Using logging configuration: ${PAYARA_LOGGING_PROPERTIES}";
+  cp "${PAYARA_LOGGING_PROPERTIES}" "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/logging.properties";
+fi
+if [[ -z "${PAYARA_DEBUG}" ]]; then
+  export PAYARA_DEBUG=false;
+fi
+if [ -z "${PAYARA_VERBOSE}" ]; then
+  export PAYARA_VERBOSE=false;
+fi
+if [[ -z "${HARNESS_DEBUG}" ]]; then
+  export HARNESS_DEBUG=false;
+fi
 
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
@@ -310,6 +329,12 @@ killjava "$JAVA_HOME_VI/bin/java"
 ##### installVI.sh ends here #####
 
 ##### configVI.sh starts here #####
+
+export CTS_ANT_OPTS="-Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/modules/endorsed \
+-Djavax.xml.accessExternalStylesheet=all \
+-Djavax.xml.accessExternalSchema=all \
+-Djavax.xml.accessExternalDTD=file,http \
+"
 
 if [[ "$PROFILE" == "web" || "$PROFILE" == "WEB" ]];then
   KEYWORDS="javaee_web_profile|jacc_web_profile|jaspic_web_profile|javamail_web_profile|connector_web_profile"
@@ -348,6 +373,7 @@ export JT_WORK_DIR=${CTS_HOME}/jakartaeetck-work
 
 ### Update ts.jte for CTS run
 cd ${TS_HOME}/bin
+
 sed -i "s#^report.dir=.*#report.dir=${JT_REPORT_DIR}#g" ts.jte
 sed -i "s#^work.dir=.*#work.dir=${JT_WORK_DIR}#g" ts.jte
 
@@ -386,8 +412,10 @@ fi
 sed -i 's/^impl.deploy.timeout.multiplier=.*/impl.deploy.timeout.multiplier=240/g' ts.jte
 sed -i 's/^javatest.timeout.factor=.*/javatest.timeout.factor=2.0/g' ts.jte
 sed -i 's/^test.ejb.stateful.timeout.wait.seconds=.*/test.ejb.stateful.timeout.wait.seconds=180/g' ts.jte
-sed -i 's/^harness.log.traceflag=.*/harness.log.traceflag=false/g' ts.jte
+sed -i "s#^harness.log.traceflag=.*#harness.log.traceflag=${HARNESS_DEBUG}#g" ts.jte
+sed -i 's/^harness.maxoutputsize=.*/harness.maxoutputsize=10000000/g' ts.jte
 sed -i 's/^impl\.deploy\.timeout\.multiplier=240/impl\.deploy\.timeout\.multiplier=480/g' ts.jte
+sed -i "s#=client-logging\.properties#=${CLIENT_LOGGING_PROPERTIES}#g" ts.jte
 
 if [ "servlet" == "${test_suite}" ]; then
   sed -i 's/s1as\.java\.endorsed\.dirs=.*/s1as.java.endorsed.dirs=\$\{endorsed.dirs\}\$\{pathsep\}\$\{ts.home\}\/endorsedlib/g' ts.jte
@@ -461,6 +489,22 @@ if [[ "securityapi" == ${test_suite} ]]; then
   echo "LDAP initilized for securityapi"
 fi
 
+### start PAYARA with arguments ###
+${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set configs.config.server-config.java-config.debug-enabled=${PAYARA_DEBUG}
+${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} rotate-log
+${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain --debug=${PAYARA_DEBUG} --verbose=${PAYARA_VERBOSE} &
+
+# yield to allow to roll the file depending on logging configuration
+sleep 5;
+# Wait for the Payara Server [version] #badassfish startup message in server.log
+timeout 30 grep -q '\[NCLS\-CORE\-00017\]' <(tail -n 100000 -F "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/logs/server.log")
+
+if [[ "${PAYARA_DEBUG}" == "true" ]]; then
+  echo "********************************************************************************";
+  read -p "Attach the debugger to the Payara Server instance and hit ENTER";
+fi
+
 ### ctsStartStandardDeploymentServer.sh starts here #####
 cd $TS_HOME/bin;
 echo "ant start.auto.deployment.server > /tmp/deploy.out 2>&1 & "
@@ -473,14 +517,14 @@ if [ -z "$KEYWORDS" ]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
     ant ${ANT_ARG} runclient -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
   else
-    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
+    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}" -Dskip.server.restart="true"
   fi
 else
   if [[ "jbatch" == ${test_suite} ]]; then
     cd $TS_HOME/src/com/ibm/jbatch/tck;
     ant ${ANT_ARG} runclient -Dkeywords=\"${KEYWORDS}\" -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch;
   else
-    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}"
+    ant ${ANT_ARG} -f xml/impl/payara/s1as.xml run.cts -Dkeywords=\"${KEYWORDS}\" -Dant.opts="${CTS_ANT_OPTS} ${ANT_OPTS}" -Dtest.areas="${test_suite}" -Dskip.server.restart="true"
   fi
 fi
 
