@@ -17,4 +17,4 @@ check_present jakarta-inject-tck-2.0.1-bin.zip
 check_present javadb.zip
 check_present ejbtimer_derby.sql
 check_present jsr352-derby.sql
-exec python3 -m http.server
+exec python3 -m http.server 8000
