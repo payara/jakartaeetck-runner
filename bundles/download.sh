@@ -11,8 +11,8 @@ if [ ! -f bv-tck-3.0.0-dist.zip ]; then
 	wget https://download.eclipse.org/ee4j/bean-validation/3.0/beanvalidation-tck-dist-3.0.0.zip -O bv-tck-3.0.0-dist.zip
 fi
 if [ ! -f latest-glassfish.zip ]; then
-	wget https://download.eclipse.org/ee4j/glassfish/glassfish-6.0.0.zip -O latest-glassfish.zip
+	wget https://download.eclipse.org/ee4j/glassfish/glassfish-6.2.4.zip -O latest-glassfish.zip
 fi
 if [ ! -f javadb.zip ]; then
-	wget https://dlcdn.apache.org//db/derby/db-derby-10.14.2.0/db-derby-10.14.2.0-bin.zip -O javadb.zip
+	wget https://dlcdn.apache.org//db/derby/db-derby-10.15.2.0/db-derby-10.15.2.0-bin.zip -O javadb.zip
 fi
