@@ -4,7 +4,7 @@ fi
 if [ ! -f cdi-tck-3.0.3-dist.zip ]; then
   wget https://download.eclipse.org/ee4j/cdi/3.0/cdi-tck-3.0.3-dist.zip -O cdi-tck-3.0.3-dist.zip
 fi
-if [ ! -f jakarta-inject-tck-2.0.1-bin.zip ]; then
+if [ ! -f jakarta.inject-tck-2.0.1-bin.zip ]; then
   wget https://download.eclipse.org/ee4j/cdi/inject/2.0/jakarta.inject-tck-2.0.1-bin.zip -O jakarta.inject-tck-2.0.1-bin.zip
 fi
 if [ ! -f bv-tck-3.0.0-dist.zip ]; then
