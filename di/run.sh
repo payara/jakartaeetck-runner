@@ -14,7 +14,8 @@ rm -rf ditck-porting/cdi-tck-*/
 
 export WORKSPACE=$SCRIPTPATH/ditck-porting
 export GF_BUNDLE_URL=$PAYARA_URL
-export JSR299_TCK_URL=$CDI_TCK_URL
+# Let ditck-porting/docker/run_ditck.sh figure out its own JSR299_TCK_URL for now - it needs CDI 4 and functions.sh is trying to tell it to use CDI 3
+#export JSR299_TCK_URL=$CDI_TCK_URL
 export JAKARTA_INJECT_TCK_URL=$DI_TCK_URL
 echo Build should download from $GF_BUNDLE_URL
 
