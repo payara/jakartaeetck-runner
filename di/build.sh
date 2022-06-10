@@ -17,7 +17,7 @@ PORTING=$SCRIPTPATH/ditck-porting
 OUTPUT=$PORTING/bundles
 
 cd $PORTING
-git checkout EE9
+#git checkout EE10
 cd $SCRIPTPATH
 
 rm -f $PORTING/latest-glassfish.zip
