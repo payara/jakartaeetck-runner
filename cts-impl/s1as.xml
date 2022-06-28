@@ -1263,14 +1263,14 @@
        
        <antcall target="delete.cert" >
           <param name="cert.alias" value="${client.cert.alias}" />
-          <param name="trustStore" value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.jks"/>
+          <param name="trustStore" value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.p12"/>
           <param name="trustStore.password" value="${keystore.password}" />
        </antcall>
 
        <antcall target="delete.cert" >
           <param name="cert.alias" value="RI_CERT" />
           <param name="trustStore" 
-             value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.jks"/>
+             value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.p12"/>
           <param name="trustStore.password" value="${keystore.password}" />
        </antcall>
      </target>
@@ -1284,7 +1284,7 @@
             <param name="cert.file" value="${cert.file}" />
             <param name="trustStore.password" value="${keystore.password}" />
             <param name="trustStore" 
-                   value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.jks"/>
+                   value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.p12"/>
         </antcall>
 
          <antcall target="add.cts.cert.into.nss.databases"/>
@@ -1331,7 +1331,7 @@
             <param name="cert.file" value="${ts.home}/tmp/ri_server_cert.file" />
             <param name="trustStore.password" value="${keystore.password}" />
             <param name="trustStore"
-                   value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.jks"/>
+                   value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.p12"/>
          </antcall>
 
          <!--
@@ -1341,7 +1341,7 @@
             <param name="cert.alias" value="${server.cert.alias}" />
             <param name="cert.file" value="${ts.home}/tmp/vi_server_cert.file" />
             <param name="trustStore"
-                  value="${s1as.domain.dir}/${s1as.domain.name}/config/keystore.jks"/>
+                  value="${s1as.domain.dir}/${s1as.domain.name}/config/keystore.p12"/>
             <param name="trustStore.password" value="${keystore.password}" />
         </antcall>
 
