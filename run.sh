@@ -65,9 +65,6 @@ if [ -z "$SKIP_TCK" ]; then
     echo -n "Unzipping TCK... "
     unzip -q -d $CTS_HOME $TCK_TEMP
     rm $TCK_TEMP
-    if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
-      cp $WORKSPACE/bin/ts.jte.jdk11 $WORKSPACE/bin/ts.jte
-    fi
     cp $WORKSPACE/bin/ts.jte $CTS_HOME/ts.jte.dist
     echo "Done"
 
