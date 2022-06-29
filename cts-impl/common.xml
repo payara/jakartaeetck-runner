@@ -73,8 +73,8 @@
            <property name="exec.imqusermgr.part2" value="" />
            <property name="cert.file" value="${bin.dir}/certificates/cts_cert"/>
            <property name="server.config.dir.path" value="${server.domain}/${server.config.dir}" />
-           <property name="cacerts.jks" value="${server.config.dir.path}/cacerts.p12"/>
-           <property name="keystore.jks" value="${server.config.dir.path}/keystore.p12"/>
+           <property name="cacerts.jks" value="${server.config.dir.path}/cacerts.jks"/>
+           <property name="keystore.jks" value="${server.config.dir.path}/keystore.jks"/>
            <property name="cert8.db" value="${server.config.dir.path}/cert8.db"/>
            <property name="key3.db" value="${server.config.dir.path}/key3.db"/>
            <property name="secmod.db" value="${server.config.dir.path}/secmod.db"/>
@@ -107,8 +107,8 @@
            <property name="exec.imqusermgr.part2" value="/c ${imqbin.loc}\imqusermgr" />
            <property name="cert.file" value="${ts.home}\bin\certificates\cts_cert"/>
            <property name="server.config.dir.path" value="${server.domain}\${server.config.dir}" />
-           <property name="cacerts.jks" value="${server.config.dir.path}\cacerts.p12"/>
-           <property name="keystore.jks" value="${server.config.dir.path}\keystore.p12"/>
+           <property name="cacerts.jks" value="${server.config.dir.path}\cacerts.jks"/>
+           <property name="keystore.jks" value="${server.config.dir.path}\keystore.jks"/>
            <property name="cert8.db" value="${server.config.dir.path}\cert8.db"/>
            <property name="key3.db" value="${server.config.dir.path}\key3.db"/>
            <property name="secmod.db" value="${server.config.dir.path}\secmod.db"/>
