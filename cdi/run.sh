@@ -8,7 +8,7 @@ export PORTING=$SCRIPTPATH/cditck-porting
 export WORKSPACE=$PORTING
 export GF_BUNDLE_URL=$PAYARA_URL
 export TS_HOME=${WORKSPACE}/cdi-tck-glassfish-porting
-export CDI_TCK_VERSION=3.0.1
+export CDI_TCK_VERSION=4.0.5
 export DIST=$PORTING/dist/tck
 export CDI_TCK_DIST=cdi-tck-$CDI_TCK_VERSION
 
