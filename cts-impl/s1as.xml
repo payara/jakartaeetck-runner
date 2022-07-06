@@ -1199,19 +1199,21 @@
     <property name="skip.server.restart" value="false"/>
 
     <target name="run.cts">
-      <runcts runclientargs="${run.client.args}"
-              buildJwsJaxws="${buildJwsJaxws}"
-              reportdir="${report.dir}"
-              workdir="${work.dir}"
-              tshome="${ts.home}"
-              j2eehome="${javaee.home}"
-              testareas="${test.areas}"
-              jointimeout="${jointimeout}"
-              antopts="${ant.opts}"
-              deliverabledir="${deliverabledir}"
-              bufferingenabled="${buffering.enabled}"
-              skipserverrestart="${skip.server.restart}"
-              passwordfile="${ts.home}/../admin-password.txt"/>
+
+
+        <runcts runclientargs="${run.client.args}"
+                buildJwsJaxws="${buildJwsJaxws}"
+                reportdir="${report.dir}"
+                workdir="${work.dir}"
+                tshome="${ts.home}"
+                j2eehome="${javaee.home}"
+                testareas="${test.areas}"
+                jointimeout="${jointimeout}"
+                antopts="${ant.opts}"
+                deliverabledir="${deliverabledir}"
+                bufferingenabled="${buffering.enabled}"
+                skipserverrestart="${skip.server.restart}"
+                passwordfile="${ts.home}/../admin-password.txt"/>
     </target>
 
     <target name="backup.ts.jte.file" unless="ts.jte.backed">
@@ -1572,5 +1574,15 @@
           <param name="set.value" value=" ${server.instance}-config.network-config.protocols.protocol.http-listener-1.http.trace-enabled=true"/>
         </antcall>
      </target>
+
+    <target name="overwrite.glassfish.jacc.vm.options" depends="configPlatform">
+        <echo message="Overwriting create.jacc.vm.options and delete.jacc.vm.options targets of cts_home/jakartaeetck/bin/xml/impl/glassfish/common.xml since RunCTS#enableJacc() is hardcoded to run this over any VI file"/>
+        <replace file="${bin.dir}/bin/xml/impl/glassfish/common.xml"
+                 token="-Dvendor.jakarta.security.jacc.policy.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyProvider"
+                 value="-Dvendor.jakarta.security.jacc.policy.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
+        <replace file="${bin.dir}/bin/xml/impl/glassfish/common.xml"
+                 token="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyConfigurationFactory"
+                 value="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
+    </target>
 
 </project>
