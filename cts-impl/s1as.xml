@@ -1198,9 +1198,8 @@
     <property name="buildJwsJaxws" value="true"/>
     <property name="skip.server.restart" value="false"/>
 
-    <target name="run.cts">
-
-
+    <target name="run.cts" depends="overwrite.glassfish.jacc.vm.options">
+        
         <runcts runclientargs="${run.client.args}"
                 buildJwsJaxws="${buildJwsJaxws}"
                 reportdir="${report.dir}"
@@ -1575,14 +1574,14 @@
         </antcall>
      </target>
 
-    <target name="overwrite.glassfish.jacc.vm.options" depends="configPlatform">
+     <target name="overwrite.glassfish.jacc.vm.options">
         <echo message="Overwriting create.jacc.vm.options and delete.jacc.vm.options targets of cts_home/jakartaeetck/bin/xml/impl/glassfish/common.xml since RunCTS#enableJacc() is hardcoded to run this over any VI file"/>
-        <replace file="${bin.dir}/bin/xml/impl/glassfish/common.xml"
-                 token="-Dvendor.jakarta.security.jacc.policy.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyProvider"
-                 value="-Dvendor.jakarta.security.jacc.policy.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
-        <replace file="${bin.dir}/bin/xml/impl/glassfish/common.xml"
-                 token="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyConfigurationFactory"
-                 value="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
-    </target>
+        <replace file="${bin.dir}/xml/impl/glassfish/common.xml"
+                  token="-Dvendor.jakarta.security.jacc.policy.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyProvider"
+                  value="-Dvendor.jakarta.security.jacc.policy.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
+         <replace file="${bin.dir}/xml/impl/glassfish/common.xml"
+                  token="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyConfigurationFactory"
+                  value="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
+     </target>
 
 </project>
