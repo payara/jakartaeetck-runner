@@ -1581,7 +1581,7 @@
                   value="-Dvendor.jakarta.security.jacc.policy.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
          <replace file="${bin.dir}/xml/impl/glassfish/common.xml"
                   token="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyConfigurationFactory"
-                  value="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
+                  value="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=org.glassfish.exousia.modules.locked.SimplePolicyConfigurationFactory"/>
      </target>
 
 </project>
