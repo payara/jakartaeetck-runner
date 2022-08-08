@@ -42,13 +42,13 @@ fi
 export TS_HOME=${CTS_HOME}/jakartaeetck/
 
 if [ -z "${GF_RI_TOPLEVEL_DIR}" ]; then
-    echo "Using glassfish6 for GF_RI_TOPLEVEL_DIR"
-    export GF_RI_TOPLEVEL_DIR=glassfish6
+    echo "Using glassfish7 for GF_RI_TOPLEVEL_DIR"
+    export GF_RI_TOPLEVEL_DIR=glassfish7
 fi
 
 if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
-    echo "Using glassfish6 for GF_VI_TOPLEVEL_DIR"
-    export GF_VI_TOPLEVEL_DIR=glassfish6
+    echo "Using glassfish7 for GF_VI_TOPLEVEL_DIR"
+    export GF_VI_TOPLEVEL_DIR=glassfish7
 fi
 
 if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
