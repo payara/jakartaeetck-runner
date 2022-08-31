@@ -148,13 +148,13 @@ echo "" >> ${CTS_HOME}/change-admin-password.txt
 installRI() {
   printf  "
 ******************************************************
-* Installing CI/RI (Glassfish 6.0)                   *
+* Installing CI/RI (Glassfish 7.0)                   *
 ******************************************************
 
 "
 
   ##### installRI.sh starts here #####
-  echo "Download and install GlassFish 6.0.0 ..."
+  echo "Download and install GlassFish 7.0.0 ..."
   if [ -z "${GF_BUNDLE_URL}" ]; then
     if [ -z "$DEFAULT_GF_BUNDLE_URL" ]; then
       echo "[ERROR] GF_BUNDLE_URL not set"
