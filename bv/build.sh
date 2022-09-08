@@ -1,9 +1,5 @@
 #!/bin/bash
 
-if [ ! -d bvtck-porting ]; then
-   git clone https://github.com/payara/bvtck-porting
-fi
-
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 . $SCRIPTPATH/../functions.sh
 
@@ -16,9 +12,12 @@ init_urls
 PORTING=$SCRIPTPATH/bvtck-porting
 OUTPUT=$PORTING/bundles
 
-cd $PORTING
-git checkout EE9
-cd $SCRIPTPATH
+if [ ! -d bvtck-porting ]; then
+   git clone https://github.com/payara/bvtck-porting
+   cd $PORTING
+   git checkout EE10
+   cd $SCRIPTPATH
+fi
 
 rm -f $PORTING/latest-glassfish.zip
 rm -rf $OUTPUT
