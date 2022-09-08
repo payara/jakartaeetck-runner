@@ -3,7 +3,7 @@
 	url = https://github.com/payara/cditck-porting
 [submodule "bv/bvtck-porting"]
 	path = bv/bvtck-porting
-	url = https://github.com/payara/bvtck-porting
+	url = https://github.com/Pandrex247/bvtck-porting
 [submodule "di/ditck-porting"]
 	path = di/ditck-porting
 	url = https://github.com/payara/ditck-porting
