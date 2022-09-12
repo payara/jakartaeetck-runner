@@ -16,3 +16,6 @@ fi
 if [ ! -f javadb.zip ]; then
 	wget https://dlcdn.apache.org//db/derby/db-derby-10.15.2.0/db-derby-10.15.2.0-bin.zip -O javadb.zip
 fi
+if [ ! -f activation-tck-2.1.0.zip ]; then
+	wget https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee10/staged/epl/activation-tck-2.1.0.zip -O activation-tck-2.1.0.zip
+fi
