@@ -8,7 +8,7 @@ PORTING=$SCRIPTPATH/dsol-tck
 OUTPUT=$PORTING/bundles
 
 rm $PORTING/latest-glassfish.zip
-rm -rf jaf-tck/payara6
+rm -rf dsol-tck/payara6
 
 export WORKSPACE=$PORTING
 export GF_BUNDLE_URL=$PAYARA_URL
@@ -34,6 +34,6 @@ if [ ! -d "$SCRIPTPATH/../results" ]; then
 fi
 
 #TIMESTAMP=`date -Iminutes | tr -d :`
-#report=$SCRIPTPATH/../results/jaf-$TIMESTAMP.tar.gz
+#report=$SCRIPTPATH/../results/dsol-$TIMESTAMP.tar.gz
 #echo Creating report $report
 #tar zcf $report $WORKSPACE/activation-tck/JTreport/ $SCRIPTPATH/payara6/glassfish/domains/domain1/logs

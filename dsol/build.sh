@@ -9,7 +9,7 @@ echo -----------------------------------------------------------------------
 
 init_urls
 
-PORTING=$SCRIPTPATH/jaf-tck
+PORTING=$SCRIPTPATH/dsol-tck
 OUTPUT=$PORTING/bundles
 
 if [ ! -d dsol-tck ]; then
