@@ -67,7 +67,7 @@ init_urls () {
         DI_TCK_URL=$BASE_URL/jakarta.inject-tck-2.0.1-bin.zip
     fi
     if [ -z "$BV_TCK_URL" ]; then
-        BV_TCK_URL=$BASE_URL/bv-tck-3.0.0-dist.zip
+        BV_TCK_URL=$BASE_URL/bv-tck-3.0.1-dist.zip
     fi
     if [ -z "$DERBY_URL" ]; then
         DERBY_URL=$BASE_URL/javadb.zip
