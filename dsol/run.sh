@@ -25,7 +25,13 @@ if [ -z $MAVEN_HOME ]; then
     export MAVEN_HOME=`mvn -v | sed -n 's/Maven home: \(.\+\)/\1/p'`
 fi
 
+# Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara6
 sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_dsoltck.sh"
+
+# Make sure the script doesn't unset JAVA_HOME
+if [ -z "$JDK11_HOME" ]; then
+  export JDK11_HOME=${JAVA_HOME}
+fi
 
 bash -x $WORKSPACE/docker/run_dsoltck.sh | tee $WORKSPACE/dsol.log
 
