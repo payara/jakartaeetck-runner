@@ -33,7 +33,3 @@ if [ -z "$TCK_BUNDLE_FILE_NAME" ]; then
 fi
 
 bash -x $WORKSPACE/docker/build_dsoltck.sh
-
-# update bundles links upstream
-#rm $SCRIPTPATH/../bundles/dsol-tck-*
-#ln -s -t $SCRIPTPATH/../bundles $OUTPUT/*.zip

@@ -43,7 +43,7 @@ if [ ! -d "$SCRIPTPATH/../results" ]; then
     mkdir $SCRIPTPATH/../results
 fi
 
-#TIMESTAMP=`date -Iminutes | tr -d :`
-#report=$SCRIPTPATH/../results/dsol-$TIMESTAMP.tar.gz
-#echo Creating report $report
-#tar zcf $report $WORKSPACE/activation-tck/JTreport/ $SCRIPTPATH/payara6/glassfish/domains/domain1/logs
+TIMESTAMP=`date -Iminutes | tr -d :`
+report=$SCRIPTPATH/../results/dsol-$TIMESTAMP.xml
+echo Creating report $report
+tar zcf $report $WORKSPACE/debugging-tck-junit-report.xml $WORKSPACE/vi/payara6/glassfish/domains/domain1/logs
