@@ -4,11 +4,11 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 init_urls
 
-PORTING=$SCRIPTPATH/dsol-tck
+PORTING=$SCRIPTPATH/jaxb-tck
 OUTPUT=$PORTING/bundles
 
 rm $PORTING/latest-glassfish.zip
-rm -rf dsol-tck/payara6
+rm -rf jaxb-tck/payara6
 
 export WORKSPACE=$PORTING
 export GF_BUNDLE_URL=$PAYARA_URL
