@@ -18,7 +18,7 @@ if [ -z "$TCK_BUNDLE_BASE_URL" ]; then
   export TCK_BUNDLE_BASE_URL=http://localhost:8000
 fi
 if [ -z "$TCK_BUNDLE_FILE_NAME" ]; then
-  export TCK_BUNDLE_FILE_NAME=jakarta-debugging-tck-2.0.0.zip
+  export TCK_BUNDLE_FILE_NAME=jakarta-xml-binding-tck-4.0.0.zip
 fi
 
 if [ -z $MAVEN_HOME ]; then
