@@ -29,6 +29,10 @@ sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_activationtck.sh"
 
 bash -x $WORKSPACE/docker/run_activationtck.sh | tee $WORKSPACE/bv.log
 
+if [ ! -d "$SCRIPTPATH/../results" ]; then
+    mkdir $SCRIPTPATH/../results
+fi
+
 TIMESTAMP=`date -Iminutes | tr -d :`
 report=$SCRIPTPATH/../results/jaf-$TIMESTAMP.tar.gz
 echo Creating report $report
