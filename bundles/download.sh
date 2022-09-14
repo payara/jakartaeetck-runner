@@ -16,3 +16,6 @@ fi
 if [ ! -f javadb.zip ]; then
 	wget https://dlcdn.apache.org//db/derby/db-derby-10.15.2.0/db-derby-10.15.2.0-bin.zip -O javadb.zip
 fi
+if [ ! -f jakarta-mail-tck.zip ]; then
+	wget https://download.eclipse.org/jakartaee/mail/2.1/jakarta-mail-tck-2.1.0.zip -O jakarta-mail-tck.zip
+fi

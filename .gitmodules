@@ -7,3 +7,6 @@
 [submodule "di/ditck-porting"]
 	path = di/ditck-porting
 	url = https://github.com/payara/ditck-porting
+[submodule "mail/mail-tck"]
+	path = mail/mail-tck
+	url = https://github.com/payara/mail-tck
