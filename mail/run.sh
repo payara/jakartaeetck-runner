@@ -45,6 +45,11 @@ if [ -z "$RUNTIME" ]; then
   export RUNTIME=Glassfish
 fi
 
+# Set MAIL_USER
+if [ -z "$MAIL_USER" ]; then
+  export MAIL_USER="user01@james.local"
+fi
+
 # Start Mail container
 JAMES_CONTAINER=`docker ps -f name='james-mail' -q`
 if [ -z "$JAMES_CONTAINER" ]; then
