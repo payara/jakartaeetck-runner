@@ -50,12 +50,15 @@ JAMES_CONTAINER=`docker ps -f name='james-mail' -q`
 if [ -z "$JAMES_CONTAINER" ]; then
     echo "Starting email server Docker container"
     docker run --name james-mail --rm -d -p 1025:1025 -p 1143:1143 --entrypoint=/bin/bash jakartaee/cts-mailserver:0.1 -c /root/startup.sh
-    sleep 10
+    sleep 20
     echo "Initializing container"
     docker exec -it james-mail /bin/bash -c /root/create_users.sh
 fi
 
 bash -x $WORKSPACE/docker/run_mailtck.sh | tee $WORKSPACE/mail.log
+
+# Stop the Mail container
+docker kill james-mail
 
 if [ ! -d "$SCRIPTPATH/../results" ]; then
     mkdir $SCRIPTPATH/../results
