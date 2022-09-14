@@ -33,6 +33,11 @@ if [ -z "$JDK11_HOME" ]; then
   export JDK11_HOME=${JAVA_HOME}
 fi
 
+if [ -z "$RUNTIME" ]; then
+  # Lowercase f intentional - that's what run_mailtck.sh specifically checks for
+  export RUNTIME=Glassfish
+fi
+
 bash -x $WORKSPACE/docker/run_mailtck.sh | tee $WORKSPACE/mail.log
 
 # Stop domain because the script doesn't
