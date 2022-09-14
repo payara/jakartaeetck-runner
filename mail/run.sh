@@ -28,6 +28,13 @@ fi
 # Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara6
 sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_mailtck.sh"
 
+# Replace default download and unzip location to workspace rather than .
+sed -i 's/-O latest-glassfish\.zip/-O ${WORKSPACE}\/latest-glassfish\.zip/g' "$WORKSPACE/docker/run_mailtck.sh"
+sed -i 's/unzip -q -o latest-glassfish\.zip/unzip -q -o ${WORKSPACE}\/latest-glassfish\.zip -d ${WORKSPACE}/g' "$WORKSPACE/docker/run_mailtck.sh"
+
+# Replace default chmod to workspace rather than .
+sed -i 's/chmod -R 777 ${TOP_GLASSFISH_DIR}/chmod -R 777 ${WORKSPACE}\/${TOP_GLASSFISH_DIR}/g' "$WORKSPACE/docker/run_mailtck.sh"
+
 # Make sure the script doesn't unset JAVA_HOME
 if [ -z "$JDK11_HOME" ]; then
   export JDK11_HOME=${JAVA_HOME}
