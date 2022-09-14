@@ -12,7 +12,7 @@ init_urls
 PORTING=$SCRIPTPATH/mail-tck
 OUTPUT=$PORTING/bundles
 
-if [ ! -d bvtck-porting ]; then
+if [ ! -d mail-tck ]; then
   git clone https://github.com/payara/mail-tck
 fi
 
