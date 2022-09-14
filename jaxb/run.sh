@@ -40,15 +40,11 @@ fi
 
 bash -x $WORKSPACE/docker/run_jaxbtck.sh | tee $WORKSPACE/jaxb.log
 
-# Stop domain because the script doesn't
-$WORKSPACE/vi/payara6/bin/asadmin stop-domain
-
-
 if [ ! -d "$SCRIPTPATH/../results" ]; then
     mkdir $SCRIPTPATH/../results
 fi
 
-#TIMESTAMP=`date -Iminutes | tr -d :`
-#report=$SCRIPTPATH/../results/jaxb-$TIMESTAMP.xml
-#echo Creating report $report
-#tar zcf $report $WORKSPACE/debugging-tck-junit-report.xml $WORKSPACE/vi/payara6/glassfish/domains/domain1/logs
+TIMESTAMP=`date -Iminutes | tr -d :`
+report=$SCRIPTPATH/../results/jaxb-$TIMESTAMP.xml
+echo Copying report $report
+cp $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml $report
