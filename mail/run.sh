@@ -50,9 +50,6 @@ fi
 
 bash -x $WORKSPACE/docker/run_mailtck.sh | tee $WORKSPACE/mail.log
 
-# Stop domain because the script doesn't
-$WORKSPACE/vi/payara6/bin/asadmin stop-domain
-
 if [ ! -d "$SCRIPTPATH/../results" ]; then
     mkdir $SCRIPTPATH/../results
 fi
