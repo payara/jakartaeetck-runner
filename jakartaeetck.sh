@@ -95,11 +95,11 @@ else
      -Djavax.xml.accessExternalDTD=file,http"
 
 fi
-
+echo "Current Java_HOME: ${JAVA_HOME}"
 if [ -z "${RI_JAVA_HOME}" ]; then
   export RI_JAVA_HOME=$JAVA_HOME
 fi
-
+echo "Current Java_HOME: ${JAVA_HOME}"
 # Run CTS related steps
 echo "JAVA_HOME ${JAVA_HOME}"
 echo "ANT_HOME ${ANT_HOME}"
