@@ -61,8 +61,7 @@ if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
     export GF_VI_TOPLEVEL_DIR=glassfish7
 fi
 
-if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
-  export JAVA_HOME=${JDK11_HOME}
+if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]]; then
   export PATH=$JAVA_HOME/bin:$PATH
   export ANT_OPTS="-Xmx2G \
                  -Djavax.xml.accessExternalStylesheet=all \
@@ -72,8 +71,7 @@ if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
   export CTS_ANT_OPTS="-Djavax.xml.accessExternalStylesheet=all \
                  -Djavax.xml.accessExternalSchema=all \
      -Djavax.xml.accessExternalDTD=file,http"
-elif [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]];then
-  export JAVA_HOME=${JDK17_HOME}
+elif [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]]; then
   export PATH=$JAVA_HOME/bin:$PATH
   export ANT_OPTS="-Xmx2G \
                   -Djavax.xml.accessExternalStylesheet=all \
@@ -95,11 +93,11 @@ else
      -Djavax.xml.accessExternalDTD=file,http"
 
 fi
-echo "Current Java_HOME: ${JAVA_HOME}"
+
 if [ -z "${RI_JAVA_HOME}" ]; then
   export RI_JAVA_HOME=$JAVA_HOME
 fi
-echo "Current Java_HOME: ${JAVA_HOME}"
+
 # Run CTS related steps
 echo "JAVA_HOME ${JAVA_HOME}"
 echo "ANT_HOME ${ANT_HOME}"
@@ -339,7 +337,7 @@ killjava "$JAVA_HOME_VI/bin/java"
 
 ##### configVI.sh starts here #####
 
-if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
+if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]]; then
   export CTS_ANT_OPTS="-Djavax.xml.accessExternalStylesheet=all \
                  -Djavax.xml.accessExternalSchema=all \
      -Djavax.xml.accessExternalDTD=file,http"
