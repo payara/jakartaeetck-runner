@@ -72,7 +72,17 @@ if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
   export CTS_ANT_OPTS="-Djavax.xml.accessExternalStylesheet=all \
                  -Djavax.xml.accessExternalSchema=all \
      -Djavax.xml.accessExternalDTD=file,http"
-
+elif [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]];then
+  export JAVA_HOME=${JDK17_HOME}
+  export PATH=$JAVA_HOME/bin:$PATH
+  export ANT_OPTS="-Xmx2G \
+                  -Djavax.xml.accessExternalStylesheet=all \
+                  -Djavax.xml.accessExternalSchema=all \
+  	 -DenableExternalEntityProcessing=true \
+                   -Djavax.xml.accessExternalDTD=file,http"
+  export CTS_ANT_OPTS="-Djavax.xml.accessExternalStylesheet=all \
+                 -Djavax.xml.accessExternalSchema=all \
+      -Djavax.xml.accessExternalDTD=file,http"
 else
   export ANT_OPTS="-Xmx2G -Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/modules/endorsed \
                  -Djavax.xml.accessExternalStylesheet=all \
@@ -333,6 +343,10 @@ if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
   export CTS_ANT_OPTS="-Djavax.xml.accessExternalStylesheet=all \
                  -Djavax.xml.accessExternalSchema=all \
      -Djavax.xml.accessExternalDTD=file,http"
+elif [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]]; then
+  export CTS_ANT_OPTS="-Djavax.xml.accessExternalStylesheet=all \
+                   -Djavax.xml.accessExternalSchema=all \
+       -Djavax.xml.accessExternalDTD=file,http"
 else
   export CTS_ANT_OPTS="-Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/modules/endorsed \
                  -Djavax.xml.accessExternalStylesheet=all \
