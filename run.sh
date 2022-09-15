@@ -55,7 +55,6 @@ pkill -KILL -f glassfish
 if [ -z "$JAVA_HOME" ]; then
   export JAVA_HOME=`readlink -f /usr/bin/java | sed  "s:\(/jre\)\?/bin/java::"`
 fi
-echo "Current Java_HOME: ${JAVA_HOME}"
 if [ -z "$SKIP_TCK" ]; then
     # clean cts directory
     rm -rf $CTS_HOME/*
@@ -74,7 +73,6 @@ if [ -z "$SKIP_TCK" ]; then
       cp patch/run_jakartaeetck.sh $WORKSPACE/docker/
     fi;
 fi
-echo "Current Java_HOME: ${JAVA_HOME}"
 # link VI impl
 rm -rf $WORKSPACE/bin/xml/impl/payara
 ln -s $SCRIPTPATH/cts-impl $WORKSPACE/bin/xml/impl/payara
@@ -113,7 +111,7 @@ export GF_VI_TOPLEVEL_DIR=payara6
 export DERBY_URL
 export EJBTIMER_DERBY_SQL
 export JSR352_DERBY_SQL
-echo "Current Java_HOME: ${JAVA_HOME}"
+
 TEST_SUITE=`echo "$1" | tr '/' '_'`
 
 # (ENV) SKIP_TEST - if just testing the script
