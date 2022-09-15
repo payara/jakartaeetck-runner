@@ -62,6 +62,7 @@ if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
 fi
 
 if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]]; then
+  export JAVA_HOME=${JDK11_HOME}
   export PATH=$JAVA_HOME/bin:$PATH
   export ANT_OPTS="-Xmx2G \
                  -Djavax.xml.accessExternalStylesheet=all \
@@ -72,6 +73,7 @@ if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]]; then
                  -Djavax.xml.accessExternalSchema=all \
      -Djavax.xml.accessExternalDTD=file,http"
 elif [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]]; then
+  export JAVA_HOME=${JDK17_HOME}
   export PATH=$JAVA_HOME/bin:$PATH
   export ANT_OPTS="-Xmx2G \
                   -Djavax.xml.accessExternalStylesheet=all \
