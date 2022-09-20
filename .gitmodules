@@ -7,6 +7,9 @@
 [submodule "di/ditck-porting"]
 	path = di/ditck-porting
 	url = https://github.com/payara/ditck-porting
+[submodule "jaxb-tck"]
+	path = jaxb/jaxb-tck
+	url = https://github.com/eclipse-ee4j/jaxb-tck
 [submodule "dsol-tck"]
 	path = dsol/dsol-tck
 	url = https://github.com/eclipse-ee4j/debugging-support-for-other-languages-tck
