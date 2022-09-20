@@ -10,3 +10,6 @@
 [submodule "dsol-tck"]
 	path = dsol/dsol-tck
 	url = https://github.com/eclipse-ee4j/debugging-support-for-other-languages-tck
+[submodule "mail/mail-tck"]
+	path = mail/mail-tck
+	url = https://github.com/payara/mail-tck
