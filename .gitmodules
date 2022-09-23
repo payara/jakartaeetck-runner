@@ -10,3 +10,4 @@
 [submodule "dsol/dsol-tck"]
 	path = dsol/dsol-tck
 	url = https://github.com/eclipse-ee4j/debugging-support-for-other-languages-tck/
+	tag = 1.0.0
