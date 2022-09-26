@@ -1,5 +1,5 @@
 if [ ! -f jakartaeetck.zip ]; then
-  wget --read-timeout=20 https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee10/staged/eftl/jakarta-jakartaeetck-10.0.0.zip -O jakartaeetck.zip
+  wget --read-timeout=20 https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-10.0.0.zip -O jakartaeetck.zip
 fi
 if [ ! -f cdi-tck-4.0.5-dist.zip ]; then
   wget https://download.eclipse.org/ee4j/cdi/4.0/cdi-tck-4.0.5-dist.zip -O cdi-tck-4.0.5-dist.zip
