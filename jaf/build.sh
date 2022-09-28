@@ -35,5 +35,5 @@ fi
 bash -x $WORKSPACE/docker/build_activationtck.sh
 
 # update bundles links upstream
-rm $SCRIPTPATH/../bundles/jakarta-activation-tck-*
-ln -s -t $SCRIPTPATH/../bundles $OUTPUT/*.zip
+#rm $SCRIPTPATH/../bundles/jakarta-activation-tck-*
+#ln -s -t $SCRIPTPATH/../bundles $OUTPUT/*.zip
