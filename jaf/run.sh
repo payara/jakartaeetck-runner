@@ -27,6 +27,17 @@ fi
 
 sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_activationtck.sh"
 
+# fix broken running script
+# add missing argument with path
+sed -i 's/echo "1 /echo "1 html /g' "$WORKSPACE/docker/run_activationtck.sh"
+# create separate directory with pluggability report
+sed -ni 'p; s|mkdir -p $WORKSPACE/results/junitreports|mkdir -p $WORKSPACE/results/junitreports-pluggability|p' "$WORKSPACE/docker/run_activationtck.sh"
+# run the converter again for pluggability report
+sed -ni 'p; s|args.txt $JT_REPORT_DIR $WORKSPACE/results/junitreports/|args.txt ${JT_REPORT_DIR}-Pluggability $WORKSPACE/results/junitreports-pluggability/|p' "$WORKSPACE/docker/run_activationtck.sh"
+# tar both results
+sed -i 's|^tar \(.*\)$|tar \1 ${JT_REPORT_DIR}-Pluggability $WORKSPACE/results/junitreports-pluggability|g' "$WORKSPACE/docker/run_activationtck.sh"
+
+
 bash -x $WORKSPACE/docker/run_activationtck.sh | tee $WORKSPACE/bv.log
 
 if [ ! -d "$SCRIPTPATH/../results" ]; then
@@ -36,4 +47,4 @@ fi
 TIMESTAMP=`date -Iminutes | tr -d :`
 report=$SCRIPTPATH/../results/jaf-$TIMESTAMP.tar.gz
 echo Creating report $report
-tar zcf $report $WORKSPACE/activation-tck/JTreport/ $SCRIPTPATH/payara6/glassfish/domains/domain1/logs
+tar zcf $report $WORKSPACE/activation-tck/JTreport/ $WORKSPACE/activation-tck/JTreport-Pluggability/ $WORKSPACE/results $SCRIPTPATH/payara6/glassfish/domains/domain1/logs
