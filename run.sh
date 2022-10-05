@@ -55,7 +55,6 @@ pkill -KILL -f glassfish
 if [ -z "$JAVA_HOME" ]; then
   export JAVA_HOME=`readlink -f /usr/bin/java | sed  "s:\(/jre\)\?/bin/java::"`
 fi
-
 if [ -z "$SKIP_TCK" ]; then
     # clean cts directory
     rm -rf $CTS_HOME/*
@@ -74,7 +73,6 @@ if [ -z "$SKIP_TCK" ]; then
       cp patch/run_jakartaeetck.sh $WORKSPACE/docker/
     fi;
 fi
-
 # link VI impl
 rm -rf $WORKSPACE/bin/xml/impl/payara
 ln -s $SCRIPTPATH/cts-impl $WORKSPACE/bin/xml/impl/payara
