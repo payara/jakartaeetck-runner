@@ -73,6 +73,10 @@ if [ -z "$SKIP_TCK" ]; then
       echo "Replacing runner script with patched one"
       cp patch/run_jakartaeetck.sh $WORKSPACE/docker/
     fi;
+
+    # Copy patched ant_sun.jar
+    echo "Replacing ant_sun.jar with patched one"
+    cp patch/ant_sun.jar $CTS_HOME/jakartaeetck/lib/ant_sun.jar
 fi
 
 # link VI impl
