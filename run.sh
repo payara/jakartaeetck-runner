@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2019, 2020 Payara Foundation and/or its affiliates. All rights reserved.
+# Copyright (c) 2019, 2023 Payara Foundation and/or its affiliates. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v. 2.0, which is available at
@@ -73,6 +73,10 @@ if [ -z "$SKIP_TCK" ]; then
       echo "Replacing runner script with patched one"
       cp patch/run_jakartaeetck.sh $WORKSPACE/docker/
     fi;
+
+    # Copy patched ant_sun.jar
+    echo "Replacing ant_sun.jar with patched one"
+    cp patch/ant_sun.jar $CTS_HOME/jakartaeetck/lib/ant_sun.jar
 fi
 
 # link VI impl
