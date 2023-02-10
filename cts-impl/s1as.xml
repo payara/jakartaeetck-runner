@@ -2,7 +2,7 @@
 <!--
 
     Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
-    Copyright (c) [2019-2022] Payara Foundation and/or its affiliates. All rights reserved.
+    Copyright (c) 2019 Payara Foundation and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -1264,7 +1264,7 @@
        
        <antcall target="delete.cert" >
           <param name="cert.alias" value="${client.cert.alias}" />
-          <param name="trustStore" value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.p12"/>
+          <param name="trustStore" value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.jks"/>
           <param name="trustStore.password" value="${keystore.password}" />
        </antcall>
 
@@ -1285,7 +1285,7 @@
             <param name="cert.file" value="${cert.file}" />
             <param name="trustStore.password" value="${keystore.password}" />
             <param name="trustStore" 
-                   value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.p12"/>
+                   value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.jks"/>
         </antcall>
 
          <antcall target="add.cts.cert.into.nss.databases"/>
@@ -1342,7 +1342,7 @@
             <param name="cert.alias" value="${server.cert.alias}" />
             <param name="cert.file" value="${ts.home}/tmp/vi_server_cert.file" />
             <param name="trustStore"
-                  value="${s1as.domain.dir}/${s1as.domain.name}/config/keystore.p12"/>
+                  value="${s1as.domain.dir}/${s1as.domain.name}/config/keystore.jks"/>
             <param name="trustStore.password" value="${keystore.password}" />
         </antcall>
 
@@ -1351,7 +1351,7 @@
             <param name="cert.file" value="${ts.home}/tmp/vi_server_cert.file" />
             <param name="trustStore.password" value="${keystore.password}" />
             <param name="trustStore"
-                   value="${ri.domain.dir}/${ri.domain.name}/config/cacerts.p12"/>
+                   value="${ri.domain.dir}/${ri.domain.name}/config/cacerts.jks"/>
          </antcall>
 
          <antcall target="import.into.nss.databases" />
