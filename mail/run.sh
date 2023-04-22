@@ -28,6 +28,11 @@ fi
 # Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara6
 sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_mailtck.sh"
 
+# fix broken running script - paths to JTreport
+sed -i 's/echo "1 mail-tck $HOST"/echo "1 html $HOST"/g' "$WORKSPACE/docker/run_mailtck.sh"
+sed -i 's#$WORKSPACE/JTreport/mail-tck#$WORKSPACE/mail-tck/JTreport#g' "$WORKSPACE/docker/run_mailtck.sh"
+sed -i 's#$WORKSPACE/JTreport#$WORKSPACE/mail-tck/JTreport#g' "$WORKSPACE/docker/run_mailtck.sh"
+
 # Replace default download and unzip location to workspace rather than .
 sed -i 's/-O latest-glassfish\.zip/-O ${WORKSPACE}\/latest-glassfish\.zip/g' "$WORKSPACE/docker/run_mailtck.sh"
 sed -i 's/unzip -q -o latest-glassfish\.zip/unzip -q -o ${WORKSPACE}\/latest-glassfish\.zip -d ${WORKSPACE}/g' "$WORKSPACE/docker/run_mailtck.sh"
@@ -60,6 +65,7 @@ if [ -z "$JAMES_CONTAINER" ]; then
     docker exec -it james-mail /bin/bash -c /root/create_users.sh
 fi
 
+echo "****** Running docker/run_mailtck.sh"
 bash -x $WORKSPACE/docker/run_mailtck.sh | tee $WORKSPACE/mail.log
 
 # Stop the Mail container
