@@ -88,3 +88,7 @@ TIMESTAMP=`date -Iminutes | tr -d :`
 report=$SCRIPTPATH/../results/mail-$TIMESTAMP.tar.gz
 echo Creating report $report
 tar zcf $report $WORKSPACE/payara6/glassfish/domains/domain1/logs
+
+# generate stage log
+CTS_HOME=$WORKSPACE
+make_stage_log mail mail
