@@ -28,10 +28,19 @@ fi
 # Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara6
 sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_mailtck.sh"
 
-# fix broken running script - paths to JTreport
+# fix broken running script - paths to JTreport and JTwork
 sed -i 's/echo "1 mail-tck $HOST"/echo "1 html $HOST"/g' "$WORKSPACE/docker/run_mailtck.sh"
 sed -i 's#$WORKSPACE/JTreport/mail-tck#$WORKSPACE/mail-tck/JTreport#g' "$WORKSPACE/docker/run_mailtck.sh"
 sed -i 's#$WORKSPACE/JTreport#$WORKSPACE/mail-tck/JTreport#g' "$WORKSPACE/docker/run_mailtck.sh"
+sed -i 's#$WORKSPACE/JTwork/mail-tck#$WORKSPACE/mail-tck/JTwork#g' "$WORKSPACE/docker/run_mailtck.sh"
+sed -i 's#$WORKSPACE/JTwork#$WORKSPACE/mail-tck/JTwork#g' "$WORKSPACE/docker/run_mailtck.sh"
+
+# create path to junitreports-pluggability
+sed -i 's#^\(mkdir -p $WORKSPACE/results/junitreports/\)#\1\nmkdir -p $WORKSPACE/results/junitreports-pluggability/#g' "$WORKSPACE/docker/run_mailtck.sh"
+# run JTReportParser also for JTreport-Pluggability
+sed -i 's#^\(.*\)\(JTReportParser.jar\)\(.*\)#\1\2\3\n\1\2 $WORKSPACE/args.txt $WORKSPACE/mail-tck/JTreport-Pluggability $WORKSPACE/results/junitreports-pluggability/#g' "$WORKSPACE/docker/run_mailtck.sh"
+# add pluggability results to the final tar
+sed -i 's#^\(tar .*\)\(mail-tck-results.tar.gz\)\(.*\)\(JTreport\)\(.*\)\(junitreports\)/#\1\2\3\4\5\6 $WORKSPACE/mail-tck/JTreport-Pluggability $WORKSPACE/results/junitreports-pluggability/#g' "$WORKSPACE/docker/run_mailtck.sh"
 
 # Replace default download and unzip location to workspace rather than .
 sed -i 's/-O latest-glassfish\.zip/-O ${WORKSPACE}\/latest-glassfish\.zip/g' "$WORKSPACE/docker/run_mailtck.sh"
