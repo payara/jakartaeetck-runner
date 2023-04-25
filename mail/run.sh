@@ -90,5 +90,10 @@ echo Creating report $report
 tar zcf $report $WORKSPACE/payara6/glassfish/domains/domain1/logs
 
 # generate stage log
-CTS_HOME=$WORKSPACE
-make_stage_log mail mail
+cat > $SCRIPTPATH/../stage_mail << EOF
+### mail
+
+\`\`\`
+`sed -n '/Completed running/,+4 p' $WORKSPACE/mail.log`
+\`\`\`
+EOF
