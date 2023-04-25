@@ -355,7 +355,7 @@ else
 fi
 
 if [[ "$PROFILE" == "web" || "$PROFILE" == "WEB" ]];then
-  KEYWORDS="javaee_web_profile|jacc_web_profile|jaspic_web_profile|javamail_web_profile|connector_web_profile"
+   KEYWORDS="javaee_web_profile|jacc_web_profile|jaspic_web_profile|javamail_web_profile|connector_web_profile|jaxrs|jaxrs_web_profile"
 fi
 
 if [ -z "${vehicle}" ];then
