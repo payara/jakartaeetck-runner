@@ -28,6 +28,20 @@ fi
 # Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara6
 sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_mailtck.sh"
 
+# fix broken running script - paths to JTreport and JTwork
+sed -i 's/echo "1 mail-tck $HOST"/echo "1 html $HOST"/g' "$WORKSPACE/docker/run_mailtck.sh"
+sed -i 's#$WORKSPACE/JTreport/mail-tck#$WORKSPACE/mail-tck/JTreport#g' "$WORKSPACE/docker/run_mailtck.sh"
+sed -i 's#$WORKSPACE/JTreport#$WORKSPACE/mail-tck/JTreport#g' "$WORKSPACE/docker/run_mailtck.sh"
+sed -i 's#$WORKSPACE/JTwork/mail-tck#$WORKSPACE/mail-tck/JTwork#g' "$WORKSPACE/docker/run_mailtck.sh"
+sed -i 's#$WORKSPACE/JTwork#$WORKSPACE/mail-tck/JTwork#g' "$WORKSPACE/docker/run_mailtck.sh"
+
+# create path to junitreports-pluggability
+sed -i 's#^\(mkdir -p $WORKSPACE/results/junitreports/\)#\1\nmkdir -p $WORKSPACE/results/junitreports-pluggability/#g' "$WORKSPACE/docker/run_mailtck.sh"
+# run JTReportParser also for JTreport-Pluggability
+sed -i 's#^\(.*\)\(JTReportParser.jar\)\(.*\)#\1\2\3\n\1\2 $WORKSPACE/args.txt $WORKSPACE/mail-tck/JTreport-Pluggability $WORKSPACE/results/junitreports-pluggability/#g' "$WORKSPACE/docker/run_mailtck.sh"
+# add pluggability results to the final tar
+sed -i 's#^\(tar .*\)\(mail-tck-results.tar.gz\)\(.*\)\(JTreport\)\(.*\)\(junitreports\)/#\1\2\3\4\5\6 $WORKSPACE/mail-tck/JTreport-Pluggability $WORKSPACE/results/junitreports-pluggability/#g' "$WORKSPACE/docker/run_mailtck.sh"
+
 # Replace default download and unzip location to workspace rather than .
 sed -i 's/-O latest-glassfish\.zip/-O ${WORKSPACE}\/latest-glassfish\.zip/g' "$WORKSPACE/docker/run_mailtck.sh"
 sed -i 's/unzip -q -o latest-glassfish\.zip/unzip -q -o ${WORKSPACE}\/latest-glassfish\.zip -d ${WORKSPACE}/g' "$WORKSPACE/docker/run_mailtck.sh"
@@ -60,6 +74,7 @@ if [ -z "$JAMES_CONTAINER" ]; then
     docker exec -it james-mail /bin/bash -c /root/create_users.sh
 fi
 
+echo "****** Running docker/run_mailtck.sh"
 bash -x $WORKSPACE/docker/run_mailtck.sh | tee $WORKSPACE/mail.log
 
 # Stop the Mail container
@@ -73,3 +88,12 @@ TIMESTAMP=`date -Iminutes | tr -d :`
 report=$SCRIPTPATH/../results/mail-$TIMESTAMP.tar.gz
 echo Creating report $report
 tar zcf $report $WORKSPACE/payara6/glassfish/domains/domain1/logs
+
+# generate stage log
+cat > $SCRIPTPATH/../stage_mail << EOF
+### mail
+
+\`\`\`
+`sed -n '/Completed running/,+4 p' $WORKSPACE/mail.log`
+\`\`\`
+EOF
