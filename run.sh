@@ -125,8 +125,8 @@ export GF_VI_BUNDLE_URL=$PAYARA_URL
 export PAYARA_VERSION=$PAYARA_VERSION
 export GF_VI_TOPLEVEL_DIR=payara5
 export DERBY_URL
-export EJBTIMER_DERBY_SQL
-export JSR352_DERBY_SQL
+export EJBTIMER_DERBY_SQL_PATH=./bundles/ejbtimer_derby.sql
+export JSR352_DERBY_SQL_PATH=./bundles/jsr352-derby.sql
 
 TEST_SUITE=`echo "$1" | tr '/' '_'`
 
