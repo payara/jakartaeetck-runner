@@ -417,8 +417,17 @@ echo '};' >> ${VI_SERVER_POLICY_FILE}
 
 VI_APPCLIENT_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/appclient/client.policy
 echo 'grant {' >> ${VI_APPCLIENT_POLICY_FILE}
-echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_APPCLIENT_POLICY_FILE}
-echo 'permission "java.lang.RuntimePermission" "getenv.*";' >> ${VI_APPCLIENT_POLICY_FILE}
+echo 'permission java.security.AllPermission;' >> ${VI_APPCLIENT_POLICY_FILE}
+# If anybody want to continue in specifying all permissions, this is incomplete list:
+# echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_APPCLIENT_POLICY_FILE}
+# echo 'permission "java.lang.RuntimePermission" "getenv.*";' >> ${VI_APPCLIENT_POLICY_FILE}
+# echo 'permission "java.lang.RuntimePermission" "getClassLoader";' >> ${VI_APPCLIENT_POLICY_FILE}
+# echo 'permission "java.lang.RuntimePermission" "createClassLoader";' >> ${VI_APPCLIENT_POLICY_FILE}
+# echo 'permission "java.lang.RuntimePermission" "setContextClassLoader";' >> ${VI_APPCLIENT_POLICY_FILE}
+# echo 'permission "java.lang.RuntimePermission" "setIO";' >> ${VI_APPCLIENT_POLICY_FILE}
+# echo 'permission "java.lang.RuntimePermission" "accessDeclaredMembers";' >> ${VI_APPCLIENT_POLICY_FILE}
+# echo 'permission "java.lang.RuntimePermission" "getProtectionDomain";' >> ${VI_APPCLIENT_POLICY_FILE}
+# echo 'permission "java.util.PropertyPermission" "*", "read, write";' >> ${VI_APPCLIENT_POLICY_FILE}
 echo '};' >> ${VI_APPCLIENT_POLICY_FILE}
 
 mkdir -p ${JT_REPORT_DIR}
