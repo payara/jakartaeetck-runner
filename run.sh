@@ -124,7 +124,7 @@ export DATABASE=JavaDB
 export GF_VI_BUNDLE_URL=$PAYARA_URL
 export PAYARA_VERSION=$PAYARA_VERSION
 export GF_VI_TOPLEVEL_DIR=payara5
-export DERBY_URL
+export DERBY_PATH=./bundles/javadb.zip
 export EJBTIMER_DERBY_SQL_PATH=./bundles/ejbtimer_derby.sql
 export JSR352_DERBY_SQL_PATH=./bundles/jsr352-derby.sql
 

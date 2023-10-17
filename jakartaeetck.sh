@@ -254,7 +254,7 @@ if [ ! -d "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR" ]; then
   exit 1
 fi
 
-wget --progress=bar:force --no-cache $DERBY_URL -O ${CTS_HOME}/javadb.zip
+cp $DERBY_PATH ${CTS_HOME}/javadb.zip
 
 echo "Unzipping JavaDB... "
 unzip -q -o ${CTS_HOME}/javadb.zip -d $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR
