@@ -36,3 +36,16 @@ fi
 sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/build_jaxbtck.sh"
 
 bash -x $WORKSPACE/docker/build_jaxbtck.sh
+
+echo Deleting file due to TCK Challenge: https://github.com/jakartaee/jaxb-tck/issues/82
+# TCK Challenge
+# https://github.com/jakartaee/jaxb-tck/issues/82
+echo "Current path:"
+pwd
+echo "Deleting IDREFS_length006_395 test"
+rm jaxb-tck/xml_schema/tests/xml_schema/msData/datatypes/Facets/Schemas/IDREFS_length006.xsd
+rm jaxb-tck/xml_schema/tests/xml_schema/msData/datatypes/Facets/Schemas/jaxb/IDREFS_length006_395.test.xml
+rm jaxb-tck/xml-binding-tck/tests/xml_schema/msData/datatypes/Facets/Schemas/IDREFS_length006.xsd
+rm jaxb-tck/batch-multiJVM/work/xml_schema/msData/datatypes/Facets/Schemas/jaxb/IDREFS_length006_395_IDREFS_length006_395.jtr
+echo "Preparation completed"
+
