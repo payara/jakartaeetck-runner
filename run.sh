@@ -51,6 +51,13 @@ export WORKSPACE=$CTS_HOME/jakartaeetck
 echo "Cleaning and installing TCK"
 # kill any leftover glassfish/payara instances
 pkill -KILL -f glassfish
+# check the required ports
+echo Checking ports: 8080
+ss -tupanr | grep 8080
+echo Checking ports: 8181
+ss -tupanr | grep 8181
+echo Checking ports: 4848
+ss -tupanr | grep 4848
 
 if [ -z "$JAVA_HOME" ]; then
   export JAVA_HOME=`readlink -f /usr/bin/java | sed  "s:\(/jre\)\?/bin/java::"`
