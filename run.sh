@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2019, 2023 Payara Foundation and/or its affiliates. All rights reserved.
+# Copyright (c) 2019-2023 Payara Foundation and/or its affiliates. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v. 2.0, which is available at
@@ -132,7 +132,17 @@ if [ -z "$SKIP_TEST" ]; then
   echo "Starting test!"
   time bash -x $SCRIPTPATH/jakartaeetck.sh "$@" |& tee $CTS_HOME/$TEST_SUITE.log
   ./asadmin stop-domain
+  # print Payara log
+  echo "***********************************"
+  echo "*            Payara LOGS          *"
+  echo "***********************************"
+  cat /home/ubuntu/workspace/TCK-Suite/cts_home/vi/payara6/glassfish/domains/domain1/logs/server.log
+  echo "***********************************"
+  echo "*        End of Payara LOGS       *"
+  echo "***********************************"
 fi
+
+
 # collect results
 
 summary=$CTS_HOME/jakartaeetck-report/${TEST_SUITE}/text/summary.txt
