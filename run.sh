@@ -55,6 +55,9 @@ pkill -KILL -f glassfish
 if [ -z "$JAVA_HOME" ]; then
   export JAVA_HOME=`readlink -f /usr/bin/java | sed  "s:\(/jre\)\?/bin/java::"`
 fi
+echo "Remove trailing / from JAVA_HOME and JDK11_HOME, which causes problems in the TCK script"
+JAVA_HOME=$(echo "${JAVA_HOME}" | sed 's:/$::')
+JDK11_HOME=$(echo "${JDK11_HOME}" | sed 's:/$::')
 
 if [ -z "$SKIP_TCK" ]; then
     # clean cts directory
