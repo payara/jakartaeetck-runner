@@ -50,3 +50,6 @@ TIMESTAMP=`date -Iminutes | tr -d :`
 report=$SCRIPTPATH/../results/jaxb-$TIMESTAMP.xml
 echo Copying report $report
 cp $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml $report
+
+echo "Content of $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml"
+cat $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml
