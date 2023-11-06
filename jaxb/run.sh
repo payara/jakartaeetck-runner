@@ -27,8 +27,10 @@ fi
 
 # Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara6
 sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_jaxbtck.sh"
-sed -i 's:-runtests$:-runtests -excludeList \${WORKSPACE}/batch-multiJVM/work/xml_schema/msData/datatypes/Facets/Schemas/jaxb/IDREFS_length006_395_IDREFS_length006_395.jtr:g' "$WORKSPACE/docker/run_jaxbtck.sh"
-sed -i 's/xml-binding-tck\*.zip -d /xml-binding-tck*.zip -x "*IDREFS_length006*" -d /g' "$WORKSPACE/docker/run_jaxbtck.sh"
+
+# TCK Challenge
+# https://github.com/jakartaee/jaxb-tck/issues/82
+sed -i 's/xml-binding-tck\*.zip -d /xml-binding-tck*.zip -x "*IDREFS_length006*" -x "*NMTOKENS_length006*" -d /g' "$WORKSPACE/docker/run_jaxbtck.sh"
 
 # Make sure the script doesn't unset JAVA_HOME
 if [ -z "$JDK11_HOME" ]; then
