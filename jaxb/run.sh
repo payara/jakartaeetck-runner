@@ -55,3 +55,17 @@ cp $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml $report
 
 echo "Content of $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml"
 cat $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml
+
+# generate stage log
+# Number of Tests Passed = NOT REPORTED BY JAXB
+cat > $SCRIPTPATH/../stage_jaxb << EOF
+### jaxb
+
+\`\`\`
+`sed -n '/<testsuite / p' $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml | sed 's/.* tests="\([0-9]*\)".*/Completed running \1 tests./'`
+`sed -n '/<testsuite / p' $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml | sed 's/.* failures="\([0-9]*\)".*/Number of Tests Failed = \1/'`
+`sed -n '/<testsuite / p' $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml | sed 's/.* errors="\([0-9]*\)".*/Number of Tests with Errors = \1/'`
+`sed -n '/<testsuite / p' $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml | sed 's/.* disabled="\([0-9]*\)".*/Number of Disabled Tests = \1/'`
+`sed -n '/<testsuite / p' $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml | sed 's/.* skipped="\([0-9]*\)".*/Number of Skipped Tests = \1/'`
+\`\`\`
+EOF
