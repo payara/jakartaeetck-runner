@@ -140,7 +140,7 @@ if [ -z "$SKIP_TEST" ]; then
   echo "***********************************"
   echo "*            Payara LOGS          *"
   echo "***********************************"
-  cat /home/ubuntu/workspace/TCK-Suite/cts_home/vi/payara6/glassfish/domains/domain1/logs/server.log
+  cat $CTS_HOME/vi/payara6/glassfish/domains/domain1/logs/server.log
   echo "***********************************"
   echo "*        End of Payara LOGS       *"
   echo "***********************************"
