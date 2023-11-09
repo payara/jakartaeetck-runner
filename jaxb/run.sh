@@ -28,6 +28,10 @@ fi
 # Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara6
 sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_jaxbtck.sh"
 
+# TCK Challenge
+# https://github.com/jakartaee/jaxb-tck/issues/82
+sed -i 's/xml-binding-tck\*.zip -d /xml-binding-tck*.zip -x "*IDREFS_length006*" -x "*NMTOKENS_length006*" -d /g' "$WORKSPACE/docker/run_jaxbtck.sh"
+
 # Make sure the script doesn't unset JAVA_HOME
 if [ -z "$JDK11_HOME" ]; then
   export JDK11_HOME=${JAVA_HOME}
@@ -48,3 +52,20 @@ TIMESTAMP=`date -Iminutes | tr -d :`
 report=$SCRIPTPATH/../results/jaxb-$TIMESTAMP.xml
 echo Copying report $report
 cp $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml $report
+
+echo "Content of $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml"
+cat $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml
+
+# generate stage log
+# Number of Tests Passed = NOT REPORTED BY JAXB
+cat > $SCRIPTPATH/../stage_jaxb << EOF
+### jaxb
+
+\`\`\`
+`sed -n '/<testsuite / p' $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml | sed 's/.* tests="\([0-9]*\)".*/Completed running \1 tests./'`
+`sed -n '/<testsuite / p' $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml | sed 's/.* failures="\([0-9]*\)".*/Number of Tests Failed = \1/'`
+`sed -n '/<testsuite / p' $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml | sed 's/.* errors="\([0-9]*\)".*/Number of Tests with Errors = \1/'`
+`sed -n '/<testsuite / p' $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml | sed 's/.* disabled="\([0-9]*\)".*/Number of Disabled Tests = \1/'`
+`sed -n '/<testsuite / p' $WORKSPACE/results/junitreports/JAXB-TCK-junit-report.xml | sed 's/.* skipped="\([0-9]*\)".*/Number of Skipped Tests = \1/'`
+\`\`\`
+EOF

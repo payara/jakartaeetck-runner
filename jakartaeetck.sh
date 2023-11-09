@@ -290,11 +290,13 @@ fi
 
 wget --progress=bar:force --no-cache $DERBY_URL -O ${CTS_HOME}/javadb.zip
 
-echo -n "Unzipping JavaDB... "
+echo "Unzipping JavaDB..."
 unzip -q -o ${CTS_HOME}/javadb.zip -d $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR
 # apache derby is packed to directory like db-derby-10.14.2.0-bin
 mv $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/db-derby* $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb
 cp $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbytools.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbyshared.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbyclient.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derby.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib
+echo "Additional libs in vi"
+ls -l $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib
 rm ${CTS_HOME}/javadb.zip
 
 wget --progress=bar:force --no-cache $EJBTIMER_DERBY_SQL -O ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/ejbtimer_derby.sql
@@ -457,9 +459,14 @@ echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyi
 echo 'permission java.net.SocketPermission "*", "listen";' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission java.net.SocketPermission "*", "accept";' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission java.io.FilePermission       "<<ALL FILES>>", "write,read";' >> ${VI_SERVER_POLICY_FILE}
-echo 'permission org.apache.derby.shared.common.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_SERVER_POLICY_FILE}
+echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_SERVER_POLICY_FILE}
 echo '};' >> ${VI_SERVER_POLICY_FILE}
 
+VI_APPCLIENT_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/appclient/client.policy
+echo 'grant {' >> ${VI_APPCLIENT_POLICY_FILE}
+echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_APPCLIENT_POLICY_FILE}
+echo 'permission "java.lang.RuntimePermission" "getenv.*";' >> ${VI_APPCLIENT_POLICY_FILE}
+echo '};' >> ${VI_APPCLIENT_POLICY_FILE}
 
 mkdir -p ${JT_REPORT_DIR}
 mkdir -p ${JT_WORK_DIR}
@@ -467,7 +474,17 @@ mkdir -p ${JT_WORK_DIR}
 export JAVA_VERSION=`java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}'`
 echo $JAVA_VERSION > ${JT_REPORT_DIR}/.jdk_version
 
+# For debugging purposes, look at the policies
+#echo "user's java policy"
+#cat ~/.java.policy
+#echo "appclient's java policy"
+#cat ${VI_APPCLIENT_POLICY_FILE}
+#echo "system policy"
+#cat ${JAVA_HOME}/conf/security/java.policy
+
 cd  ${TS_HOME}/bin
+export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${VI_APPCLIENT_POLICY_FILE}"
+# special syntax with "==" replaces system policy file
 ant ${ANT_ARG} config.vi.javadb
 ##### configVI.sh ends here #####
 
