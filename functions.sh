@@ -64,6 +64,11 @@ init_urls () {
     if [ -z "$DERBY_URL" ]; then
         DERBY_URL=$BASE_URL/javadb.zip
     fi
+
+    # set BV_TCK_BUNDLE_URL here!
+    # remove setup from https://github.com/payara/EngineeringJenkinsjobs/blob/dff9a4e26440830394c3dc7f93c701eba8bf1fab/TCK-Suite/Jenkinsfile#L321
+    # remove comment https://github.com/payara/EngineeringJenkinsjobs/blob/dff9a4e26440830394c3dc7f93c701eba8bf1fab/TCK-Suite/Jenkinsfile#L314
+    BV_TCK_BUNDLE_URL=http://download.eclipse.org/ee4j/bean-validation/beanvalidation-tck-dist-2.0.5.zip 
 }
 
 make_stage_log () {
