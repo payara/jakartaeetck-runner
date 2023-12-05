@@ -428,6 +428,7 @@ echo 'permission "java.lang.RuntimePermission" "setIO";' >> ${VI_APPCLIENT_POLIC
 echo 'permission "java.lang.RuntimePermission" "accessDeclaredMembers";' >> ${VI_APPCLIENT_POLICY_FILE}
 echo 'permission "java.lang.RuntimePermission" "getProtectionDomain";' >> ${VI_APPCLIENT_POLICY_FILE}
 echo 'permission "java.util.PropertyPermission" "*", "read, write";' >> ${VI_APPCLIENT_POLICY_FILE}
+echo 'permission "java.io.FilePermission" "*", "execute, delete";' >> ${VI_APPCLIENT_POLICY_FILE}
 echo '};' >> ${VI_APPCLIENT_POLICY_FILE}
 
 mkdir -p ${JT_REPORT_DIR}
@@ -437,7 +438,7 @@ export JAVA_VERSION=`java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}'`
 echo $JAVA_VERSION > ${JT_REPORT_DIR}/.jdk_version
 
 cd  ${TS_HOME}/bin
-export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${VI_APPCLIENT_POLICY_FILE}"
+export ANT_ARG="${ANT_ARG} -Djava.security.manager -Djava.security.policy==${VI_APPCLIENT_POLICY_FILE}"
 ant ${ANT_ARG} config.vi.javadb
 ##### configVI.sh ends here #####
 
