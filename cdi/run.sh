@@ -25,6 +25,7 @@ fi
 
 rm -rf $WORKSPACE/cdi-tck-glassfish-porting
 
+echo "Setting up max.classes.restart"
 if grep "^max.classes.restart=" ${WORKSPACE}/build.properties
 then
   echo "max.classes.restart settings already exists"
@@ -32,7 +33,7 @@ else
   echo "# The restarts can cause issues -- once fixed, remove the max.classes.restart settings" >> ${WORKSPACE}/build.properties
   echo "max.classes.restart=10000" >> ${WORKSPACE}/build.properties
 fi
-read -p "Press any key to resume ..."
+#read -p "Press any key to resume ..."
 
 bash -x $WORKSPACE/docker/run_cditck.sh | tee $WORKSPACE/cdi.log
 
