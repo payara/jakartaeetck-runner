@@ -20,6 +20,16 @@ rm -rf $PORTING/payara5
 
 export WORKSPACE=$SCRIPTPATH/cditck-porting
 export GF_BUNDLE_URL=$PAYARA_URL
+
+echo "Setting up max.classes.restart"
+if grep "^max.classes.restart=" ${WORKSPACE}/build.properties
+then
+  echo "max.classes.restart settings already exists"
+else
+  echo "# The restarts can cause issues -- once fixed, remove the max.classes.restart settings" >> ${WORKSPACE}/build.properties
+  echo "max.classes.restart=10000" >> ${WORKSPACE}/build.properties
+fi
+
 echo Build should download from $GF_BUNDLE_URL
 bash -x $WORKSPACE/docker/build_cditck.sh
 
