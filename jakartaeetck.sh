@@ -411,13 +411,24 @@ fi
 
 VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/server.policy
 echo 'grant {' >> ${VI_SERVER_POLICY_FILE}
+if [ "ejb30/sec" == "${test_suite}" ]; then
+  # ejb30/sec fails with AllPermission
+else
+  echo "Setting AllPermission if not ejb30/sec"
+  echo 'permission java.security.AllPermission;' >> ${VI_SERVER_POLICY_FILE}
+fi
 echo 'permission java.io.FilePermission "${com.sun.aas.instanceRoot}${/}generated${/}policy${/}-", "read,write,execute,delete";' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_SERVER_POLICY_FILE}
 echo '};' >> ${VI_SERVER_POLICY_FILE}
 
 VI_APPCLIENT_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/appclient/client.policy
 echo 'grant {' >> ${VI_APPCLIENT_POLICY_FILE}
-#echo 'permission java.security.AllPermission;' >> ${VI_APPCLIENT_POLICY_FILE}
+if [ "ejb30/sec" == "${test_suite}" ]; then
+  # ejb30/sec fails with AllPermission
+else
+  echo "Setting AllPermission if not ejb30/sec"
+  echo 'permission java.security.AllPermission;' >> ${VI_APPCLIENT_POLICY_FILE}
+fi
 # If anybody want to continue in specifying all permissions, this is incomplete list:
 echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_APPCLIENT_POLICY_FILE}
 echo 'permission "java.lang.RuntimePermission" "getenv.*";' >> ${VI_APPCLIENT_POLICY_FILE}
