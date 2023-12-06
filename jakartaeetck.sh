@@ -413,6 +413,7 @@ VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domai
 echo 'grant {' >> ${VI_SERVER_POLICY_FILE}
 if [ "ejb30/sec" == "${test_suite}" ]; then
   # ejb30/sec fails with AllPermission
+  echo "Not setting AllPermission for ejb30/sec"
 else
   echo "Setting AllPermission if not ejb30/sec"
   echo 'permission java.security.AllPermission;' >> ${VI_SERVER_POLICY_FILE}
@@ -425,6 +426,7 @@ VI_APPCLIENT_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/appcli
 echo 'grant {' >> ${VI_APPCLIENT_POLICY_FILE}
 if [ "ejb30/sec" == "${test_suite}" ]; then
   # ejb30/sec fails with AllPermission
+  echo "Not setting AllPermission for ejb30/sec"
 else
   echo "Setting AllPermission if not ejb30/sec"
   echo 'permission java.security.AllPermission;' >> ${VI_APPCLIENT_POLICY_FILE}
