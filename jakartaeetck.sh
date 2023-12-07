@@ -409,28 +409,28 @@ if [ ! -z "${DATABASE}" ];then
   fi
 fi
 
-echo 'grant {' >> /tmp/allpermission.policy
+echo 'grant {' > /tmp/allpermission.policy
 echo 'permission java.security.AllPermission;' >> /tmp/allpermission.policy
 echo '};' >> /tmp/allpermission.policy
 
 VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/server.policy
 echo 'grant {' >> ${VI_SERVER_POLICY_FILE}
-if [ "ejb30/sec" == "${test_suite}" ] || [ "webservices12" == "${test_suite}" ]; then
+# if [ "ejb30/sec" == "${test_suite}" ] || [ "webservices12" == "${test_suite}" ]; then
   # ejb30/sec fails with AllPermission
-  echo "Setting permissions for ejb30/sec, not AllPermission"
+#   echo "Setting permissions for ejb30/sec, not AllPermission"
   echo 'permission java.io.FilePermission "${com.sun.aas.instanceRoot}${/}generated${/}policy${/}-", "read,write,execute,delete";' >> ${VI_SERVER_POLICY_FILE}
   echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_SERVER_POLICY_FILE}
-else
-  echo "Setting AllPermission if not ejb30/sec"
-  echo 'permission java.security.AllPermission;' >> ${VI_SERVER_POLICY_FILE}
-fi
+# else
+#   echo "Setting AllPermission if not ejb30/sec"
+#   echo 'permission java.security.AllPermission;' >> ${VI_SERVER_POLICY_FILE}
+# fi
 echo '};' >> ${VI_SERVER_POLICY_FILE}
 
 VI_APPCLIENT_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/appclient/client.policy
 echo 'grant {' >> ${VI_APPCLIENT_POLICY_FILE}
-if [ "ejb30/sec" == "${test_suite}" ] || [ "webservices12" == "${test_suite}" ]; then
+#if [ "ejb30/sec" == "${test_suite}" ] || [ "webservices12" == "${test_suite}" ]; then
   # ejb30/sec fails with AllPermission
-  echo "Setting permissions for ejb30/sec, not AllPermission, enumerate the needed ones"
+#   echo "Setting permissions for ejb30/sec, not AllPermission, enumerate the needed ones"
   # If anybody want to continue in specifying all permissions, this is incomplete list:
   echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_APPCLIENT_POLICY_FILE}
   echo 'permission "java.lang.RuntimePermission" "getenv.*";' >> ${VI_APPCLIENT_POLICY_FILE}
@@ -442,10 +442,10 @@ if [ "ejb30/sec" == "${test_suite}" ] || [ "webservices12" == "${test_suite}" ];
   echo 'permission "java.lang.RuntimePermission" "getProtectionDomain";' >> ${VI_APPCLIENT_POLICY_FILE}
   echo 'permission "java.util.PropertyPermission" "*", "read, write";' >> ${VI_APPCLIENT_POLICY_FILE}
   echo 'permission "java.io.FilePermission" "*", "execute, delete";' >> ${VI_APPCLIENT_POLICY_FILE}
-else
-  echo "Setting AllPermission if not ejb30/sec"
-  echo 'permission java.security.AllPermission;' >> ${VI_APPCLIENT_POLICY_FILE}
-fi
+# else
+#   echo "Setting AllPermission if not ejb30/sec"
+#   echo 'permission java.security.AllPermission;' >> ${VI_APPCLIENT_POLICY_FILE}
+# fi
 echo '};' >> ${VI_APPCLIENT_POLICY_FILE}
 
 mkdir -p ${JT_REPORT_DIR}
@@ -455,8 +455,11 @@ export JAVA_VERSION=`java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}'`
 echo $JAVA_VERSION > ${JT_REPORT_DIR}/.jdk_version
 
 cd  ${TS_HOME}/bin
+# permit everything for preparational ant
+export ANT_ARG="${ANT_ARG} -Djava.security.manager -Djava.security.policy==/tmp/allpermission.policy"
+# configure ant client to use client policy file
 export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${VI_APPCLIENT_POLICY_FILE}"
-ant ${ANT_ARG} -Djava.security.manager -Djava.security.policy==/tmp/allpermission.policy config.vi.javadb
+ant ${ANT_ARG} config.vi.javadb
 ##### configVI.sh ends here #####
 
 ### populateMailbox for suites using mail server - Start ###
