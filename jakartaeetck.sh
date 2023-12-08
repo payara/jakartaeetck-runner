@@ -429,7 +429,7 @@ echo '};' >> ${VI_SERVER_POLICY_FILE}
 
 VI_APPCLIENT_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/appclient/client.policy
 echo 'grant {' >> ${VI_APPCLIENT_POLICY_FILE}
-if [ "compat12" == "${test_suite}" ] || [ "connector" == "${test_suite}" ] || [ "ejb" == "${test_suite}" ] || [ "ejb30/sec" == "${test_suite}" ] || [ "integration" == "${test_suite}" ] || [ "interop_forward" == "${test_suite}" ] || [ "interop_reverse" == "${test_suite}" ] || [ "jacc" == "${test_suite}" ] || [ "jaspic" == "${test_suite}" ] || [ "jaxrpc" == "${test_suite}" ] || [ "jaxrs" == "${test_suite}" ] || [ "jbatch" == "${test_suite}" ] || [ "jsp" == "${test_suite}" ] || [ "securityapi" == "${test_suite}" ] || [ "servlet" == "${test_suite}" ] || [ "webservices" == "${test_suite}" ] || [ "webservices12" == "${test_suite}" ] || [ "websocket" == "${test_suite}" ]; then
+if [ "compat12" == "${test_suite}" ] || [ "connector" == "${test_suite}" ] || [ "ejb" == "${test_suite}" ] || [ "ejb30/sec" == "${test_suite}" ] || [ "integration" == "${test_suite}" ] || [ "interop_forward" == "${test_suite}" ] || [ "interop_reverse" == "${test_suite}" ] || [ "jacc" == "${test_suite}" ] || [ "jaspic" == "${test_suite}" ] || [ "jaxrpc" == "${test_suite}" ] || [ "jaxrs" == "${test_suite}" ] || [ "jbatch" == "${test_suite}" ] || [ "jsp" == "${test_suite}" ] || [ "securityapi" == "${test_suite}" ] || [ "servlet" == "${test_suite}" ] || [ "webservices" == "${test_suite}" ] || [ "websocket" == "${test_suite}" ]; then
   # ejb30/sec fails with AllPermission
   echo "Setting specific permissions, not AllPermission"
   # If anybody want to continue in specifying all permissions, this is incomplete list:
@@ -459,8 +459,8 @@ cd  ${TS_HOME}/bin
 # permit everything for preparational ant
 export ANT_ARG="${ANT_ARG} -Djava.security.manager -Djava.security.policy==${ALLPERMISSION_POLICY_FILE}"
 # configure ant client to use client policy file
-#export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${VI_APPCLIENT_POLICY_FILE}"
-export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${ALLPERMISSION_POLICY_FILE}"
+export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${VI_APPCLIENT_POLICY_FILE}"
+#export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${ALLPERMISSION_POLICY_FILE}"
 ant ${ANT_ARG} config.vi.javadb
 echo "config vi ends here"
 ##### configVI.sh ends here #####
