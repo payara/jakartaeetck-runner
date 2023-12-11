@@ -429,10 +429,12 @@ echo '};' >> ${VI_SERVER_POLICY_FILE}
 
 VI_APPCLIENT_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/appclient/client.policy
 echo 'grant {' >> ${VI_APPCLIENT_POLICY_FILE}
-if [ "compat12" == "${test_suite}" ] || [ "connector" == "${test_suite}" ] || [ "ejb" == "${test_suite}" ] || [ "ejb30/sec" == "${test_suite}" ] || [ "integration" == "${test_suite}" ] || [ "jacc" == "${test_suite}" ] || [ "jaspic" == "${test_suite}" ] || [ "jaxrpc" == "${test_suite}" ] || [ "jaxrs" == "${test_suite}" ] || [ "jbatch" == "${test_suite}" ] || [ "jsp" == "${test_suite}" ] || [ "securityapi" == "${test_suite}" ] || [ "servlet" == "${test_suite}" ] || [ "webservices" == "${test_suite}" ] || [ "websocket" == "${test_suite}" ]; then
+if [ "compat12" == "${test_suite}" ] || [ "connector" == "${test_suite}" ] || [ "ejb" == "${test_suite}" ] || [ "ejb30/sec" == "${test_suite}" ] || [ "integration" == "${test_suite}" ] || [ "jacc" == "${test_suite}" ] || [ "jaspic" == "${test_suite}" ] || [ "jaxrpc" == "${test_suite}" ] || [ "jaxrs" == "${test_suite}" ] || [ "jbatch" == "${test_suite}" ] || [ "jsp" == "${test_suite}" ] || [ "securityapi" == "${test_suite}" ] || [ "servlet" == "${test_suite}" ] || [ "webservices" == "${test_suite}" ] || [ "websocket" == "${test_suite}" ] ]; then
+  #  || [ "interop" == "${test_suite}"
   # ejb30/sec fails with AllPermission
   echo "Setting specific permissions, not AllPermission"
   # If anybody want to continue in specifying all permissions, this is incomplete list:
+  echo 'permission "java.io.FilePermission" "<<ALL FILES>>", "execute, delete";' >> ${VI_APPCLIENT_POLICY_FILE}
   echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_APPCLIENT_POLICY_FILE}
   echo 'permission "java.lang.RuntimePermission" "getenv.*";' >> ${VI_APPCLIENT_POLICY_FILE}
   echo 'permission "java.lang.RuntimePermission" "getClassLoader";' >> ${VI_APPCLIENT_POLICY_FILE}
@@ -442,7 +444,6 @@ if [ "compat12" == "${test_suite}" ] || [ "connector" == "${test_suite}" ] || [ 
   echo 'permission "java.lang.RuntimePermission" "accessDeclaredMembers";' >> ${VI_APPCLIENT_POLICY_FILE}
   echo 'permission "java.lang.RuntimePermission" "getProtectionDomain";' >> ${VI_APPCLIENT_POLICY_FILE}
   echo 'permission "java.util.PropertyPermission" "*", "read, write";' >> ${VI_APPCLIENT_POLICY_FILE}
-  echo 'permission "java.io.FilePermission" "*", "execute, delete";' >> ${VI_APPCLIENT_POLICY_FILE}
 else
   echo "Setting AllPermission"
   echo 'permission java.security.AllPermission;' >> ${VI_APPCLIENT_POLICY_FILE}
@@ -456,12 +457,12 @@ export JAVA_VERSION=`java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}'`
 echo $JAVA_VERSION > ${JT_REPORT_DIR}/.jdk_version
 
 cd  ${TS_HOME}/bin
-# permit everything for preparational ant
-export ANT_ARG="${ANT_ARG} -Djava.security.manager -Djava.security.policy==${ALLPERMISSION_POLICY_FILE}"
+# permit everything for configuration ant runs
+export CONFIG_ARG="${ANT_ARG} -Djava.security.manager -Djava.security.policy==${ALLPERMISSION_POLICY_FILE}"
 # configure ant client to use client policy file
 export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${VI_APPCLIENT_POLICY_FILE}"
 #export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${ALLPERMISSION_POLICY_FILE}"
-ant ${ANT_ARG} config.vi.javadb
+ant ${CONFIG_ARG} ${ANT_ARG} config.vi.javadb
 echo "config vi ends here"
 ##### configVI.sh ends here #####
 
@@ -476,13 +477,13 @@ fi
 configRI() {
   ##### configRI.sh ends here #####
   cd  ${TS_HOME}/bin
-  ant ${ANT_ARG} config.ri
-  ant ${ANT_ARG} enable.csiv2
+  ant ${CONFIG_ARG} ${ANT_ARG} config.ri
+  ant ${CONFIG_ARG} ${ANT_ARG} enable.csiv2
   ##### configRI.sh ends here #####
 
   ##### addInteropCerts.sh starts here #####
   cd ${TS_HOME}/bin
-  ant ${ANT_ARG} add.interop.certs
+  ant ${CONFIG_ARG} ${ANT_ARG} add.interop.certs
   ##### addInteropCerts.sh ends here #####
 
   ### restartRI.sh starts here #####
@@ -509,7 +510,7 @@ fi
 
 if [[ "securityapi" == ${test_suite} ]]; then
   cd $TS_HOME/bin;
-  ant ${ANT_ARG} init.ldap
+  ant ${CONFIG_ARG} ${ANT_ARG} init.ldap
   echo "LDAP initilized for securityapi"
 fi
 
@@ -580,9 +581,9 @@ else
 fi
   # Generate combined report for both the runs.
 if [[ "jbatch" == ${test_suite} ]]; then
-  ant -Dreport.for=com/ibm/jbatch/tck -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch report
+  ant ${CONFIG_ARG} -Dreport.for=com/ibm/jbatch/tck -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch report
 else  
-  ant -Dreport.for=com/sun/ts/tests/$test_suite -Dreport.dir=${JT_REPORT_DIR}/${TEST_SUITE} -Dwork.dir=${JT_WORK_DIR}/${TEST_SUITE} report
+  ant ${CONFIG_ARG} -Dreport.for=com/sun/ts/tests/$test_suite -Dreport.dir=${JT_REPORT_DIR}/${TEST_SUITE} -Dwork.dir=${JT_WORK_DIR}/${TEST_SUITE} report
 fi
 
 fi
