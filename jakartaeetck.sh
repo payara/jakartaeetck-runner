@@ -444,6 +444,10 @@ if [ "compat12" == "${test_suite}" ] || [ "connector" == "${test_suite}" ] || [ 
   echo 'permission "java.lang.RuntimePermission" "accessDeclaredMembers";' >> ${VI_APPCLIENT_POLICY_FILE}
   echo 'permission "java.lang.RuntimePermission" "getProtectionDomain";' >> ${VI_APPCLIENT_POLICY_FILE}
   echo 'permission "java.util.PropertyPermission" "*", "read, write";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "accessUserInformation";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "shutdownHooks";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "org.glassfish.pfl.basic.reflection.BridgePermission" "getBridge";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "javax.xml.ws.WebServicePermission" "ConnectorPermission1_name2");' >> ${VI_APPCLIENT_POLICY_FILE}
 else
   echo "Setting AllPermission"
   echo 'permission java.security.AllPermission;' >> ${VI_APPCLIENT_POLICY_FILE}
