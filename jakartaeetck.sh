@@ -415,6 +415,7 @@ echo 'permission java.security.AllPermission;' >> ${ALLPERMISSION_POLICY_FILE}
 echo '};' >> ${ALLPERMISSION_POLICY_FILE}
 
 VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/server.policy
+echo '/* from jakartaeetck.sh for TCK tests */' >> ${VI_SERVER_POLICY_FILE}
 echo 'grant {' >> ${VI_SERVER_POLICY_FILE}
 # if [ "ejb30/sec" == "${test_suite}" ] || [ "webservices12" == "${test_suite}" ]; then
   #ejb30/sec fails with AllPermission
