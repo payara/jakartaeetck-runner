@@ -59,6 +59,8 @@ init_urls () {
     # set *_TCK_BUNDLE_URL here!
     # remove setup from https://github.com/payara/EngineeringJenkinsjobs/blob/dff9a4e26440830394c3dc7f93c701eba8bf1fab/TCK-Suite/Jenkinsfile#L321
     # remove comment https://github.com/payara/EngineeringJenkinsjobs/blob/dff9a4e26440830394c3dc7f93c701eba8bf1fab/TCK-Suite/Jenkinsfile#L314
+    TCK_URL=https://download.eclipse.org/jakartaee/platform/8/jakarta-jakartaeetck-8.0.3.zip
+
     BV_TCK_BUNDLE_URL=http://download.eclipse.org/ee4j/bean-validation/beanvalidation-tck-dist-2.0.5.zip 
 
     CDI_TCK_URL=http://download.eclipse.org/ee4j/cdi/cdi-tck-2.0.6-dist.zip

@@ -71,8 +71,9 @@ if [ -z "$SKIP_TCK" ]; then
     rm -rf $CTS_HOME/*
     # download and unzip TCK
     TCK_TEMP=`mktemp --suffix .zip`
+    echo "Downloading TCK from $TCK_URL"
     curl $TCK_URL -o $TCK_TEMP
-    echo -n "Unzipping TCK... "
+    echo -n "Unzipping TCK to $CTS_HOME... "
     unzip -q -d $CTS_HOME $TCK_TEMP
     rm $TCK_TEMP
     cp $WORKSPACE/bin/ts.jte $CTS_HOME/ts.jte.dist
