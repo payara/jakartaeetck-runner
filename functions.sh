@@ -49,27 +49,24 @@ init_urls () {
     if [ -z "$TCK_URL" ]; then
         TCK_URL=$BASE_URL/jakartaeetck.zip
     fi
-    if [ -z "$GLASSFISH_URL" ]; then
-        GLASSFISH_URL=$BASE_URL/latest-glassfish.zip
-    fi
     if [ -z "$PAYARA_URL" ]; then
         PAYARA_URL=$BASE_URL/payara-prerelease.zip
-    fi
-    if [ -z "$CDI_TCK_URL" ]; then
-        CDI_TCK_URL=$BASE_URL/cdi-tck-2.0.6-dist.zip
-    fi
-    if [ -z "$DI_TCK_URL" ]; then
-        DI_TCK_URL=$BASE_URL/jakarta.inject-tck-1.0-bin.zip
     fi
     if [ -z "$DERBY_URL" ]; then
         DERBY_URL=$BASE_URL/javadb.zip
     fi
-    if [ -z "$EJBTIMER_DERBY_SQL" ]; then
-        EJBTIMER_DERBY_SQL=$BASE_URL/ejbtimer_derby.sql
-    fi
-    if [ -z "$JSR352_DERBY_SQL" ]; then
-        JSR352_DERBY_SQL=$BASE_URL/jsr352-derby.sql
-    fi      
+
+    # set *_TCK_BUNDLE_URL here!
+    # remove setup from https://github.com/payara/EngineeringJenkinsjobs/blob/dff9a4e26440830394c3dc7f93c701eba8bf1fab/TCK-Suite/Jenkinsfile#L321
+    # remove comment https://github.com/payara/EngineeringJenkinsjobs/blob/dff9a4e26440830394c3dc7f93c701eba8bf1fab/TCK-Suite/Jenkinsfile#L314
+    TCK_URL=https://download.eclipse.org/jakartaee/platform/8/jakarta-jakartaeetck-8.0.3.zip
+
+    BV_TCK_BUNDLE_URL=http://download.eclipse.org/ee4j/bean-validation/beanvalidation-tck-dist-2.0.5.zip 
+
+    CDI_TCK_URL=http://download.eclipse.org/ee4j/cdi/cdi-tck-2.0.6-dist.zip
+    DI_TCK_URL=http://download.eclipse.org/ee4j/cdi/jakarta.inject-tck-1.0-bin.zip
+    
+    GLASSFISH_URL=https://download.eclipse.org/glassfish/glassfish-5.1.0.zip
 }
 
 make_stage_log () {

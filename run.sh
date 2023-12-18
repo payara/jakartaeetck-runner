@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2019, 2023 Payara Foundation and/or its affiliates. All rights reserved.
+# Copyright (c) 2019-2023 Payara Foundation and/or its affiliates. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v. 2.0, which is available at
@@ -51,18 +51,29 @@ export WORKSPACE=$CTS_HOME/jakartaeetck
 echo "Cleaning and installing TCK"
 # kill any leftover glassfish/payara instances
 pkill -KILL -f glassfish
+# check the required ports
+echo Checking ports: 8080
+ss -tupanr | grep 8080
+echo Checking ports: 8181
+ss -tupanr | grep 8181
+echo Checking ports: 4848
+ss -tupanr | grep 4848
 
 if [ -z "$JAVA_HOME" ]; then
   export JAVA_HOME=`readlink -f /usr/bin/java | sed  "s:\(/jre\)\?/bin/java::"`
 fi
+echo "Remove trailing / from JAVA_HOME and JDK11_HOME, which causes problems in the TCK script"
+JAVA_HOME=$(echo "${JAVA_HOME}" | sed 's:/$::')
+JDK11_HOME=$(echo "${JDK11_HOME}" | sed 's:/$::')
 
 if [ -z "$SKIP_TCK" ]; then
     # clean cts directory
     rm -rf $CTS_HOME/*
     # download and unzip TCK
     TCK_TEMP=`mktemp --suffix .zip`
+    echo "Downloading TCK from $TCK_URL"
     curl $TCK_URL -o $TCK_TEMP
-    echo -n "Unzipping TCK... "
+    echo -n "Unzipping TCK to $CTS_HOME... "
     unzip -q -d $CTS_HOME $TCK_TEMP
     rm $TCK_TEMP
     cp $WORKSPACE/bin/ts.jte $CTS_HOME/ts.jte.dist
@@ -124,9 +135,9 @@ export DATABASE=JavaDB
 export GF_VI_BUNDLE_URL=$PAYARA_URL
 export PAYARA_VERSION=$PAYARA_VERSION
 export GF_VI_TOPLEVEL_DIR=payara5
-export DERBY_URL
-export EJBTIMER_DERBY_SQL
-export JSR352_DERBY_SQL
+export DERBY_PATH=./bundles/javadb.zip
+export EJBTIMER_DERBY_SQL_PATH=./bundles/ejbtimer_derby.sql
+export JSR352_DERBY_SQL_PATH=./bundles/jsr352-derby.sql
 
 TEST_SUITE=`echo "$1" | tr '/' '_'`
 
@@ -137,7 +148,17 @@ if [ -z "$SKIP_TEST" ]; then
   echo "Starting test!"
   time bash -x $SCRIPTPATH/jakartaeetck.sh "$@" |& tee $CTS_HOME/$TEST_SUITE.log
   ./asadmin stop-domain
+  # print Payara log
+  echo "***********************************"
+  echo "*            Payara LOGS          *"
+  echo "***********************************"
+  cat $CTS_HOME/vi/${GF_VI_TOPLEVEL_DIR}/glassfish/domains/domain1/logs/server.log
+  echo "***********************************"
+  echo "*        End of Payara LOGS       *"
+  echo "***********************************"
 fi
+
+
 # collect results
 
 summary=$CTS_HOME/jakartaeetck-report/${TEST_SUITE}/text/summary.txt

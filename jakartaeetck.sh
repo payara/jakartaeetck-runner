@@ -2,7 +2,7 @@
 
 #
 # Copyright (c) 2018, 2019 Oracle and/or its affiliates. All rights reserved.
-# Copyright (c) 2019, 2020 Payara Foundation and/or its affiliates. All rights reserved.
+# Copyright (c) 2019-2023 Payara Foundation and/or its affiliates. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v. 2.0, which is available at
@@ -254,15 +254,17 @@ if [ ! -d "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR" ]; then
   exit 1
 fi
 
-wget --progress=bar:force --no-cache $DERBY_URL -O ${CTS_HOME}/javadb.zip
+cp $DERBY_PATH ${CTS_HOME}/javadb.zip
 
-echo -n "Unzipping JavaDB... "
+echo "Unzipping JavaDB... "
 unzip -q -o ${CTS_HOME}/javadb.zip -d $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR
 cp $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbyclient.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derby.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib
+echo "Additional libs in vi"
+ls -l $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib
 rm ${CTS_HOME}/javadb.zip
 
-wget --progress=bar:force --no-cache $EJBTIMER_DERBY_SQL -O ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/ejbtimer_derby.sql
-wget --progress=bar:force --no-cache $JSR352_DERBY_SQL -O ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/jsr352-derby.sql
+cp $EJBTIMER_DERBY_SQL_PATH ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/ejbtimer_derby.sql
+cp $JSR352_DERBY_SQL_PATH ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/jsr352-derby.sql
 
 if [[ $test_suite == ejb30/lite* ]] || [[ "ejb30" == $test_suite ]] ; then
   echo "Using higher JVM memory for EJB Lite suites to avoid OOM errors"
@@ -407,11 +409,51 @@ if [ ! -z "${DATABASE}" ];then
   fi
 fi
 
+ALLPERMISSION_POLICY_FILE=/tmp/allpermission.policy
+echo 'grant {' > ${ALLPERMISSION_POLICY_FILE}
+echo 'permission java.security.AllPermission;' >> ${ALLPERMISSION_POLICY_FILE}
+echo '};' >> ${ALLPERMISSION_POLICY_FILE}
+
 VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/server.policy
+echo '/* from jakartaeetck.sh for TCK tests */' >> ${VI_SERVER_POLICY_FILE}
 echo 'grant {' >> ${VI_SERVER_POLICY_FILE}
-echo 'permission java.io.FilePermission "${com.sun.aas.instanceRoot}${/}generated${/}policy${/}-", "read,write,execute,delete";' >> ${VI_SERVER_POLICY_FILE}
+# if [ "ejb30/sec" == "${test_suite}" ] || [ "webservices12" == "${test_suite}" ]; then
+  #ejb30/sec fails with AllPermission
+#   echo "Setting specific permissions for ejb30/sec, not AllPermission"
+  echo 'permission java.io.FilePermission "${com.sun.aas.instanceRoot}${/}generated${/}policy${/}-", "read,write,execute,delete";' >> ${VI_SERVER_POLICY_FILE}
+  echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_SERVER_POLICY_FILE}
+# else
+#   echo "Setting AllPermission"
+#   echo 'permission java.security.AllPermission;' >> ${VI_SERVER_POLICY_FILE}
+# fi
 echo '};' >> ${VI_SERVER_POLICY_FILE}
 
+VI_APPCLIENT_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/appclient/client.policy
+echo 'grant {' >> ${VI_APPCLIENT_POLICY_FILE}
+if [ "compat12" == "${test_suite}" ] || [ "connector" == "${test_suite}" ] || [ "ejb" == "${test_suite}" ] || [ "ejb30/sec" == "${test_suite}" ] || [ "integration" == "${test_suite}" ] || [ "jacc" == "${test_suite}" ] || [ "jaspic" == "${test_suite}" ] || [ "jaxrpc" == "${test_suite}" ] || [ "jaxrs" == "${test_suite}" ] || [ "jbatch" == "${test_suite}" ] || [ "jsp" == "${test_suite}" ] || [ "securityapi" == "${test_suite}" ] || [ "servlet" == "${test_suite}" ] || [ "webservices" == "${test_suite}" ] || [ "websocket" == "${test_suite}" ] ]; then
+  #  || [ "interop" == "${test_suite}"
+  # ejb30/sec fails with AllPermission
+  echo "Setting specific permissions, not AllPermission"
+  # If anybody want to continue in specifying all permissions, this is incomplete list:
+  echo 'permission "java.io.FilePermission" "<<ALL FILES>>", "execute, delete";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "getenv.*";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "getClassLoader";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "createClassLoader";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "setContextClassLoader";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "setIO";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "accessDeclaredMembers";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "getProtectionDomain";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.util.PropertyPermission" "*", "read, write";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "accessUserInformation";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "java.lang.RuntimePermission" "shutdownHooks";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "org.glassfish.pfl.basic.reflection.BridgePermission" "getBridge";' >> ${VI_APPCLIENT_POLICY_FILE}
+  echo 'permission "javax.xml.ws.WebServicePermission" "ConnectorPermission1_name2";' >> ${VI_APPCLIENT_POLICY_FILE}
+else
+  echo "Setting AllPermission"
+  echo 'permission java.security.AllPermission;' >> ${VI_APPCLIENT_POLICY_FILE}
+fi
+echo '};' >> ${VI_APPCLIENT_POLICY_FILE}
 
 mkdir -p ${JT_REPORT_DIR}
 mkdir -p ${JT_WORK_DIR}
@@ -420,7 +462,13 @@ export JAVA_VERSION=`java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}'`
 echo $JAVA_VERSION > ${JT_REPORT_DIR}/.jdk_version
 
 cd  ${TS_HOME}/bin
-ant ${ANT_ARG} config.vi.javadb
+# permit everything for configuration ant runs
+export CONFIG_ARG="${ANT_ARG} -Djava.security.manager -Djava.security.policy==${ALLPERMISSION_POLICY_FILE}"
+# configure ant client to use client policy file
+export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${VI_APPCLIENT_POLICY_FILE}"
+#export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${ALLPERMISSION_POLICY_FILE}"
+ant ${CONFIG_ARG} ${ANT_ARG} config.vi.javadb
+echo "config vi ends here"
 ##### configVI.sh ends here #####
 
 ### populateMailbox for suites using mail server - Start ###
@@ -434,13 +482,13 @@ fi
 configRI() {
   ##### configRI.sh ends here #####
   cd  ${TS_HOME}/bin
-  ant ${ANT_ARG} config.ri
-  ant ${ANT_ARG} enable.csiv2
+  ant ${CONFIG_ARG} ${ANT_ARG} config.ri
+  ant ${CONFIG_ARG} ${ANT_ARG} enable.csiv2
   ##### configRI.sh ends here #####
 
   ##### addInteropCerts.sh starts here #####
   cd ${TS_HOME}/bin
-  ant ${ANT_ARG} add.interop.certs
+  ant ${CONFIG_ARG} ${ANT_ARG} add.interop.certs
   ##### addInteropCerts.sh ends here #####
 
   ### restartRI.sh starts here #####
@@ -467,7 +515,7 @@ fi
 
 if [[ "securityapi" == ${test_suite} ]]; then
   cd $TS_HOME/bin;
-  ant ${ANT_ARG} init.ldap
+  ant ${CONFIG_ARG} ${ANT_ARG} init.ldap
   echo "LDAP initilized for securityapi"
 fi
 
@@ -538,9 +586,9 @@ else
 fi
   # Generate combined report for both the runs.
 if [[ "jbatch" == ${test_suite} ]]; then
-  ant -Dreport.for=com/ibm/jbatch/tck -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch report
+  ant ${CONFIG_ARG} -Dreport.for=com/ibm/jbatch/tck -Dwork.dir=${JT_WORK_DIR}/jbatch -Dreport.dir=${JT_REPORT_DIR}/jbatch report
 else  
-  ant -Dreport.for=com/sun/ts/tests/$test_suite -Dreport.dir=${JT_REPORT_DIR}/${TEST_SUITE} -Dwork.dir=${JT_WORK_DIR}/${TEST_SUITE} report
+  ant ${CONFIG_ARG} -Dreport.for=com/sun/ts/tests/$test_suite -Dreport.dir=${JT_REPORT_DIR}/${TEST_SUITE} -Dwork.dir=${JT_WORK_DIR}/${TEST_SUITE} report
 fi
 
 fi
