@@ -14,11 +14,12 @@ export WORKSPACE=$PORTING
 export GF_BUNDLE_URL=$PAYARA_URL
 echo Build should download from $GF_BUNDLE_URL
 
+# be aware, that in the new version (since 4.0.2), defining $TCK_BUNDLE_BASE_URL causes the run_jaxbtck.sh script to stop in the middle (some way for specific script?)
 if [ -z "$TCK_BUNDLE_BASE_URL" ]; then
   export TCK_BUNDLE_BASE_URL=http://localhost:8000
 fi
 if [ -z "$TCK_BUNDLE_FILE_NAME" ]; then
-  export TCK_BUNDLE_FILE_NAME=jakarta-xml-binding-tck-4.0.0.zip
+  export TCK_BUNDLE_FILE_NAME=jakarta-xml-binding-tck-4.0.1.zip
 fi
 
 if [ -z $MAVEN_HOME ]; then
@@ -27,10 +28,6 @@ fi
 
 # Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara6
 sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_jaxbtck.sh"
-
-# TCK Challenge
-# https://github.com/jakartaee/jaxb-tck/issues/82
-sed -i 's/xml-binding-tck\*.zip -d /xml-binding-tck*.zip -x "*IDREFS_length006*" -x "*NMTOKENS_length006*" -d /g' "$WORKSPACE/docker/run_jaxbtck.sh"
 
 # Make sure the script doesn't unset JAVA_HOME
 if [ -z "$JDK11_HOME" ]; then
