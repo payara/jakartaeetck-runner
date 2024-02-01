@@ -71,6 +71,10 @@ init_urls () {
     if [ -z "$BV_TCK_URL" ]; then
         BV_TCK_URL=$BASE_URL/bv-tck-3.0.1-dist.zip
     fi
+    if [ -z "$JAXB_TCK_URL" ]; then
+        JAXB_TCK_VERSION=4.0.1
+        JAXB_TCK_NAME=jakarta-xml-binding-tck-$JAXB_TCK_VERSION.zip
+    fi
     if [ -z "$DERBY_URL" ]; then
         DERBY_URL=$BASE_URL/javadb.zip
     fi
