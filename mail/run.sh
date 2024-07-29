@@ -8,7 +8,7 @@ export PORTING=$SCRIPTPATH/mail-tck
 OUTPUT=$PORTING/bundles
 
 rm $PORTING/latest-glassfish.zip
-rm -rf mail-tck/payara6
+rm -rf mail-tck/payara7
 
 export WORKSPACE=$PORTING
 export GF_BUNDLE_URL=$PAYARA_URL
@@ -25,8 +25,8 @@ if [ -z $MAVEN_HOME ]; then
     export MAVEN_HOME=`mvn -v | sed -n 's/Maven home: \(.\+\)/\1/p'`
 fi
 
-# Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara6
-sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_mailtck.sh"
+# Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara7
+sed -i "s/glassfish7/payara7/g" "$WORKSPACE/docker/run_mailtck.sh"
 
 # fix broken running script - paths to JTreport and JTwork
 sed -i 's/echo "1 mail-tck $HOST"/echo "1 html $HOST"/g' "$WORKSPACE/docker/run_mailtck.sh"
@@ -87,7 +87,7 @@ fi
 TIMESTAMP=`date -Iminutes | tr -d :`
 report=$SCRIPTPATH/../results/mail-$TIMESTAMP.tar.gz
 echo Creating report $report
-tar zcf $report $WORKSPACE/payara6/glassfish/domains/domain1/logs
+tar zcf $report $WORKSPACE/payara7/glassfish/domains/domain1/logs
 
 # generate stage log
 cat > $SCRIPTPATH/../stage_mail << EOF

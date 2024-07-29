@@ -13,13 +13,16 @@ PORTING=$SCRIPTPATH/mail-tck
 OUTPUT=$PORTING/bundles
 
 if [ ! -d mail-tck ]; then
-  git clone https://github.com/jakartaee/mail-tck -b 2.1.1
+  git clone https://github.com/jakartaee/mail-tck
+  cd mail-tck
+  git checkout c57f734856b3dc7b5313d997dc7805ff95dc5c32
+  cd ..
 fi
 
 rm -f $PORTING/latest-glassfish.zip
 rm -rf $OUTPUT
 rm -rf $PORTING/dist/
-rm -rf $PORTING/payara6
+rm -rf $PORTING/payara7
 
 export WORKSPACE=$PORTING
 export GF_BUNDLE_URL=$PAYARA_URL

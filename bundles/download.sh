@@ -26,5 +26,5 @@ if [ ! -f jakarta-debugging-tck-2.0.0.zip ]; then
 	wget https://download.eclipse.org/jakartaee/debugging/2.0/jakarta-debugging-tck-2.0.0.zip -O jakarta-debugging-tck-2.0.0.zip
 fi
 if [ ! -f mail-tck-2.1_latest.zip ]; then
-	wget https://download.eclipse.org/jakartaee/mail/2.1/jakarta-mail-tck-2.1.0.zip -O mail-tck-2.1_latest.zip
+	wget https://download.eclipse.org/jakartaee/mail/2.1/jakarta-mail-tck-2.1.2.zip -O mail-tck-2.1_latest.zip
 fi
