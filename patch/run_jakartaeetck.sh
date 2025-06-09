@@ -65,6 +65,19 @@ if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]];then
                  -Djavax.xml.accessExternalSchema=all \
      -Djavax.xml.accessExternalDTD=file,http"
 
+elseif [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]];then
+  cp $TS_HOME/bin/ts.jte.jdk17 $TS_HOME/bin/ts.jte
+  export JAVA_HOME=${JDK17_HOME}
+  export PATH=$JAVA_HOME/bin:$PATH
+  export ANT_OPTS="-Xmx2G \
+                 -Djavax.xml.accessExternalStylesheet=all \
+                 -Djavax.xml.accessExternalSchema=all \
+		 -DenableExternalEntityProcessing=true \
+                 -Djavax.xml.accessExternalDTD=file,http"
+  export CTS_ANT_OPTS="-Djavax.xml.accessExternalStylesheet=all \
+                 -Djavax.xml.accessExternalSchema=all \
+     -Djavax.xml.accessExternalDTD=file,http"
+
 else
   export ANT_OPTS="-Xmx2G -Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/modules/endorsed \
                  -Djavax.xml.accessExternalStylesheet=all \
