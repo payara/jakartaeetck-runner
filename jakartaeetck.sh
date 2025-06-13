@@ -462,6 +462,7 @@ echo 'permission java.net.SocketPermission "*", "listen";' >> ${VI_SERVER_POLICY
 echo 'permission java.net.SocketPermission "*", "accept";' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission java.io.FilePermission       "<<ALL FILES>>", "write,read";' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_SERVER_POLICY_FILE}
+echo 'permission jakarta.xml.ws.WebServicePermission "CTSPermission3_name";' >> ${VI_SERVER_POLICY_FILE}
 echo '};' >> ${VI_SERVER_POLICY_FILE}
 
 VI_APPCLIENT_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/appclient/client.policy
