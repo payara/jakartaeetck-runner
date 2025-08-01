@@ -39,6 +39,11 @@ if [ -z "$RUNTIME" ]; then
   export RUNTIME=Glassfish
 fi
 
+# If provided, set concurrent threads
+if [ $# == 1 ]; then
+  export CONCURRENT_THREADS=$1
+fi
+
 bash -x $WORKSPACE/docker/run_jaxbtck.sh | tee $WORKSPACE/jaxb.log
 
 if [ ! -d "$SCRIPTPATH/../results" ]; then
