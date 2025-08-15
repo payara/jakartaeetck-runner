@@ -22,12 +22,12 @@ if [ -z "$TCK_BUNDLE_FILE_NAME" ]; then
   export TCK_BUNDLE_FILE_NAME=jakarta-xml-binding-tck-4.0.1.zip
 fi
 
+# Copy in edited run file
+cp $SCRIPTPATH/run_jaxbtck-edited.sh $WORKSPACE/docker/run_jaxbtck.sh
+
 if [ -z $MAVEN_HOME ]; then
     export MAVEN_HOME=`mvn -v | sed -n 's/Maven home: \(.\+\)/\1/p'`
 fi
-
-# Replace default value of ${$GF_TOPLEVEL_DIR} (glassfish7) with payara6
-sed -i "s/glassfish7/payara6/g" "$WORKSPACE/docker/run_jaxbtck.sh"
 
 # Make sure the script doesn't unset JAVA_HOME
 if [ -z "$JDK11_HOME" ]; then
@@ -37,6 +37,11 @@ fi
 if [ -z "$RUNTIME" ]; then
   # Lowercase f intentional - that's what the run_jaxbtck.sh specifically checks for
   export RUNTIME=Glassfish
+fi
+
+# If provided, set concurrent threads
+if [ $# == 1 ]; then
+  export CONCURRENT_THREADS=$1
 fi
 
 bash -x $WORKSPACE/docker/run_jaxbtck.sh | tee $WORKSPACE/jaxb.log
