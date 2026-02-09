@@ -21,6 +21,11 @@ if [ -z "$TCK_BUNDLE_FILE_NAME" ]; then
   export TCK_BUNDLE_FILE_NAME=jakarta-activation-tck-2.1.0.zip
 fi
 
+export ACTIVATION_BUNDLE_URL=https://repo1.maven.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0.jar
+echo Build should download from $ACTIVATION_BUNDLE_URL
+export ANGUS_BUNDLE_URL=https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/1.1.0/angus-activation-1.1.0.jar
+echo Build should download from $ANGUS_BUNDLE_URL
+
 if [ -z $MAVEN_HOME ]; then
     export MAVEN_HOME=`mvn -v | sed -n 's/Maven home: \(.\+\)/\1/p'`
 fi
