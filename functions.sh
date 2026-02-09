@@ -79,10 +79,10 @@ init_urls () {
         DERBY_URL=$BASE_URL/javadb.zip
     fi
     if [ -z "$ACTIVATION_BUNDLE_URL" ]; then
-        ACTIVATION_BUNDLE_URL=https://repo1.maven.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0.jar
+        ACTIVATION_BUNDLE_URL=https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/2.1.4/jakarta.activation-api-2.1.4.jar
     fi
     if [ -z "$JAF_BUNDLE_URL" ]; then
-        JAF_BUNDLE_URL=https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/2.1.0/jakarta.activation-api-2.1.0.jar
+        JAF_BUNDLE_URL=https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/2.1.4/jakarta.activation-api-2.1.4.jar
     fi
     if [ -z "$ANGUS_BUNDLE_URL" ]; then
         ANGUS_BUNDLE_URL=https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/1.1.0/angus-activation-1.1.0.jar

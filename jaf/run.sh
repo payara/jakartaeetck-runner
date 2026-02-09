@@ -18,10 +18,10 @@ if [ -z "$TCK_BUNDLE_BASE_URL" ]; then
   export TCK_BUNDLE_BASE_URL=http://localhost:8000
 fi
 if [ -z "$TCK_BUNDLE_FILE_NAME" ]; then
-  export TCK_BUNDLE_FILE_NAME=jakarta-activation-tck-2.1.0.zip
+  export TCK_BUNDLE_FILE_NAME=jakarta-activation-tck-2.1.2.zip
 fi
 
-export ACTIVATION_BUNDLE_URL=https://repo1.maven.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0.jar
+export ACTIVATION_BUNDLE_URL=https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/2.1.4/jakarta.activation-api-2.1.4.jar
 echo Build should download from $ACTIVATION_BUNDLE_URL
 export ANGUS_BUNDLE_URL=https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/1.1.0/angus-activation-1.1.0.jar
 echo Build should download from $ANGUS_BUNDLE_URL
