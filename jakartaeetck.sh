@@ -328,6 +328,23 @@ if [[ -z "${HARNESS_DEBUG}" ]]; then
   export HARNESS_DEBUG=false;
 fi
 
+# Regenerate s1as certificate with localhost SAN for SSL tests
+DOMAIN_CONFIG=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config
+keytool -delete -alias s1as -keystore $DOMAIN_CONFIG/keystore.p12 -storepass changeit -storetype PKCS12
+keytool -genkeypair -alias s1as \
+  -keyalg RSA -keysize 2048 \
+  -dname "CN=localhost, OU=Payara, O=Payara Foundation, L=Great Malvern, ST=Worcestershire, C=UK" \
+  -ext "SAN=dns:localhost,ip:127.0.0.1" \
+  -validity 3650 \
+  -keystore $DOMAIN_CONFIG/keystore.p12 \
+  -storepass changeit -storetype PKCS12
+keytool -exportcert -alias s1as -keystore $DOMAIN_CONFIG/keystore.p12 \
+  -storepass changeit -storetype PKCS12 -file /tmp/s1as.crt
+keytool -delete -alias s1as -keystore $DOMAIN_CONFIG/cacerts.p12 -storepass changeit -storetype PKCS12
+keytool -importcert -alias s1as -file /tmp/s1as.crt \
+  -keystore $DOMAIN_CONFIG/cacerts.p12 -storepass changeit -storetype PKCS12 -noprompt
+rm /tmp/s1as.crt
+
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
 ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
