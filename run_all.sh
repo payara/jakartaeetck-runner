@@ -15,15 +15,15 @@ SUITES=(
   # Sorted by size (smallest first, based on Client*.java file count)
 
   # ejb30/lite sub-suites not yet run
-  ejb30/lite/naming          #  1
-  ejb30/lite/xmloverride     #  2
-  ejb30/lite/lookup          #  3
-  ejb30/lite/nointerface     #  3
-  ejb30/lite/enventry        #  4
-  ejb30/lite/view            #  5
-  ejb30/lite/async           #  9
-  ejb30/lite/singleton       #  9
-  ejb30/lite/stateful        #  9
+  # ejb30/lite/naming          #  1
+  # ejb30/lite/xmloverride     #  2
+  # ejb30/lite/lookup          #  3
+  # ejb30/lite/nointerface     #  3
+  # ejb30/lite/enventry        #  4
+  # ejb30/lite/view            #  5
+  # ejb30/lite/async           #  9
+  # ejb30/lite/singleton       #  9
+  ejokb30/lite/stateful        #  9
   ejb30/lite/tx              # 14
   ejb30/lite/packaging       # 16
 
