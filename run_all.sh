@@ -12,50 +12,54 @@ OUTPUT_DIR="${1:-$SCRIPTPATH/results/logs}"
 mkdir -p "$OUTPUT_DIR"
 
 SUITES=(
-  # Top-level suites
-  appclient
-  assembly
-  connector
-  ejb
-  ejb32
-  el
-  integration
-  jacc
-  javaee
-  javamail
-  jaxrs
-  jaxws
-  jdbc
-  jms
-  jpa
-  jsonb
-  jsonp
-  jsp
-  jstl
-  jta
-  samples
-  servlet
-  webservices12
-  webservices13
-  websocket
-  xa
+  # Sorted by size (smallest first, based on Client*.java file count)
 
-  # ejb30/lite sub-suites
-  ejb30/lite/appexception
-  ejb30/lite/async
-  ejb30/lite/basic
-  ejb30/lite/ejbcontext
-  ejb30/lite/enventry
-  ejb30/lite/interceptor
-  ejb30/lite/lookup
-  ejb30/lite/naming
-  ejb30/lite/nointerface
-  ejb30/lite/packaging
-  ejb30/lite/singleton
-  ejb30/lite/stateful
-  ejb30/lite/tx
-  ejb30/lite/view
-  ejb30/lite/xmloverride
+  # ejb30/lite sub-suites not yet run
+  ejb30/lite/naming          #  1
+  ejb30/lite/xmloverride     #  2
+  ejb30/lite/lookup          #  3
+  ejb30/lite/nointerface     #  3
+  ejb30/lite/enventry        #  4
+  ejb30/lite/view            #  5
+  ejb30/lite/async           #  9
+  ejb30/lite/singleton       #  9
+  ejb30/lite/stateful        #  9
+  ejb30/lite/tx              # 14
+  ejb30/lite/packaging       # 16
+
+  # Top-level suites (small to large)
+  jsonb                      #  1
+  jsonp                      #  1
+  integration                #  2
+  jsp                        #  2
+  jta                        #  2
+  xa                         #  5
+  connector                  #  6
+  jacc                       #  6
+  el                         #  ~
+  javaee                     #  ~
+  javamail                   #  ~
+  jaxrs                      #  ~
+  jaxws                      #  ~
+  jdbc                       #  ~
+  jstl                       #  ~
+  samples                    #  ~
+  servlet                    # 17
+  appclient                  # 18
+  webservices13              # 19
+  assembly                   # 27
+  ejb32                      # 31
+  jms                        # 34
+  webservices12              # 77
+  jpa                        # 171
+  ejb                        # 331
+
+  # Already run (moved to last)
+  ejb30/lite/ejbcontext      # 50 tests
+  ejb30/lite/basic           # 105 tests
+  ejb30/lite/interceptor     # 175 tests
+  ejb30/lite/appexception    # 365 tests
+  websocket                  # 748 tests
 )
 
 TOTAL=${#SUITES[@]}
