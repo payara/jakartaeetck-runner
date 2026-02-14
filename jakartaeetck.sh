@@ -95,6 +95,16 @@ else
 
 fi
 
+# Exclude tests that require Security Manager (deprecated in JDK 17, JEP 411)
+if [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]]; then
+  cat >> ${CTS_HOME}/jakartaeetck/bin/ts.jtx <<'EOF'
+# Security Manager deprecated in JDK 17 (JEP 411) - permissiondd tests require SM
+com/sun/ts/tests/connector/permissiondd/Client.java#testValidateMissingPermFails_from_ejb
+com/sun/ts/tests/connector/permissiondd/Client.java#testValidateMissingPermFails_from_jsp
+com/sun/ts/tests/connector/permissiondd/Client.java#testValidateMissingPermFails_from_servlet
+EOF
+fi
+
 if [ -z "${RI_JAVA_HOME}" ]; then
   export RI_JAVA_HOME=$JAVA_HOME
 fi
