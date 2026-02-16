@@ -60,7 +60,9 @@ if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
     export GF_VI_TOPLEVEL_DIR=glassfish7
 fi
 
+echo "JDK env var: '${JDK}'"
 if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]]; then
+  echo "Configuring for JDK 11 (JDK11_HOME=${JDK11_HOME})"
   export JAVA_HOME=${JDK11_HOME}
   export PATH=$JAVA_HOME/bin:$PATH
   export ANT_OPTS="-Xmx2G \
@@ -72,6 +74,7 @@ if [[ "$JDK" == "JDK11" || "$JDK" == "jdk11" ]]; then
                  -Djavax.xml.accessExternalSchema=all \
      -Djavax.xml.accessExternalDTD=file,http"
 elif [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]]; then
+  echo "Configuring for JDK 17 (JDK17_HOME=${JDK17_HOME})"
   export JAVA_HOME=${JDK17_HOME}
   export PATH=$JAVA_HOME/bin:$PATH
   export ANT_OPTS="-Xmx2G \
@@ -83,6 +86,7 @@ elif [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]]; then
                  -Djavax.xml.accessExternalSchema=all \
       -Djavax.xml.accessExternalDTD=file,http"
 else
+  echo "WARNING: JDK env var not set to JDK11 or JDK17, using default (JDK 8) configuration"
   export ANT_OPTS="-Xmx2G -Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/modules/endorsed \
                  -Djavax.xml.accessExternalStylesheet=all \
                  -Djavax.xml.accessExternalSchema=all \
@@ -96,14 +100,23 @@ else
 fi
 
 # Exclude tests that require Security Manager (deprecated in JDK 17, JEP 411)
-if [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]]; then
+# Detect Java major version dynamically to avoid depending on JDK env var
+JAVA_MAJOR_VERSION=$(java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}' | awk -F '.' '{if ($1 == "1") print $2; else print $1}')
+echo "Detected Java major version: ${JAVA_MAJOR_VERSION}"
+if [[ "$JAVA_MAJOR_VERSION" -ge 17 ]]; then
+  echo "JDK >= 17 detected: excluding permissiondd tests (Security Manager deprecated, JEP 411)"
   cat >> ${CTS_HOME}/jakartaeetck/bin/ts.jtx <<'EOF'
 # Security Manager deprecated in JDK 17 (JEP 411) - permissiondd tests require SM
 com/sun/ts/tests/connector/permissiondd/Client.java#testValidateMissingPermFails_from_ejb
 com/sun/ts/tests/connector/permissiondd/Client.java#testValidateMissingPermFails_from_jsp
 com/sun/ts/tests/connector/permissiondd/Client.java#testValidateMissingPermFails_from_servlet
 EOF
+else
+  echo "JDK < 17: permissiondd tests will NOT be excluded (Security Manager available)"
 fi
+
+echo "ts.jtx exclusion list tail:"
+tail -5 ${CTS_HOME}/jakartaeetck/bin/ts.jtx 2>/dev/null || echo "WARNING: ts.jtx not found at ${CTS_HOME}/jakartaeetck/bin/ts.jtx"
 
 if [ -z "${RI_JAVA_HOME}" ]; then
   export RI_JAVA_HOME=$JAVA_HOME
