@@ -462,6 +462,9 @@ echo 'permission java.net.SocketPermission "*", "listen";' >> ${VI_SERVER_POLICY
 echo 'permission java.net.SocketPermission "*", "accept";' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission java.io.FilePermission       "<<ALL FILES>>", "write,read";' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission org.apache.derby.security.SystemPermission "engine", "usederbyinternals";' >> ${VI_SERVER_POLICY_FILE}
+# Mojarra 4.0.22 creates a StackWalker with RETAIN_CLASS_REFERENCE in FacesContext.<clinit>. The signature test is the
+# first to touch FactoryFinder/FacesContext, from app code, so the SecurityManager check fails without this grant.
+echo 'permission java.lang.RuntimePermission "getStackWalkerWithClassReference";' >> ${VI_SERVER_POLICY_FILE}
 if [[ "$JDK" == "JDK17" || "$JDK" == "jdk17" ]]; then
   echo 'permission jakarta.xml.ws.WebServicePermission "CTSPermission3_name";' >> ${VI_SERVER_POLICY_FILE}
 fi
