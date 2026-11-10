@@ -44,6 +44,23 @@ if [ ! -d "$SCRIPTPATH/../results" ]; then
 fi
 
 TIMESTAMP=`date -Iminutes | tr -d :`
-report=$SCRIPTPATH/../results/dsol-$TIMESTAMP.xml
+report=$SCRIPTPATH/../results/dsol-$TIMESTAMP.tar.gz
 echo Creating report $report
 tar zcf $report $WORKSPACE/debugging-tck-junit-report.xml $WORKSPACE/vi/payara6/glassfish/domains/domain1/logs
+
+# generate stage log (collected by the Jenkins job from stage_*)
+JUNIT=$WORKSPACE/debugging-tck-junit-report.xml
+# list every test that did not pass, one per line, as "<classname>#<testcase>  <status>." (same format as the main runner's summary.txt)
+FAILED_TESTS=`sed -n -E 's/.*<testcase name="([^"]*)" classname="([^"]*)".* status="([^"]*)".*/\2#\1  \3./p' $JUNIT | grep -v 'Passed\.$'`
+cat > $SCRIPTPATH/../stage_dsol << EOF
+### dsol
+
+\`\`\`
+`sed -n '/<testsuite / p' $JUNIT | sed 's/.* tests="\([0-9]*\)".*/Completed running \1 tests./'`
+`sed -n '/<testsuite / p' $JUNIT | sed 's/.* failures="\([0-9]*\)".*/Number of Tests Failed = \1/'`
+`sed -n '/<testsuite / p' $JUNIT | sed 's/.* errors="\([0-9]*\)".*/Number of Tests with Errors = \1/'`
+`sed -n '/<testsuite / p' $JUNIT | sed 's/.* disabled="\([0-9]*\)".*/Number of Disabled Tests = \1/'`
+`sed -n '/<testsuite / p' $JUNIT | sed 's/.* skipped="\([0-9]*\)".*/Number of Skipped Tests = \1/'`
+$FAILED_TESTS
+\`\`\`
+EOF
