@@ -55,12 +55,10 @@ FAILED_TESTS=`sed -n -E 's/.*<testcase name="([^"]*)" classname="([^"]*)".* stat
 cat > $SCRIPTPATH/../stage_dsol << EOF
 ### dsol
 
-\`\`\`
 `sed -n '/<testsuite / p' $JUNIT | sed 's/.* tests="\([0-9]*\)".*/Completed running \1 tests./'`
 `sed -n '/<testsuite / p' $JUNIT | sed 's/.* failures="\([0-9]*\)".*/Number of Tests Failed = \1/'`
 `sed -n '/<testsuite / p' $JUNIT | sed 's/.* errors="\([0-9]*\)".*/Number of Tests with Errors = \1/'`
 `sed -n '/<testsuite / p' $JUNIT | sed 's/.* disabled="\([0-9]*\)".*/Number of Disabled Tests = \1/'`
 `sed -n '/<testsuite / p' $JUNIT | sed 's/.* skipped="\([0-9]*\)".*/Number of Skipped Tests = \1/'`
 $FAILED_TESTS
-\`\`\`
 EOF
