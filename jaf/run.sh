@@ -53,3 +53,24 @@ TIMESTAMP=`date -Iminutes | tr -d :`
 report=$SCRIPTPATH/../results/jaf-$TIMESTAMP.tar.gz
 echo Creating report $report
 tar zcf $report $WORKSPACE/activation-tck/JTreport/ $WORKSPACE/activation-tck/JTreport-Pluggability/ $WORKSPACE/results $SCRIPTPATH/payara6/glassfish/domains/domain1/logs
+
+# generate stage log (collected by the Jenkins job from stage_*)
+# the regular and the pluggability run each have their own junit report, so sum up both
+JUNIT_FILES=`ls $WORKSPACE/results/junitreports*/*-junit-report.xml`
+sum_attr () {
+    sed -n '/<testsuite / p' $JUNIT_FILES | sed -n "s/.* $1=\"\([0-9]*\)\".*/\1/p" | awk '{s+=$1} END {print s+0}'
+}
+# list every test that did not pass, one per line, as "<classname>#<testcase>  <status>." (same format as the main runner's summary.txt)
+FAILED_TESTS=`sed -n -E 's/.*<testcase name="([^"]*)" classname="([^"]*)".* status="([^"]*)".*/\2#\1  \3./p' $JUNIT_FILES | grep -v 'Passed\.$'`
+cat > $SCRIPTPATH/../stage_activation << EOF
+### activation
+
+\`\`\`
+Completed running `sum_attr tests` tests.
+Number of Tests Failed = `sum_attr failures`
+Number of Tests with Errors = `sum_attr errors`
+Number of Disabled Tests = `sum_attr disabled`
+Number of Skipped Tests = `sum_attr skipped`
+$FAILED_TESTS
+\`\`\`
+EOF

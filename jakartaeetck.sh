@@ -483,12 +483,23 @@ export JAVA_VERSION=`java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}'`
 echo $JAVA_VERSION > ${JT_REPORT_DIR}/.jdk_version
 
 # For debugging purposes, look at the policies
-#echo "user's java policy"
-#cat ~/.java.policy
-#echo "appclient's java policy"
-#cat ${VI_APPCLIENT_POLICY_FILE}
-#echo "system policy"
-#cat ${JAVA_HOME}/conf/security/java.policy
+echo "user's java policy"
+cat ~/.java.policy
+echo "appclient's java policy"
+cat ${VI_APPCLIENT_POLICY_FILE}
+echo "system policy"
+cat ${JAVA_HOME}/conf/security/java.policy
+
+
+echo "ANT_OPTS before ant: "
+ant -diagnostics | grep -i security || true
+
+echo "Listing Java environment variables..."
+env | grep JAVA
+
+echo "JAVA TOOL OPTIONS: "
+echo "_JAVA_OPTIONS=$_JAVA_OPTIONS"
+echo "JAVA_TOOL_OPTIONS=$JAVA_TOOL_OPTIONS"
 
 cd  ${TS_HOME}/bin
 export ANT_OPTS="${ANT_OPTS} -Djava.security.manager -Djava.security.policy==${VI_APPCLIENT_POLICY_FILE}"
